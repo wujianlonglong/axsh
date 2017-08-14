@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: sjes-gateway-admin
+  profiles:
+    active: development
+---
+
+spring:
+  profiles: development
+  cloud:
+    config:
+      profile: development
+      enabled: false
+#      uri: http://srv3.sanjiang.info:8888
+#      fail-fast: true
+---
+
+spring:
+  profiles: production
+  cloud:
+    config:
+      profile: production
+      uri: http://srv3.sanjiang.info:8888
+      fail-fast: true
+#zuul:
+#  routes:
+#    #用户服务
+#    users:
+#      path: /users/**
+#      stripPrefix: false
+#      serviceId: sjes-api-user
+

@@ -1,0 +1,48 @@
+server:
+  port: 9050
+spring:
+  profiles: development
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://srv3.sanjiang.info:3306/sjes-admin?failOverReadOnly=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true
+    username: sjes
+    password: sjes
+    max-active: 50
+    min-idle: 10
+    max-idle: 10
+    initial-size: 15
+    max-wait: 5
+    test-on-borrow: true
+    validation-query: select 1
+
+  jpa:
+      database: MYSQL
+      show-sql: true
+  thymeleaf:
+    prefix: file://${HOME}/sjes/sjes-app-admin/
+    suffix: .html
+    cache: false
+
+picture:
+  application:
+    address: http://img.dev.sanjiang.info
+  upload:
+    path: file://${HOME}/sjes/sjes-app-admin/
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://srv3.sanjiang.info:8761/eureka/
+  instance:
+    hostname: srv3.sanjiang.info
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
+
+multipart:
+  enabled: true
+  max-file-size: 52428800
