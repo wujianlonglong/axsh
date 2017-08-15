@@ -14,6 +14,11 @@ spring:
     max-wait: 5
     test-on-borrow: true
     validation-query: select 1
+  data:
+    mongodb:
+      host: srv3.sanjiang.info
+      port: 27017
+      database: anxian-gateway-admin
 
   jpa:
       database: MYSQL
@@ -22,6 +27,10 @@ spring:
     prefix: file://${HOME}/sjes/sjes-app-admin/
     suffix: .html
     cache: false
+
+mongeez:
+  enabled: true
+  location: db/migration/mongeez.xml
 
 picture:
   application:

@@ -3,6 +3,7 @@ package anxian.gateway.admin.module.base.domain;
 import anxian.gateway.admin.module.common.domain.BaseObj;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
