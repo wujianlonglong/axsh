@@ -42,9 +42,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/anxian/sjes_product")
-public class SjesProductController {
+public class AnxianProductController {
 
-    Logger LOGGER = LoggerFactory.getLogger(SjesProductController.class);
+    Logger LOGGER = LoggerFactory.getLogger(AnxianProductController.class);
 
     @Autowired
     private ProductFeign productFeign;

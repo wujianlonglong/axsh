@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/anxian/sjes_attribute")
-public class SjesAttributeController {
+public class AnxianAttributeController {
 
     @Autowired
     private SjesAttributeService sjesAttributeService;

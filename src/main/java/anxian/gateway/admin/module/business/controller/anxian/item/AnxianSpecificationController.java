@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("anxian/specification")
-public class SpecificationController {
+public class AnxianSpecificationController {
 
     @Autowired
     private SpecificationFeign specificationFeign;

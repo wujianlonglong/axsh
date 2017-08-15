@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("anxian/productCategory")
-public class ProductCategoryController {
+public class AnxianProductCategoryController {
 
     @Autowired
     private ProductCategoryFeign productCategoryFeign;
