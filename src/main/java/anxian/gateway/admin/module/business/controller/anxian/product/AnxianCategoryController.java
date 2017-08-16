@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/anxian/sjes_category")
-public class SjesCategoryController {
+public class AnxianCategoryController {
 
     @Autowired
     private SjesCategoryService sjesCategoryService;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("anxian/specificationValues")
-public class SpecificationValueController {
+public class AnxianSpecificationValueController {
 
     @Autowired
     private SpecificationValueFeign specificationValueFeign;
