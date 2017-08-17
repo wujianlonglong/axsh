@@ -24,7 +24,7 @@ public class NewMenuService {
 
     // TODO 菜单保存，列表表示
 
-    // 菜单展示【高级管理员】
+    // 菜单展示
     public List<MenuModel> showMenu(List<NewMenu> newMenus) {
         // 获取一级菜单
         List<NewMenu> firstMenus = null;
