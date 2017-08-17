@@ -1,8 +1,5 @@
 package anxian.gateway.admin.config;
 
-import anxian.gateway.admin.module.security.service.SecurityManager;
-import anxian.gateway.admin.module.security.service.UserContextService;
-import anxian.gateway.admin.module.security.service.impl.SecurityManagerImpl;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +13,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationProvid
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.authentication.event.LoggerListener;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +20,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
@@ -90,14 +85,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //这里使用自带的DaoAuthenticationProvider(如果满足不了需求,就参照此类再自定义)
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
-        authenticationProvider.setPasswordEncoder(new Md5PasswordEncoder());
-        SaltSource saltSource = new SaltSource() { //盐值
-            @Override
-            public Object getSalt(UserDetails user) {
-                return user.getUsername();
-            }
-        };
-        authenticationProvider.setSaltSource(saltSource);
+        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+//        SaltSource saltSource = new SaltSource() { //盐值
+//            @Override
+//            public Object getSalt(UserDetails user) {
+//                return user.getUsername();
+//            }
+//        };
+//        authenticationProvider.setSaltSource(saltSource);
         authenticationProvider.setHideUserNotFoundExceptions(false);
         return authenticationProvider;
     }
@@ -117,7 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/org/**").hasAuthority("ORG_LIST")
                 .antMatchers("/user/**").hasAuthority("USER_LIST")
                 .antMatchers("/authority/**").hasAuthority("AUTHORITY_LIST")
-                .antMatchers("/menu/**").hasAuthority("MENU_LIST")
+                .antMatchers("/menu/**").permitAll()
                 .antMatchers("/sjes_users/**").hasAuthority("SJESUSER_LIST")
                 .antMatchers("/sjes_product/**").hasAuthority("COMMODITYINFORMATION_LIST")
                 .antMatchers("/sjes_category/**").hasAuthority("COMMODITYCATEGORY_LIST")
@@ -143,18 +138,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/promotionSycn/**").hasAnyAuthority("ERPSALE_LIST")
                 .antMatchers("/admin/customerComplain/**").permitAll()
                 .antMatchers("/anxian/**").permitAll()
+                .antMatchers("/login").permitAll()
                 .anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
                 .and()
                 .exceptionHandling().accessDeniedPage("/login")
                 .and()
                 .formLogin() // 使用Java配置默认值设置了基于表单的验证。使用POST提交到”/login”时，需要用”username”和”password”进行验证。
-                .loginPage("/login") // 注明了登陆页面，意味着用GET访问”/login”时，显示登陆页面
-                .failureUrl("/login?error=1")
-                .loginProcessingUrl("/j_spring_security_check")
-                .defaultSuccessUrl("/index")  //登陆成功时跳转到的页面
-                .permitAll()// 任何人(包括没有经过验证的)都可以访问”/login”和”/login?error”。permitAll()是指用户可以访问formLogin()相关的任何URL
-                .and().sessionManagement()
-                .sessionFixation().changeSessionId()
+                .loginPage("/login")
+                .successHandler(new CustomAuthenticationSuccessHandler())
+                .failureHandler(new CustomAuthenticationFailureHandler())
+                .and()
+                .sessionManagement()
+                .sessionFixation()
+                .changeSessionId()
                 .maximumSessions(30).maxSessionsPreventsLogin(true)
                 .sessionRegistry(this.sessionRegistryImpl())
                 .and()
@@ -168,19 +164,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/static/**", "/**/*.html"); // 设置不拦截规则
+//        web.ignoring().antMatchers("/static/**", "/**/*.html");
     }
 
     @Bean
-    public UserContextService userDetailsService() {
-        UserContextService userContextService = new UserContextService();
+    public NewUserContextService userDetailsService() {
+        NewUserContextService userContextService = new NewUserContextService();
         userContextService.setSecurityManager(securityManager());
         return userContextService;
     }
 
     @Bean
     public SecurityManager securityManager() {
-        SecurityManagerImpl securityManager = new SecurityManagerImpl();
+        NewSecurityManager securityManager = new NewSecurityManager();
         return securityManager;
     }
 

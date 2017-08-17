@@ -17,7 +17,7 @@ public class User implements Serializable {
     private ObjectId id;
 
     /**
-     * 用户名
+     * 用户名[工号]
      */
     private String username;
 

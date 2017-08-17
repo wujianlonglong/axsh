@@ -24,13 +24,26 @@ spring:
       database: MYSQL
       show-sql: true
   thymeleaf:
-    prefix: file://${HOME}/sjes/sjes-app-admin/
-    suffix: .html
+    prefix: file://${HOME}/sjes/sjes-hub-static/dist/
+    mode: LEGACYHTML5
     cache: false
+  resources:
+    static-locations:
+      - file://${HOME}/sjes/sjes-hub-static/
+      - file://${HOME}/sjes/sjes-hub-static/dist/
+      - file://${HOME}/sjes/sjes-hub-static/.tmp/
 
 mongeez:
-  enabled: true
+  enabled: false
   location: db/migration/mongeez.xml
+security:
+  ignored:
+    - /favicon.ico
+    - /bower_components/**
+    - /common/**
+    - /scripts/**
+    - /images/**
+    - /styles/**
 
 picture:
   application:

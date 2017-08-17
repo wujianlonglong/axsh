@@ -25,6 +25,16 @@ public class NewMenu implements Serializable {
     private Boolean expanded;
 
     /**
+     * 是否是父菜单
+     */
+    private boolean isParent;
+
+    /**
+     * 是否是子菜单
+     */
+    private boolean leaf;
+
+    /**
      * 功能模块地址
      */
     private String url;

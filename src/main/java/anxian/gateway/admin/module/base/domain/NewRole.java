@@ -31,7 +31,6 @@ public class NewRole implements Serializable {
      */
     private String description;
 
-
     @DBRef
     private List<NewAuthority> newAuthorities;
 

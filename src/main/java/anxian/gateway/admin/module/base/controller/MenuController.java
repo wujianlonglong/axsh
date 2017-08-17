@@ -2,7 +2,9 @@ package anxian.gateway.admin.module.base.controller;
 
 import anxian.gateway.admin.module.base.domain.Menu;
 import anxian.gateway.admin.module.base.model.MenuJson;
+import anxian.gateway.admin.module.base.model.MenuModel;
 import anxian.gateway.admin.module.base.service.MenuService;
+import anxian.gateway.admin.module.base.service.NewMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private NewMenuService newMenuService;
 
     /**
      * 保存
@@ -124,5 +129,11 @@ public class MenuController {
     @RequestMapping("/loadTree")
     public Object loadTree() {
         return menuService.loadTree();
+    }
+
+
+    @RequestMapping(value = "/showMenus", method = RequestMethod.GET)
+    public List<MenuModel> showLeftMenu() {
+        return newMenuService.showMenu();
     }
 }

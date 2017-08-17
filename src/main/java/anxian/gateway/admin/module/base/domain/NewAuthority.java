@@ -3,13 +3,13 @@ package anxian.gateway.admin.module.base.domain;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Id;
-import java.io.Serializable;
 
 @Data
 @Document(collection = "authority")
-public class NewAuthority implements Serializable {
+public class NewAuthority implements GrantedAuthority {
 
     @Id
     private ObjectId id;
@@ -33,4 +33,9 @@ public class NewAuthority implements Serializable {
      * 是否启用
      */
     private Boolean enabled;
+
+    @Override
+    public String getAuthority() {
+        return code;
+    }
 }
