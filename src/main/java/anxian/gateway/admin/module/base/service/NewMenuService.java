@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 菜单业务逻辑处理
@@ -23,9 +25,18 @@ public class NewMenuService {
     // TODO 菜单保存，列表表示
 
     // 菜单展示【高级管理员】
-    public List<MenuModel> showMenu() {
+    public List<MenuModel> showMenu(List<NewMenu> newMenus) {
         // 获取一级菜单
-        List<NewMenu> firstMenus = newMenuRepository.findByIsParentOrderBySortAsc(true);
+        List<NewMenu> firstMenus = null;
+        boolean isAdmin = CollectionUtils.isEmpty(newMenus);
+        if (isAdmin) {
+            firstMenus = newMenuRepository.findByIsParentOrderBySortAsc(true);
+        } else {
+            Set<ObjectId> parentIdSet = newMenus.stream().map(NewMenu::getParentId)
+                    .collect(Collectors.toSet());
+            firstMenus = newMenuRepository.findByIdInOrderBySortAsc(parentIdSet);
+        }
+
         List<MenuModel> menuList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(firstMenus)) {
             for (NewMenu firstMenu : firstMenus) {
@@ -35,13 +46,16 @@ public class NewMenuService {
                 parentMenu.setUrl(firstMenu.getUrl());
                 parentMenu.setText(firstMenu.getText());
                 ObjectId parentId = firstMenu.getId();
-                List<NewMenu> childrenMenus = newMenuRepository.findByParentIdAndLeafOrderBySortAsc(parentId, true);
+                List<NewMenu> childrenMenus = null;
+                if (isAdmin) {
+                    childrenMenus = newMenuRepository.findByParentIdAndLeafOrderBySortAsc(parentId, true);
+                } else {
+                    childrenMenus = newMenus.stream().filter(newMenu -> newMenu.getParentId().compareTo(parentId) == 0).collect(Collectors.toList());
+                }
                 if (CollectionUtils.isNotEmpty(childrenMenus)) {
                     List<MenuModel> children = new ArrayList<>();
                     for (NewMenu childMenu : childrenMenus) {
                         MenuModel menuModel = new MenuModel();
-                        // TODO 获取对应菜单的权限
-
                         menuModel.setExpanded(childMenu.getExpanded());
                         menuModel.setSort(childMenu.getSort());
                         menuModel.setText(childMenu.getText());

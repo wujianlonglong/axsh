@@ -1,10 +1,12 @@
 package anxian.gateway.admin.module.base.controller;
 
 import anxian.gateway.admin.module.base.domain.Menu;
+import anxian.gateway.admin.module.base.domain.NewMenu;
 import anxian.gateway.admin.module.base.model.MenuJson;
 import anxian.gateway.admin.module.base.model.MenuModel;
 import anxian.gateway.admin.module.base.service.MenuService;
 import anxian.gateway.admin.module.base.service.NewMenuService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -134,6 +136,14 @@ public class MenuController {
 
     @RequestMapping(value = "/showMenus", method = RequestMethod.GET)
     public List<MenuModel> showLeftMenu() {
-        return newMenuService.showMenu();
+
+        List<NewMenu> newMenus = new ArrayList<>();
+        NewMenu newMenu = new NewMenu();
+        newMenu.setParentId(new ObjectId("599512b7fc887f7225411d7c"));
+        newMenus.add(newMenu);
+        NewMenu newMenu1 = new NewMenu();
+        newMenu1.setParentId(new ObjectId("599512b7fc887f7225411d7e"));
+        newMenus.add(newMenu1);
+        return newMenuService.showMenu(newMenus);
     }
 }

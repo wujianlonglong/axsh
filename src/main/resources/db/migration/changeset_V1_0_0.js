@@ -38,6 +38,29 @@
     ];
     db.menu.insert(menus);
 
+    var menuForShop = [
+        {
+            _id: ObjectId("59954b9afc887f7225411e9c"),
+            text: '商品信息维护',
+            expanded: true,
+            url: '',
+            parentId: ObjectId("59954b9afc887f7225411e96"),
+            isParent: false,
+            leaf: true,
+            sort: NumberInt(33)
+        },
+        {
+            _id: ObjectId("59954b9afc887f7225411e9d"),
+            text: '商品属性模板管理',
+            expanded: true,
+            parentId: ObjectId("59954b9afc887f7225411e96"),
+            url: '',
+            isParent: false,
+            leaf: true,
+            sort: NumberInt(34)
+        }
+    ];
+
     var admin = {
         _id: ObjectId(),
         code: 'ADMIN',
@@ -46,8 +69,18 @@
         newAuthorities: authorities
     };
 
+    var shop = {
+        _id: ObjectId(),
+        code: 'SHOP',
+        displayName: '门店权限',
+        description: '',
+        newAuthorities: authorities,
+        newMenus: menuForShop
+    };
+
     var roles = [
-        admin
+        admin,
+        shop
     ];
     db.role.insert(roles);
 
@@ -58,6 +91,14 @@
         password: '$2a$10$jWpdqT3iJtQG5PxhIqI5jeCzaX2LrNkuX/x03MnjK6N6AMI2Amjnm', // password: '123456a'
         newRole: admin,
         fullName: '高级管理员',
+        accountLocked: false
+    });
+
+    db.user.insert({
+        username: 'shop',
+        password: '$2a$10$jWpdqT3iJtQG5PxhIqI5jeCzaX2LrNkuX/x03MnjK6N6AMI2Amjnm', // password: '123456a'
+        newRole: shop,
+        fullName: '门店员工1',
         accountLocked: false
     });
 
