@@ -1,5 +1,7 @@
 package anxian.gateway.admin.config;
 
+import anxian.gateway.admin.module.base.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +39,9 @@ import java.util.List;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserService userService;
 
     @Bean
     protected SessionRegistry sessionRegistryImpl() {
@@ -146,7 +151,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin() // 使用Java配置默认值设置了基于表单的验证。使用POST提交到”/login”时，需要用”username”和”password”进行验证。
                 .loginPage("/login")
                 .successHandler(new CustomAuthenticationSuccessHandler())
-                .failureHandler(new CustomAuthenticationFailureHandler())
+                .failureHandler(new CustomAuthenticationFailureHandler(userService))
                 .and()
                 .sessionManagement()
                 .sessionFixation()

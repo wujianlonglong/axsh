@@ -1,5 +1,8 @@
 package anxian.gateway.admin.config;
 
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -18,6 +21,14 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
+    private UserService userService;
+
+    public CustomAuthenticationFailureHandler() {
+    }
+
+    public CustomAuthenticationFailureHandler(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -26,11 +37,11 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         String password = request.getParameter("password");
 
         HttpSession httpSession = request.getSession();
-
         // 用户名为空
         if (StringUtils.isEmpty(username)) {
             SecurityContextHolder.getContext().setAuthentication(null);
             httpSession.setAttribute("message", "用户名不能为空！");
+            response.sendRedirect("/login");
             return;
         }
 
@@ -38,12 +49,23 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         if (StringUtils.isEmpty(password)) {
             SecurityContextHolder.getContext().setAuthentication(null);
             httpSession.setAttribute("message", "密码不能为空！");
+            response.sendRedirect("/login");
             return;
         }
 
-        // TODO 处理用户名、密码错误的情况
+        // 处理用户名、密码错误的情况
 
-        response.sendRedirect("/");
+        if (exception instanceof BadCredentialsException) {
+            httpSession.setAttribute("message", "用户名或密码错误");
+            response.sendRedirect("/login");
+            return;
+        }
 
+        User user = userService.getByUserName(username);
+        if (null == user) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            httpSession.setAttribute("message", "没有找到" + username + "对应的用户");
+            response.sendRedirect("/login");
+        }
     }
 }
