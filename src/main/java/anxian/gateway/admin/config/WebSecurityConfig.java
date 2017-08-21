@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
@@ -78,6 +79,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return anonymousAuthenticationProvider;
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     /**
      * 数据提供者
@@ -90,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //这里使用自带的DaoAuthenticationProvider(如果满足不了需求,就参照此类再自定义)
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
-        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
 //        SaltSource saltSource = new SaltSource() { //盐值
 //            @Override
 //            public Object getSalt(UserDetails user) {
