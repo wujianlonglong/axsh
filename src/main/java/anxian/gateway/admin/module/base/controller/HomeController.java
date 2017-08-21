@@ -60,20 +60,19 @@ public class HomeController {
      * @param newPwd
      * @return
      */
-    @RequestMapping(value = "/anxian/updatePassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     @ResponseBody
     public ResponseMessage updatePassword(Principal principal, String oldPwd, String newPwd) {
 
-//        if (null == principal) {
-//            return ResponseMessage.error("请重新刷新页面，进行登录");
-//        }
+        if (null == principal) {
+            return ResponseMessage.error("请重新刷新页面，进行登录");
+        }
 
         if (StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd)) {
             return ResponseMessage.error("参数校验不能为空！");
         }
 
-//        String username = principal.getName();
-        String username = "admin";
+        String username = principal.getName();
         return userService.updatePassword(newPwd, oldPwd, username);
     }
 }
