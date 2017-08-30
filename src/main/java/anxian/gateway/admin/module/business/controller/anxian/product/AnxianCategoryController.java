@@ -2,20 +2,20 @@ package anxian.gateway.admin.module.business.controller.anxian.product;
 
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
+import anxian.gateway.admin.module.business.service.impl.SjesCategoryServiceImpl;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Category;
 import client.api.constants.Constants;
-import client.api.item.ProductFeign;
+import client.api.item.AnXianProductFeign;
 import client.api.item.domain.Product;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,15 +23,18 @@ import java.util.List;
  * 商品分类控制器
  * Created by jiangzhe on 15-12-4.
  */
-@RestController
+//@RestController
 @RequestMapping("/anxian/sjes_category")
+@Controller
 public class AnxianCategoryController {
 
     @Autowired
     private SjesCategoryService sjesCategoryService;
+    @Autowired
+    private SjesCategoryServiceImpl sjesCategoryServiceImpl;
 
     @Autowired
-    private ProductFeign productFeign;
+    private AnXianProductFeign productFeign;
 
     /**
      * 返回所有分类
@@ -100,6 +103,7 @@ public class AnxianCategoryController {
      * @return　分类簇对象
      */
     @RequestMapping(value = "/categorys", method = RequestMethod.GET)
+    @ResponseBody
     public List<Category> findClusters(Long categoryId) {
         return sjesCategoryService.findClusters(categoryId);
     }
@@ -236,6 +240,29 @@ public class AnxianCategoryController {
         }
     }
 
+//    /**
+//     * 商品属性模板管理列表页
+//     *
+//     * @param page
+//     * @param limit
+//     * @param parentId
+//     * @param grade
+//     * @return
+//     */
+//    @RequestMapping("/attributeManagementList")
+//    public PageModel<Category> attributeManagementList(int page, int limit, Long parentId, Integer grade) {
+//        Category searchCategory = new Category();
+//        searchCategory.setParentId(parentId);
+//        searchCategory.setGrade(grade == null ? 3 : grade);
+//        SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
+//        searchCoditionModel.setPage(page - 1);
+//        searchCoditionModel.setSize(limit);
+//        searchCoditionModel.setSearchCodition(searchCategory);
+//
+//        return sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
+//
+//    }
+
     /**
      * 商品属性模板管理列表页
      *
@@ -246,18 +273,31 @@ public class AnxianCategoryController {
      * @return
      */
     @RequestMapping("/attributeManagementList")
-    public PageModel<Category> attributeManagementList(int page, int limit, Long parentId, Integer grade) {
+    public String attributeManagementList(int page, int limit, Long parentId, Integer grade, Model model,
+                                          @RequestParam(value = "flag", required = false) String flag) {
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         searchCategory.setGrade(grade == null ? 3 : grade);
         SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
-        searchCoditionModel.setPage(page - 1);
+//        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setPage(page);
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchCategory);
 
-        return sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
-
+        PageModel<Category> productPageModel = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", productPageModel.getTotal());
+        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
+        model.addAttribute("categoryList", productPageModel.getContent());
+        model.addAttribute("maxShowPage", 10);
+        model.addAttribute("longShow", 7);
+        if (flag == null) {
+            return "anXian-goods/attribute-templet-manage";
+        } else {
+            return "anXian-goods/attribute-templet-manage-ajax";
+        }
     }
-
-
 }
