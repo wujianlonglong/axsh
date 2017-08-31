@@ -60,7 +60,8 @@ public class BlacklistController {
             }
 
             blacklistApiClient.save(blacklist);
-            log.info("{}新增了黑名单：{}", principal.getName(), blacklist);
+//            log.info("{}新增了黑名单：{}", principal.getName(), blacklist);
+            log.info("新增了黑名单：{}", blacklist);
             return JsonMsg.success("添加成功");
         } catch (Exception e) {
             log.error("新增黑名单失败", e);
@@ -75,7 +76,8 @@ public class BlacklistController {
         try {
             Blacklist oldBlacklist = blacklistApiClient.findById(blacklist.getId());
             blacklistApiClient.save(blacklist);
-            log.info("{}将黑名单由:{}修改为：{}", principal.getName(), oldBlacklist, blacklist);
+            //log.info("{}将黑名单由:{}修改为：{}", principal.getName(), oldBlacklist, blacklist);
+            log.info("将黑名单由:{}修改为：{}", oldBlacklist, blacklist);
             return JsonMsg.success("修改成功");
         } catch (Exception e) {
             log.error("新增黑名单失败", e);
@@ -108,7 +110,8 @@ public class BlacklistController {
                 blacklists.stream()
                         .forEach(blacklist -> {
                             blacklist.setFlag(-1);
-                            log.info("{}删除了黑名单：{}", principal.getName(), blacklist);
+//                            log.info("{}删除了黑名单：{}", principal.getName(), blacklist);
+                            log.info("删除了黑名单：{}",  blacklist);
                         });
 
                 blacklistApiClient.batchUpdate(blacklists);

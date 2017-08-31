@@ -177,7 +177,7 @@ public class AnxianProductController {
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     public JsonMsg updateStatus(Authentication authentication, Long id, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
-        LOGGER.info("  #######   用户： {} 在进行商品上下架，status: {} , id: {}", authentication.getName(), status, id);
+        LOGGER.info("  #######   进行商品上下架，status: {} , id: {}", status, id);
         LOGGER.info("  ############################################################     ");
         int result = productFeign.updateStatus(id, status, message);
         if (result > 0) {
