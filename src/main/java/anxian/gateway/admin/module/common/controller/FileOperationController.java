@@ -20,7 +20,7 @@ import java.util.*;
  * Created by Jianghe on 15/12/11.
  */
 @RestController
-@RequestMapping("/fileOperation")
+@RequestMapping("/anxian/fileOperation")
 public class FileOperationController {
 
 
