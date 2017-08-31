@@ -1,8 +1,10 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
-import anxian.gateway.admin.module.business.service.impl.SjesCategoryServiceImpl;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Category;
 import client.api.constants.Constants;
@@ -17,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -25,13 +28,16 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/anxian/sjes_category")
-public class AnxianCategoryController {
+public class AnxianCategoryController extends BaseController {
 
     @Autowired
     private SjesCategoryService sjesCategoryService;
 
     @Autowired
     private AnXianProductFeign productFeign;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 返回所有分类
@@ -257,8 +263,16 @@ public class AnxianCategoryController {
      */
     @ResponseBody
     @RequestMapping("/attributeManagementList")
-    public String attributeManagementList(int page, int limit, Long parentId, Integer grade, Model model,
+    public String attributeManagementList(int page, int limit, Long parentId, Integer grade, Model model, Principal principal,
                                           @RequestParam(value = "flag", required = false) String flag) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         searchCategory.setGrade(grade == null ? 3 : grade);
@@ -286,12 +300,28 @@ public class AnxianCategoryController {
     }
 
     @RequestMapping("/category")
-    public String category(Model model) {
+    public String category(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-goods/category-maintain";
     }
 
     @RequestMapping("/ajaxCategory")
-    public String ajaxCategory(Model model, int page, int limit, Long parentId) {
+    public String ajaxCategory(Model model, int page, int limit, Long parentId, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
@@ -306,12 +336,28 @@ public class AnxianCategoryController {
     }
 
     @RequestMapping("/categoryTag")
-    public String categoryTag(Model model) {
+    public String categoryTag(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-goods/category-show-label-maintain";
     }
 
     @RequestMapping("/ajaxCategoryTag")
-    public String ajaxCategoryTag(Model model, int page, int limit, Long parentId) {
+    public String ajaxCategoryTag(Model model, int page, int limit, Long parentId, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();

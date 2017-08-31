@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.anxian.app;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.app.version.VersionApiClient;
 import client.api.app.version.domain.Version;
@@ -10,8 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.Date;
 
 /**
@@ -19,8 +26,11 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping(value = "anxian/versions")
-public class AnxianVersionController {
+public class AnxianVersionController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(AnxianVersionController.class);
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private VersionApiClient versionApiClient;
@@ -91,7 +101,6 @@ public class AnxianVersionController {
     }
 
     /**
-     *
      * @param id
      * @return
      */
@@ -122,12 +131,28 @@ public class AnxianVersionController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String versions(Model model) {
+    public String versions(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-APP/version";
     }
 
     @RequestMapping("/ajaxVersion")
-    public String ajaxVersion(Model model, int page, int limit) {
+    public String ajaxVersion(Model model, int page, int limit, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         SjesPage<Version> sjesPage = versionApiClient.pageGetVersionList(page, limit);
         model.addAttribute("page", page + 1);
         model.addAttribute("versions", sjesPage);

@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.service.SjesAttributeService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Attribute;
@@ -11,9 +14,13 @@ import client.api.item.model.SearchCoditionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +30,13 @@ import java.util.Map;
 //@RestController
 @Controller
 @RequestMapping("/anxian/sjes_attribute")
-public class AnxianAttributeController {
+public class AnxianAttributeController extends BaseController {
 
     @Autowired
     private SjesAttributeService sjesAttributeService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 分页查询属性列表
@@ -84,7 +94,16 @@ public class AnxianAttributeController {
      * @return AttributeGroupModel列表
      */
     @RequestMapping(value = "{categoryId}", method = RequestMethod.GET)
-    public String getAttributeModels(@PathVariable("categoryId") Long categoryId, Model model) {
+    public String getAttributeModels(@PathVariable("categoryId") Long categoryId, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+
         model.addAttribute("categoryList", sjesAttributeService.getAttributeModels(categoryId));
         return "anXian-goods/attribute-maintain";
     }

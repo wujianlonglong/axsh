@@ -1,21 +1,25 @@
 package anxian.gateway.admin.module.business.controller.anxian.app;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.app.floor.feign.AppHotgoodsFeign;
 import client.api.app.floor.model.AdItemTemplete;
 import client.api.app.floor.model.AdItemTempleteModel;
-import client.api.app.floor.model.AppFloorModel;
-import client.api.app.version.domain.Version;
 import client.api.constants.Constants;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
-import client.api.user.utils.page.SjesPage;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +28,10 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("anxian/appHotgood")
-public class AnxianAppHotgoodsController {
+public class AnxianAppHotgoodsController extends BaseController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     AppHotgoodsFeign appHotgoodsFeign;
@@ -85,12 +92,28 @@ public class AnxianAppHotgoodsController {
     }
 
     @RequestMapping(value = "main", method = RequestMethod.GET)
-    public String hotGood(Model model) {
+    public String hotGood(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-APP/sell-hot";
     }
 
     @RequestMapping("/ajaxHot")
-    public String ajaxHotGood(Model model, int page, int limit) {
+    public String ajaxHotGood(Model model, int page, int limit, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         AdItemTemplete adItemTemplete = appHotgoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
         List<AdItemTempleteModel> list = Lists.newArrayList();
         if (adItemTemplete != null) {
@@ -114,7 +137,6 @@ public class AnxianAppHotgoodsController {
         model.addAttribute("hotGoods", hotGoods);
         return "anXian-APP/sell-hot-ajax";
     }
-
 
 
 }

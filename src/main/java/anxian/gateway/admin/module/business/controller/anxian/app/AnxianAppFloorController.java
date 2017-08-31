@@ -1,10 +1,12 @@
 package anxian.gateway.admin.module.business.controller.anxian.app;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.app.floor.feign.AppFloorFeign;
 import client.api.app.floor.model.AppFloorDetailModel;
 import client.api.app.floor.model.AppFloorModel;
-import client.api.app.floor.model.EntryIconModel;
 import client.api.app.floor.model.FloorContentModel;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,10 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("anxian/appFloor")
-public class AnxianAppFloorController {
+public class AnxianAppFloorController extends BaseController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AppFloorFeign appFloorFeign;
@@ -142,12 +148,28 @@ public class AnxianAppFloorController {
 
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public String floor(Model model) {
+    public String floor(Principal principal, Model model) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-APP/floor";
     }
 
     @RequestMapping("/ajaxFloor")
-    public String ajaxFloor(Model model, int page, int limit) {
+    public String ajaxFloor(Principal principal, Model model, int page, int limit) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         List<AppFloorModel> list = appFloorFeign.list();
         PageModel<AppFloorModel> floors = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<AppFloorModel> content = new ArrayList<>();
@@ -164,7 +186,15 @@ public class AnxianAppFloorController {
     }
 
     @RequestMapping(value = "/editFloor", method = RequestMethod.POST)
-    public String editFloor(Model model, Long id) {
+    public String editFloor(Model model, Long id, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         AppFloorDetailModel floor = appFloorFeign.getAppFloorDetailModel(id);
         model.addAttribute("floor", floor);
         return "anXian-APP/edit-floor";
