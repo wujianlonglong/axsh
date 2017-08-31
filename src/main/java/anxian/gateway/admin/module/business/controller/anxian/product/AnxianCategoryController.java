@@ -2,10 +2,11 @@ package anxian.gateway.admin.module.business.controller.anxian.product;
 
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
+import anxian.gateway.admin.module.business.service.impl.SjesCategoryServiceImpl;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Category;
 import client.api.constants.Constants;
-import client.api.item.ProductFeign;
+import client.api.item.AnXianProductFeign;
 import client.api.item.domain.Product;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -30,7 +31,10 @@ public class AnxianCategoryController {
     private SjesCategoryService sjesCategoryService;
 
     @Autowired
-    private ProductFeign productFeign;
+    private SjesCategoryServiceImpl sjesCategoryServiceImpl;
+
+    @Autowired
+    private AnXianProductFeign productFeign;
 
     /**
      * 返回所有分类
@@ -256,17 +260,32 @@ public class AnxianCategoryController {
      */
     @ResponseBody
     @RequestMapping("/attributeManagementList")
-    public PageModel<Category> attributeManagementList(int page, int limit, Long parentId, Integer grade) {
+    public String attributeManagementList(int page, int limit, Long parentId, Integer grade, Model model,
+                                          @RequestParam(value = "flag", required = false) String flag) {
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         searchCategory.setGrade(grade == null ? 3 : grade);
         SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
-        searchCoditionModel.setPage(page - 1);
+//        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setPage(page);
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchCategory);
 
-        return sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
-
+        PageModel<Category> productPageModel = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", productPageModel.getTotal());
+        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
+        model.addAttribute("categoryList", productPageModel.getContent());
+        model.addAttribute("maxShowPage", 10);
+        model.addAttribute("longShow", 7);
+        if (flag == null) {
+            return "anXian-goods/attribute-templet-manage";
+        } else {
+            return "anXian-goods/attribute-templet-manage-ajax";
+        }
     }
 
     @RequestMapping("/category")
