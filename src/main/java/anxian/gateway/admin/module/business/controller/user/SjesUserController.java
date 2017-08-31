@@ -25,7 +25,7 @@ import java.util.List;
  * Created by jiangzhe on 15-12-1.
  */
 @RestController
-@RequestMapping("/sjes_users")
+@RequestMapping("/anxian/sjes_users")
 public class SjesUserController {
 
     private static final Logger log = LoggerFactory.getLogger(SjesUserController.class);

@@ -29,5 +29,7 @@ public class PayCondition implements Serializable {
 
     private Integer platForm;
 
+    private String platformId;
+
 
 }

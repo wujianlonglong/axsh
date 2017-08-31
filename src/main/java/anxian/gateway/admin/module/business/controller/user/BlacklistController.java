@@ -21,7 +21,7 @@ import java.util.List;
  * Created by gaoqichao on 16-2-18.
  */
 @RestController
-@RequestMapping("/admin_blacklist")
+@RequestMapping("/anxian/admin_blacklist")
 public class BlacklistController {
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
 

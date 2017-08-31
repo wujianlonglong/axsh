@@ -22,4 +22,6 @@ public class PayModelView implements Serializable {
     private String platForm;
 
     private String payMethod;
+
+    private String platformId;
 }

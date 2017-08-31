@@ -143,6 +143,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/promotionSycn/**").hasAnyAuthority("ERPSALE_LIST")
                 .antMatchers("/admin/customerComplain/**").permitAll()
                 .antMatchers("/anxian/**").permitAll()
+                .antMatchers("/sjes_users/**").permitAll()
+                .antMatchers("/admin_blacklist/**").permitAll()
+                .antMatchers("/pays/**").permitAll()
                 .anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
                 .and()
                 .exceptionHandling().accessDeniedPage("/login")
