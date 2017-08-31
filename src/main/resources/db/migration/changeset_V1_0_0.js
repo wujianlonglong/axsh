@@ -215,6 +215,15 @@
             leaf: true,
             sort: NumberInt(92)
         },
+        {
+            _id: ObjectId(),
+            text: '在线支付',
+            expanded: true,
+            url: '/anXian/pay/payList',
+            isParent: false,
+            leaf: true,
+            sort: NumberInt(101)
+        },
         // 系统管理
         {
             _id: ObjectId(),
