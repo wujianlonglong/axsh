@@ -19,15 +19,18 @@ spring:
       database: MYSQL
       show-sql: true
   thymeleaf:
-    prefix: file://${HOME}/sjes/sjes-app-admin/
+    prefix:  file:///F:/JavaProjects/sjes-hub-static/dist/
     suffix: .html
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    content-type: text/html
     cache: false
 
 picture:
   application:
     address: http://img.dev.sanjiang.info
   upload:
-    path: file://${HOME}/sjes/sjes-app-admin/
+    path: file:///F:/JavaProjects/sjes-hub-static/app/
 
 eureka:
   client:
