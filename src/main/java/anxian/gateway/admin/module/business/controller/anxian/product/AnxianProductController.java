@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.CommodityInfoUpdateJson;
 import anxian.gateway.admin.module.business.model.item.ProductPriceModel;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
@@ -37,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -45,12 +49,15 @@ import java.util.List;
 //@RestController
 @Controller
 @RequestMapping("/anxian/sjes_product")
-public class AnxianProductController {
+public class AnxianProductController extends BaseController {
 
     Logger LOGGER = LoggerFactory.getLogger(AnxianProductController.class);
 
     @Autowired
     private AnXianProductFeign productFeign;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AnXianProductAttributeApiClient productAttributeApiClient;
@@ -81,6 +88,7 @@ public class AnxianProductController {
     @RequestMapping(value = "/listByProductId/{productId}", method = RequestMethod.GET)
     @ResponseBody
     public List<ProductAttributeValue> listByProductId(@PathVariable("productId") Long productId) {
+
         return productAttributeApiClient.listByProductId(productId);
     }
 
@@ -91,7 +99,15 @@ public class AnxianProductController {
      */
     @RequestMapping("/informationList")
     public String commodityInformationList(int page, int limit, Product searchProduct, Model model,
-                                           @RequestParam(value = "flag", required = false) String flag) {
+                                           @RequestParam(value = "flag", required = false) String flag, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         SearchCoditionModel<Product> searchCoditionModel = new SearchCoditionModel<>();
 //        searchCoditionModel.setPage(page - 1);
         searchCoditionModel.setPage(page);
@@ -186,7 +202,16 @@ public class AnxianProductController {
      * @return 详细信息
      */
     @RequestMapping(value = "/getProductDetail", method = RequestMethod.GET)
-    public String getProductDetail(String sn, Long productId, Integer status, Model model) {
+    public String getProductDetail(String sn, Long productId, Integer status, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+
         JsonMsg jsonMsg = new JsonMsg();
         if (StringUtils.isBlank(sn)) {
             sn = snFeign.generateProductSn(productId);
