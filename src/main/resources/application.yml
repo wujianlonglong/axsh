@@ -16,19 +16,18 @@ spring:
     validation-query: select 1
 
   jpa:
-    database: MYSQL
-    show-sql: true
+      database: MYSQL
+      show-sql: true
   thymeleaf:
-    prefix: file:///F:/workspace/sjes-hub-static/dist/
+    prefix: file://${HOME}/sjes/sjes-app-admin/
     suffix: .html
     cache: false
-    mode: LEGACYHTML5
 
 picture:
   application:
     address: http://img.dev.sanjiang.info
   upload:
-    path: file:///F:/workspace/sjes-hub-static/
+    path: file://${HOME}/sjes/sjes-app-admin/
 
 eureka:
   client:

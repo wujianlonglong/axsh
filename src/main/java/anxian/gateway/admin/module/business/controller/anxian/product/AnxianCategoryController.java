@@ -31,9 +31,6 @@ public class AnxianCategoryController {
     private SjesCategoryService sjesCategoryService;
 
     @Autowired
-    private SjesCategoryServiceImpl sjesCategoryServiceImpl;
-
-    @Autowired
     private AnXianProductFeign productFeign;
 
     /**
