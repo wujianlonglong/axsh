@@ -33,5 +33,6 @@ public class PayModel implements Serializable {
 
     private String payMethod;
 
+    private String platformId;
 
 }

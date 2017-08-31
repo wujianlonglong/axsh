@@ -7,10 +7,7 @@ import client.api.item.domain.ProductStatusPlan;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by qinhailong on 17-1-11.
@@ -44,7 +41,7 @@ public class AnxianProductStatusPlanController {
      * @return
      */
     @RequestMapping(value = "saveOrUpdate", method = RequestMethod.POST)
-    public JsonMsg productStatusPlan(ProductStatusPlan productStatusPlan) {
+    public JsonMsg productStatusPlan(  ProductStatusPlan productStatusPlan) {
         Long id = productStatusPlan.getId();
         ResponseMessage responseMessage = null;
         if (null != id) {

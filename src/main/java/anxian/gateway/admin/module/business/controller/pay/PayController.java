@@ -36,7 +36,7 @@ import java.util.Map;
  * Created by kimiyu on 16/4/18.
  */
 @RestController
-@RequestMapping(value = "/pays")
+@RequestMapping(value = "/anxian/pays")
 public class PayController {
 
     @Autowired
@@ -46,11 +46,14 @@ public class PayController {
      * 在线支付结果查询
      */
     @RequestMapping(method = RequestMethod.GET, value = "/onlinePayList")
-    public PageModel<PayModel> getOrderlistForSearch(Long orderId, String startDateTime, String endDateTime, String payMethod, Integer platForm, int page, int limit) {
+    public PageModel<PayModel> getOrderlistForSearch(String platformId,Long orderId, String startDateTime, String endDateTime, String payMethod, Integer platForm, int page, int limit) {
         PayCondition payCondition = new PayCondition();
         payCondition.setPage(page);
         payCondition.setSize(limit);
         payCondition.setOrderId(orderId);
+        if(!StringUtils.isEmpty(platformId)){
+            payCondition.setPlatformId(platformId);
+        }
         if (!StringUtils.isEmpty(startDateTime) && !StringUtils.isEmpty(endDateTime)) {
             payCondition.setStartDateTime(Date.valueOf(startDateTime));
             payCondition.setEndDateTime(Date.valueOf(endDateTime));
@@ -87,6 +90,7 @@ public class PayController {
             List<PayModelView> payModelViews = new ArrayList<>();
             exportViewModels.forEach(payModel -> {
                 PayModelView payModelView = new PayModelView();
+                payModelView.setPlatformId(payModel.getPlatformId());
                 payModelView.setShopId(payModel.getShopId());
                 payModelView.setActualAmount(payModel.getActualAmount());
                 payModelView.setOrderId(payModel.getOrderId());
