@@ -53,6 +53,7 @@ public class AnxianCategoryController {
      * @return 分类列表
      */
     @RequestMapping("/layerCategoryList")
+    @ResponseBody
     public JsonMsg layerCategoryList(Long parentId, Long currentId) {
         List<ExtCategoryModel> exceptOwnList = Lists.newArrayList();
 
@@ -79,6 +80,7 @@ public class AnxianCategoryController {
      * @return 分类列表信息
      */
     @RequestMapping(value = "/grade/{grade}/{type}", method = RequestMethod.GET)
+    @ResponseBody
     public JsonMsg findByGrade(@PathVariable("grade") Integer grade, @PathVariable("type") Integer type) {
         List<ExtCategoryModel> byGrade = sjesCategoryService.findByGrade(grade);
         List<ExtCategoryModel> result = Lists.newArrayList();
