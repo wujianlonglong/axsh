@@ -59,7 +59,7 @@
             _id: ObjectId(),
             text: '商品信息维护',
             expanded: true,
-            url: '/anxian/sjes_product/informationList?page=1&limit=10',
+            url: '/anxian/sjes_product/informationList?page=0&limit=10',
             isParent: false,
             leaf: true,
             sort: NumberInt(33)
@@ -68,7 +68,7 @@
             _id: ObjectId(),
             text: '商品上下架',
             expanded: true,
-            url: '/anxian/sjes_product/informationList?page=0&limit=10',
+            url: '/anXian/good/goodsUpdown',
             isParent: false,
             leaf: true,
             sort: NumberInt(34)
@@ -77,7 +77,7 @@
             _id: ObjectId(),
             text: '商品定时上下架',
             expanded: true,
-            url: '/anxian/productStatusPlan/search',
+            url: '/anXian/good/goodsTimeUpdown',
             isParent: false,
             leaf: true,
             sort: NumberInt(35)
@@ -87,7 +87,7 @@
             _id: ObjectId(),
             text: '版本管理',
             expanded: true,
-            url: 'anxian/versions',
+            url: '/anxian/versions',
             isParent: false,
             leaf: true,
             sort: NumberInt(41)
@@ -96,7 +96,7 @@
             _id: ObjectId(),
             text: 'APP首页热销管理',
             expanded: true,
-            url: 'anxian/appHotgood/main',
+            url: '/anxian/appHotgood/main',
             isParent: false,
             leaf: true,
             sort: NumberInt(42)
@@ -105,7 +105,7 @@
             _id: ObjectId(),
             text: 'APP首页菜单管理',
             expanded: true,
-            url: 'anxian/appMenu/main',
+            url: '/anxian/appMenu/main',
             isParent: false,
             leaf: true,
             sort: NumberInt(43)
@@ -114,7 +114,7 @@
             _id: ObjectId(),
             text: 'APP首页楼层管理',
             expanded: true,
-            url: 'anxian/appFloor/main',
+            url: '/anxian/appFloor/main',
             isParent: false,
             leaf: true,
             sort: NumberInt(44)
@@ -124,7 +124,7 @@
             _id: ObjectId(),
             text: '促销同步',
             expanded: true,
-            url: '',
+            url: '/#',
             isParent: false,
             leaf: true,
             sort: NumberInt(51)
@@ -134,7 +134,7 @@
             _id: ObjectId(),
             text: '用户查询',
             expanded: true,
-            url: '',
+            url: '/anXian/user/userList',
             isParent: false,
             leaf: true,
             sort: NumberInt(61)
@@ -143,7 +143,7 @@
             _id: ObjectId(),
             text: '黑名单管理',
             expanded: true,
-            url: '',
+            url: '/anXian/user/blackList',
             isParent: false,
             leaf: true,
             sort: NumberInt(62)

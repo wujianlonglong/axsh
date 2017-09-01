@@ -2,9 +2,11 @@ package anxian.gateway.admin.module.base.domain;
 
 import lombok.Data;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Document(collection = "menu")
@@ -44,4 +46,7 @@ public class NewMenu implements Serializable {
 
 
     private Integer sort;
+
+    @DBRef
+    private List<NewAuthority> authorities;
 }

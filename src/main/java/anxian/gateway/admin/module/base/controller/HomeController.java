@@ -41,9 +41,12 @@ public class HomeController {
         }
 
         NewRole newRole = user.getNewRole();
+        if (null == newRole || CollectionUtils.isEmpty(newRole.getNewMenus())) {
+            return "redirect:/login";
+        }
         List<MenuModel> menuModelList = newMenuService.showMenu(newRole.getNewMenus());
         if (CollectionUtils.isEmpty(menuModelList)) {
-//            return "redirect:/login";
+            return "redirect:/login";
         }
         model.addAttribute("menus", menuModelList);
         model.addAttribute("user", principal.getName());
