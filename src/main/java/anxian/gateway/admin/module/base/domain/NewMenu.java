@@ -4,14 +4,12 @@ import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 @Data
 @Document(collection = "menu")
 public class NewMenu implements Serializable {
 
-    @Id
     private ObjectId id;
 
     /**

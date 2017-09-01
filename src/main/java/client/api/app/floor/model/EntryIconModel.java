@@ -2,7 +2,6 @@ package client.api.app.floor.model;
 
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -38,9 +37,7 @@ public class EntryIconModel implements Serializable {
      */
     private String linkedContent;
 
-    @Transient
     private String startDateStr; // 开始时间字符串
 
-    @Transient
     private String endDateStr; // 结束时间字符串
 }

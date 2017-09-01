@@ -8,7 +8,6 @@ import client.api.item.domain.ProductModel;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
 import client.api.item.model.SearchCoditionModel;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -126,7 +125,7 @@ public interface AnXianProductFeign {
      */
 //    @PreAuthorize("hasAuthority('COMMODITYINFORMATION_SAVE')")
     @RequestMapping(value = "updateProductModel", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    int updateProductModel(ProductModel productModel) throws ServiceException;
+    int updateProductModel(ProductModel productModel);
 
     /**
      * 更新单品状态
@@ -172,10 +171,9 @@ public interface AnXianProductFeign {
      *
      * @param productPrices 商品价格列表
      * @return
-     * @throws ServiceException
      */
     @RequestMapping(value = "batUpdatePrice", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseMessage batUpdatePrice(List<ProductPriceModel> productPrices) throws ServiceException;
+    ResponseMessage batUpdatePrice(List<ProductPriceModel> productPrices);
 
     /**
      * 批量更新单品状态
@@ -183,9 +181,8 @@ public interface AnXianProductFeign {
      * @param erpGoodsIds
      * @param status
      * @return
-     * @throws ServiceException
      */
     @RequestMapping(value = "batUpdateStatus/{status}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseMessage batUpdateStatus(List<Long> erpGoodsIds, @PathVariable("status") Integer status) throws ServiceException;
+    ResponseMessage batUpdateStatus(List<Long> erpGoodsIds, @PathVariable("status") Integer status);
 
 }

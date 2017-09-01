@@ -5,7 +5,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @Document(collection = "role")
 public class NewRole implements Serializable {
 
-    @Id
     private ObjectId id;
 
     /**

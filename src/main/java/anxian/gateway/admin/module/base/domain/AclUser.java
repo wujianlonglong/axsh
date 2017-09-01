@@ -1,10 +1,7 @@
 package anxian.gateway.admin.module.base.domain;
 
 import anxian.gateway.admin.module.common.domain.BaseObj;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Data;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,9 +11,6 @@ import java.util.Date;
  * 用户
  */
 @Data
-@Entity
-@Table(name = "t_user")
-@DynamicInsert
 public class AclUser extends BaseObj {
     /**
      * 用户名
@@ -41,7 +35,6 @@ public class AclUser extends BaseObj {
     /**
      * 过期时间
      */
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     private Date expiredDate;
 
     /**
@@ -57,8 +50,6 @@ public class AclUser extends BaseObj {
     /**
      * 所属部门
      */
-    @JoinColumn(name = "org")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private AclOrg org;
 
     /**

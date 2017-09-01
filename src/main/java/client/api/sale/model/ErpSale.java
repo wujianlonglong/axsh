@@ -2,7 +2,6 @@ package client.api.sale.model;
 
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 @Data
 public class ErpSale implements Serializable {
 
-    @Id
     private String id;
 
     private String promotionId;

@@ -1,9 +1,7 @@
 package anxian.gateway.admin.module.base.domain;
 
 import lombok.Data;
-import lombok.ToString;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,13 +10,8 @@ import java.util.List;
  * 菜单
  */
 @Data
-@Entity
-@Table(name = "t_menu")
-@ToString(exclude = {"parentMenu", "children"})
 public class Menu implements Serializable {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     /**
@@ -49,15 +42,11 @@ public class Menu implements Serializable {
     /**
      * 父菜单
      */
-    @JoinColumn(name = "parentMenu")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Menu parentMenu;
 
     /**
      * 子菜单
      */
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,
-            CascadeType.REMOVE}, fetch = FetchType.EAGER, mappedBy = "parentMenu")
     private List<Menu> children;
 
 

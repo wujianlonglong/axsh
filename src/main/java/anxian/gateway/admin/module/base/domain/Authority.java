@@ -3,7 +3,6 @@ package anxian.gateway.admin.module.base.domain;
 import anxian.gateway.admin.module.common.domain.BaseObj;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -13,9 +12,6 @@ import javax.persistence.*;
  * 权限资源
  */
 @Data
-@Entity
-@Table(name = "t_authority")
-@DynamicInsert
 public class Authority extends BaseObj implements GrantedAuthority {
 
     /**
@@ -42,8 +38,6 @@ public class Authority extends BaseObj implements GrantedAuthority {
      * 所属菜单
      */
     @JsonIgnore
-    @JoinColumn(name = "menu")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Menu menu;
 
     @Override
@@ -51,12 +45,10 @@ public class Authority extends BaseObj implements GrantedAuthority {
         return this.authorityname;
     }
 
-    @Transient
     public Long getMenuId() {
         return menu.getId();
     }
 
-    @Transient
     public String getMenuName() {
         return menu.getText();
     }

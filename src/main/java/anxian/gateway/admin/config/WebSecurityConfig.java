@@ -119,10 +119,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())//自定义accessDecisionManager访问控制器
-                .antMatchers("/role/**").hasAuthority("ROLE_LIST")
-                .antMatchers("/org/**").hasAuthority("ORG_LIST")
-                .antMatchers("/user/**").hasAuthority("USER_LIST")
-                .antMatchers("/authority/**").hasAuthority("AUTHORITY_LIST")
                 .antMatchers("/sjes_users/**").hasAuthority("SJESUSER_LIST")
                 .antMatchers("/sjes_attribute/**").hasAuthority("COMMODITYATTRIBUTE_LIST")
                 .antMatchers("/specification/**").hasAnyAuthority("SPECIFICATIONS_LIST")

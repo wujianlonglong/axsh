@@ -1,7 +1,5 @@
 package anxian.gateway.admin.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +13,6 @@ import java.io.IOException;
  */
 @Component
 public class CORSFilter implements Filter {
-    private static Logger LOG = LoggerFactory.getLogger(CORSFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
