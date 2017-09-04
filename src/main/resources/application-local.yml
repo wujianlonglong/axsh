@@ -1,0 +1,40 @@
+server:
+  port: 9050
+spring:
+  profiles: local
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: anxian-gateway-admin
+  thymeleaf:
+    prefix: file://${HOME}/sjes/sjes-hub-static/dist/
+    mode: LEGACYHTML5
+    cache: false
+  resources:
+    static-locations:
+      - file://${HOME}/sjes/sjes-hub-static/
+      - file://${HOME}/sjes/sjes-hub-static/dist/
+      - file://${HOME}/sjes/sjes-hub-static/.tmp/
+
+mongeez:
+  enabled: false
+  location: db/migration/mongeez.xml
+security:
+  ignored:
+    - /favicon.ico
+    - /bower_components/**
+    - /common/**
+    - /scripts/**
+    - /images/**
+    - /styles/**
+
+picture:
+  application:
+    address: http://img.dev.sanjiang.info
+  upload:
+    path: file://${HOME}/sjes/sjes-app-admin/
+
+multipart:
+  enabled: true
+  max-file-size: 52428800

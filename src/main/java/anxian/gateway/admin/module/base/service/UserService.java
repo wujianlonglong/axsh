@@ -4,8 +4,11 @@ import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.repository.UserRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserService {
@@ -52,5 +55,19 @@ public class UserService {
         user.setPassword(newEncoderPwd);
         userRepository.save(user);
         return ResponseMessage.success("密码修改成功！");
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @param workerId
+     * @param pageable
+     * @return
+     */
+    public Page<User> list(String workerId, Pageable pageable) {
+        if (StringUtils.isEmpty(workerId)) {
+            return userRepository.findAll(pageable);
+        }
+        return userRepository.findByUsernameLike(workerId, pageable);
     }
 }
