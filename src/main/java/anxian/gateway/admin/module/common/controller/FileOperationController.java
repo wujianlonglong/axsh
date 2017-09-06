@@ -101,4 +101,30 @@ public class FileOperationController {
         }
         return map;
     }
+
+
+    /**
+     * 富文本框上传操作
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/upload/fuText", method = RequestMethod.POST)
+    public String fuTextUpload(HttpServletRequest request, HttpServletResponse response) {
+        Object upload = upload(request, response);
+        String errorMsg = "";
+//        String callback = ServletActionContext.getRequest().getParameter("CKEditorFuncNum");
+        String callback = request.getParameter("CKEditorFuncNum");
+        if (upload != null) {
+            Map map = (Map) upload;
+            if (map.get("success") != null) {
+                String script = "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(" + callback + ", '" + (String) map.get("img") + "', '" + errorMsg + "');</script>";
+                return script;
+            }
+        }
+        return "上传失败，请重试";
+    }
+
+
 }
