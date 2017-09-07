@@ -107,6 +107,7 @@ public class AnxianAppMenuController extends BaseController {
         menus.getContent().clear();
         menus.getContent().addAll(content);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",menus.getTotalPages());
         model.addAttribute("menus", menus);
         return "anXian-APP/menu-ajax";
     }

@@ -134,6 +134,7 @@ public class AnxianAppHotgoodsController extends BaseController {
         hotGoods.getContent().clear();
         hotGoods.getContent().addAll(content);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",hotGoods.getTotalPages());
         model.addAttribute("hotGoods", hotGoods);
         return "anXian-APP/sell-hot-ajax";
     }

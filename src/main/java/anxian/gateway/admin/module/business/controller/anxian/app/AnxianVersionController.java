@@ -155,6 +155,7 @@ public class AnxianVersionController extends BaseController {
 
         SjesPage<Version> sjesPage = versionApiClient.pageGetVersionList(page, limit);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",sjesPage.getTotalPages());
         model.addAttribute("versions", sjesPage);
         return "anXian-APP/version-ajax";
     }

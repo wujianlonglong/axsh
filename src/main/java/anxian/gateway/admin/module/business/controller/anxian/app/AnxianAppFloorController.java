@@ -181,6 +181,7 @@ public class AnxianAppFloorController extends BaseController {
         floors.getContent().clear();
         floors.getContent().addAll(content);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",floors.getTotalPages());
         model.addAttribute("floors", floors);
         return "anXian-APP/floor-ajax";
     }

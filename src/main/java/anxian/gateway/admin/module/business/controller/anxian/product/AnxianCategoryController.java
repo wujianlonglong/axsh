@@ -331,11 +331,12 @@ public class AnxianCategoryController extends BaseController {
         PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
         model.addAttribute("page", page + 1);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
         model.addAttribute("categoryModels", categoryModels);
         return "anXian-goods/category-maintain-ajax";
     }
 
-    @RequestMapping("/categoryTag")
+    @RequestMapping("/tag")
     public String categoryTag(Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
@@ -367,6 +368,7 @@ public class AnxianCategoryController extends BaseController {
         PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
         model.addAttribute("page", page + 1);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
         model.addAttribute("categoryTags", categoryModels);
         return "anXian-goods/category-show-label-ajax";
     }
