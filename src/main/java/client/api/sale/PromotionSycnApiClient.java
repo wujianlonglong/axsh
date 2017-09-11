@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Created by byinbo on 2016/12/21.
  */
 @FeignClient("sjes-api-sale")
-@RequestMapping(value = "/sales/erp", consumes = MediaType.APPLICATION_JSON_VALUE)
+//@RequestMapping(value = "/sales/erp", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/anxian/erpSale", consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface PromotionSycnApiClient {
 
     /**

@@ -146,6 +146,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sjes_users/**").permitAll()
                 .antMatchers("/admin_blacklist/**").permitAll()
                 .antMatchers("/pays/**").permitAll()
+                .antMatchers("/search/**").permitAll()
+                .antMatchers("/admin/**").permitAll()
+                .antMatchers("/admin/promotionSycn/**").permitAll()
+                .antMatchers("/fileOperation/**").permitAll()
                 .anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
                 .and()
                 .exceptionHandling().accessDeniedPage("/login")
