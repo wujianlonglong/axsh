@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name="sjes-api-sale",url="localhost:20065")
+@FeignClient(name="sjes-api-sale")
 @RequestMapping(value = "/anxian/secKill/admin", consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface SecKillSyncApiClient {
     /**
