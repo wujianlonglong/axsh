@@ -12,6 +12,7 @@ public class CancelCondition implements Serializable {
 
     private Long orderId;
     private String telphone;
+    private String platformId;
     private Integer page;
     private Integer size;
 }
