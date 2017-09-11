@@ -79,7 +79,15 @@ public class AXGateShopController extends BaseController {
     }
 
     @RequestMapping(value = "/shopDetail", method = RequestMethod.GET)
-    public String getShopDetail(String shopId, Model model) {
+    public String getShopDetail(String shopId, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         AXGateShop axGateShop = axGateShopClient.getShopDetail(shopId);
         model.addAttribute("detail", axGateShop);
         return "anXian-platform/edit-store";
