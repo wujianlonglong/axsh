@@ -1,9 +1,9 @@
 package anxian.gateway.admin.module.business.controller.order;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.AclUser;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
-import anxian.gateway.admin.module.business.controller.BaseController;
 import anxian.gateway.admin.module.business.controller.order.model.LogisticsTracking;
 import anxian.gateway.admin.module.business.controller.order.model.OrderConstant;
 import anxian.gateway.admin.module.business.controller.order.model.PayAmount;
@@ -128,7 +128,15 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/searchOrder")
     public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit,
-                                        @RequestParam(value = "flag", required = false) String flag, Model model) {
+                                        @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
         SjesPage<Order> orderlistForSearch = orderAdminApiClient.getOrderlistForSearch(searchCondition);
@@ -373,7 +381,15 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(value = "/cancelingOrder", method = RequestMethod.GET)
     public String cancelOrderList(CancelCondition cancelCondition, int page, int limit, Model model,
-                                  @RequestParam(value = "flag", required = false) String flag) {
+                                  @RequestParam(value = "flag", required = false) String flag, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
 //        cancelCondition.setPage(page - 1);
         cancelCondition.setPage(page);
         cancelCondition.setSize(limit);

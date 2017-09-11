@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.anxian.shop;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.anxian.AXGateShopClient;
 import client.api.anxian.shop.AXGateShop;
@@ -12,21 +15,34 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/anxian/shop")
-public class AXGateShopController {
+public class AXGateShopController extends BaseController {
+
+    @Autowired
+    private UserService userService;
+
 
     @Autowired
     private AXGateShopClient axGateShopClient;
 
     @RequestMapping(value = "/pageList", method = RequestMethod.GET)
-    public String  pageList(
+    public String pageList(
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "limit", required = false, defaultValue = "10") int size,
             @RequestParam(name = "shopName", required = false) String shopName,
             @RequestParam(name = "shopId", required = false) String shopId,
             @RequestParam(name = "state", required = false) Integer state,
-            @RequestParam(value = "flag", required = false) String flag, Model model) {
+            @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
 
         AXGateShopSearch gateShopSearch = new AXGateShopSearch();
 
@@ -46,14 +62,14 @@ public class AXGateShopController {
         ResponseMessage<SjesPage<AXGateShop>> responseMessage = axGateShopClient.getShopList(gateShopSearch);
         SjesPage<AXGateShop> data = responseMessage.getData();
 
-        model.addAttribute("pageNum",page);
-        model.addAttribute("isFirstPage",data.isFirst());
-        model.addAttribute("pageSize",data.getNumberOfElements());
-        model.addAttribute("totalCount",data.getTotalElements());
-        model.addAttribute("totalPage",data.getTotalPages());
-        model.addAttribute("shops",data.getContent());
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", data.isFirst());
+        model.addAttribute("pageSize", data.getNumberOfElements());
+        model.addAttribute("totalCount", data.getTotalElements());
+        model.addAttribute("totalPage", data.getTotalPages());
+        model.addAttribute("shops", data.getContent());
         model.addAttribute("isLastPage", data.isLast());
-        model.addAttribute("gateShop",data);
+        model.addAttribute("gateShop", data);
         if (flag == null) {
             return "anXian-platform/store";
         } else {
@@ -65,7 +81,7 @@ public class AXGateShopController {
     @RequestMapping(value = "/shopDetail", method = RequestMethod.GET)
     public String getShopDetail(String shopId, Model model) {
         AXGateShop axGateShop = axGateShopClient.getShopDetail(shopId);
-        model.addAttribute("detail",axGateShop);
+        model.addAttribute("detail", axGateShop);
         return "anXian-platform/edit-store";
     }
 
