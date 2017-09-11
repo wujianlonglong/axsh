@@ -15,18 +15,19 @@ import client.api.order.model.*;
 import client.api.user.utils.page.SjesPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /**
  * Created by Jianghe on 16/2/5.
  */
-@RestController
+@Controller
 @RequestMapping("/resoluteOrder")
 public class ResoluteOrderController extends BaseController {
 
@@ -130,7 +131,7 @@ public class ResoluteOrderController extends BaseController {
      * 订单明细
      */
     @RequestMapping(value = "/orderDetails/{id}", method = RequestMethod.GET)
-    public JsonMsg picking_orderDetails(@PathVariable("id") Long id) {
+    public String picking_orderDetails(@PathVariable("id") Long id, Model model) {
         ResoluteOrderViewModel orderViewModel = new ResoluteOrderViewModel();
         orderViewModel.setOrder(orderApiClient.findOrder(id));
         orderViewModel.setOrderItems(orderAdminApiClient.getItemsByOrderId(id));
@@ -140,7 +141,8 @@ public class ResoluteOrderController extends BaseController {
         JsonMsg jsonMsg = new JsonMsg();
         jsonMsg.setSuccess(true);
         jsonMsg.setData(orderViewModel);
-        return jsonMsg;
+        model.addAttribute("orderDetail", jsonMsg);
+        return "order/order-info";
     }
 
     /**

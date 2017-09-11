@@ -26,4 +26,5 @@ public class SearchCondition implements Serializable {
     private String consignee;   // 收货人
     private Integer page;
     private Integer size;
+    private String platformId;
 }
