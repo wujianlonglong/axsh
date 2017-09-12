@@ -91,7 +91,7 @@ public class PromotionSycnController extends BaseController {
      * 同步促销
      */
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public JsonMsg updateBenefitVolume(PromotionSyncModel promotionSyncModel) {
+    public JsonMsg updateBenefitVolume(@RequestBody PromotionSyncModel promotionSyncModel) {
         ResponseMessage<PromotionSync> promotionSycnResponseMessage = promotionSycnApiClient.savePromotionSycn(promotionSyncModel);
         if (promotionSycnResponseMessage.getCode() == SaleConstant.successCode) {
             return JsonMsg.success("同步成功");

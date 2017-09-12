@@ -87,4 +87,11 @@ public class WebPage extends BaseController {
         return "/pay/pay";
     }
 
+    @RequestMapping(value="/promotion/sync",method=RequestMethod.GET)
+    public String syncList(){return "/anXian-promotion/sync.html";}
+
+    @RequestMapping(value="/promotion/seckill",method=RequestMethod.GET)
+    public String seckillList(){return "/anXian-promotion/seckill.html";}
+
+
 }
