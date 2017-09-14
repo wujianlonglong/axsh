@@ -3,6 +3,7 @@ package anxian.gateway.admin.module.base.service;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.repository.UserRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
+import client.api.item.model.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,6 @@ public class UserService {
 
         return userRepository.findByUsername(username);
     }
-
-    // TODO 用户维护
 
     /**
      * 密码修改

@@ -120,6 +120,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())//自定义accessDecisionManager访问控制器
                 .antMatchers("/login").permitAll()
+                .antMatchers("/admin/**").permitAll()
                 .anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
                 .and()
                 .exceptionHandling().accessDeniedPage("/login")

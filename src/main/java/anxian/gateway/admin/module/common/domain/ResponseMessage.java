@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by mac on 15/8/29.
  */
 @Data
-public class ResponseMessage {
+public class  ResponseMessage {
 
     /**
      * 类型

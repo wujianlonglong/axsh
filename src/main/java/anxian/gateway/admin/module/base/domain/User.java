@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Document(collection = "user")
@@ -46,6 +47,16 @@ public class User implements Serializable {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 门店号
+     */
+    private String shopId;
+
+    /**
+     * 平台号列表
+     */
+    private List<String> platForms;
 
     /**
      * 描述
