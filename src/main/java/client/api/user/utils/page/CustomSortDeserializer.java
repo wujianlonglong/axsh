@@ -25,7 +25,7 @@ public class CustomSortDeserializer extends JsonDeserializer<Sort> {
 //        }
 //        Sort sort = new Sort(orders);
 //        return sort;
-        ObjectNode node = jp.getCodec().readTree(jp);
+        JsonNode node = jp.getCodec().readTree(jp);
         Sort.Order[] orders = new Sort.Order[node.size()];
         int i = 0;
         for (JsonNode obj : node) {

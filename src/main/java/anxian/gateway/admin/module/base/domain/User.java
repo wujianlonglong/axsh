@@ -52,6 +52,11 @@ public class User implements Serializable {
      */
     private String description;
 
+    /**
+     * 所属门店
+     */
+    private String shopId;
+
     @CreatedBy
     private String creater;
 
