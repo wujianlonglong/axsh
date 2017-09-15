@@ -49,11 +49,6 @@ public class User implements Serializable {
     private String mobile;
 
     /**
-     * 门店号
-     */
-    private String shopId;
-
-    /**
      * 平台号列表
      */
     private List<String> platForms;
