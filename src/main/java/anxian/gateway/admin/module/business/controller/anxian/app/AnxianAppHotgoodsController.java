@@ -4,8 +4,8 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.app.floor.feign.AppHotgoodsFeign;
-import client.api.app.floor.model.AdItemTemplete;
+import client.api.anxian.app.AnXianAppHotGoodsFeign;
+import client.api.anxian.app.model.AdItemTempleteAnxian;
 import client.api.app.floor.model.AdItemTempleteModel;
 import client.api.constants.Constants;
 import client.api.item.model.PageModel;
@@ -34,7 +34,7 @@ public class AnxianAppHotgoodsController extends BaseController {
     private UserService userService;
 
     @Autowired
-    AppHotgoodsFeign appHotgoodsFeign;
+    private AnXianAppHotGoodsFeign anXianAppHotGoodsFeign;
 
     /**
      * 根据主键取得商品模板
@@ -46,13 +46,8 @@ public class AnxianAppHotgoodsController extends BaseController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public JsonMsg getAppHotgoodsModel(@PathVariable("id") long id) {
         JsonMsg jsonMsg = new JsonMsg();
-        AdItemTemplete adItemTemplete = appHotgoodsFeign.findOne(id);
-        AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
-        adItemTempleteModel.setZoneId(adItemTemplete.getZoneId());
-        adItemTempleteModel.setTempleteName(adItemTemplete.getTempleteName());
-        adItemTempleteModel.setSns(adItemTemplete.getSns());
-        adItemTempleteModel.setId(adItemTemplete.getId());
-        jsonMsg.setData(adItemTempleteModel);
+        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.findOne(id);
+        jsonMsg.setData(adItemTemplete);
         jsonMsg.setSuccess(true);
         return jsonMsg;
     }
@@ -65,7 +60,7 @@ public class AnxianAppHotgoodsController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<AdItemTempleteModel> list(int page, int limit) {
-        AdItemTemplete adItemTemplete = appHotgoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
+        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
         List<AdItemTempleteModel> list = Lists.newArrayList();
         if (adItemTemplete != null) {
             AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
@@ -87,7 +82,7 @@ public class AnxianAppHotgoodsController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(AdItemTempleteModel adItemTempleteModel) {
-        appHotgoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns());
+        anXianAppHotGoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns());
         return JsonMsg.success("修改成功");
     }
 
@@ -114,7 +109,7 @@ public class AnxianAppHotgoodsController extends BaseController {
 
         getMenus(user, model);
 
-        AdItemTemplete adItemTemplete = appHotgoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
+        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
         List<AdItemTempleteModel> list = Lists.newArrayList();
         if (adItemTemplete != null) {
             AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();

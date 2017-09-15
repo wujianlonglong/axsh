@@ -4,7 +4,7 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.app.floor.feign.AppMenuFeign;
+import client.api.anxian.app.AnXianAppMenuFeign;
 import client.api.app.floor.model.EntryIconModel;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
@@ -31,7 +31,7 @@ public class AnxianAppMenuController extends BaseController {
     private UserService userService;
 
     @Autowired
-    AppMenuFeign appMenuFeign;
+    private AnXianAppMenuFeign anXianAppMenuFeign;
 
     /**
      * 楼层列表
@@ -41,7 +41,7 @@ public class AnxianAppMenuController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<EntryIconModel> list(int page, int limit) {
-        List<EntryIconModel> list = appMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list();
         return new PageModel<>(list, list.size(), new Pageable(page, limit));
     }
 
@@ -55,7 +55,7 @@ public class AnxianAppMenuController extends BaseController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public JsonMsg getEntryIconModel(@PathVariable("id") Long id) {
         JsonMsg jsonMsg = new JsonMsg();
-        jsonMsg.setData(appMenuFeign.getEntryIconModel(id));
+        jsonMsg.setData(anXianAppMenuFeign.getEntryIconModel(id));
         jsonMsg.setSuccess(true);
         return jsonMsg;
     }
@@ -69,7 +69,7 @@ public class AnxianAppMenuController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(EntryIconModel entryIconModel) {
-        appMenuFeign.updateEntryIcon(entryIconModel);
+        anXianAppMenuFeign.updateEntryIcon(entryIconModel);
         return JsonMsg.success("修改成功");
     }
 
@@ -96,7 +96,7 @@ public class AnxianAppMenuController extends BaseController {
 
         getMenus(user, model);
 
-        List<EntryIconModel> list = appMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list();
         PageModel<EntryIconModel> menus = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<EntryIconModel> content = new ArrayList<>();
         int currIdx = page * limit;
