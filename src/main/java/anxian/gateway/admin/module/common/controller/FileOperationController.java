@@ -82,7 +82,7 @@ public class FileOperationController {
 
                     //生成的图片路径是:file://${HOME}/sjes/sjes-app-admin/upload/image/201512/17/image1450317671943.jpg
                     String imageUploadPath = pictureUploadPath.substring(pictureUploadPath.indexOf("//") + 2) + imageLocalPath;
-                    LOGGER.info("------------上传图片路径地址：",imageUploadPath);
+                    LOGGER.info("------------上传图片路径地址：{}", imageUploadPath);
                     //new一个文件对象用来保存图片
                     File imageFile = new File(imageUploadPath);
                     if (!imageFile.getParentFile().exists()) {
