@@ -38,4 +38,19 @@ public interface AnXianAppMenuFeign {
      */
     @RequestMapping(value = "update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     void updateEntryIcon(@RequestBody EntryIconModel entryIconModel);
+
+    /**
+     * 新增菜单
+     * @param entryIconModel
+     */
+    @RequestMapping(value = "add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    void addEntryIcon(@RequestBody EntryIconModel entryIconModel);
+
+    /**
+     * 删除菜单
+     * @param id
+     */
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    void deleteEntryIcon(@PathVariable("id") Long id);
+
 }
