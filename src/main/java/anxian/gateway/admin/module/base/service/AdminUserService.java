@@ -5,6 +5,7 @@ import anxian.gateway.admin.module.base.model.ResponseMessage;
 import anxian.gateway.admin.module.base.repository.UserRepository;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -22,6 +23,9 @@ public class AdminUserService {
 
     @Autowired
     private MongoOperations mongoOperations;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // TODO 用户维护
 
@@ -58,5 +62,21 @@ public class AdminUserService {
 
 
         return ResponseMessage.defaultSuccess(userPage);
+    }
+
+    /**
+     * 根据id获取用户信息
+     *
+     * @param id 用户id
+     * @return
+     */
+    public ResponseMessage getById(String id) {
+
+        User user = userRepository.findOne(new ObjectId(id));
+        if (null == user) {
+            return ResponseMessage.defaultFailure("用户对象为空！", id);
+        }
+
+        return ResponseMessage.defaultSuccess(user);
     }
 }

@@ -3,14 +3,11 @@ package anxian.gateway.admin.module.base.controller;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.model.ResponseMessage;
 import anxian.gateway.admin.module.base.service.AdminUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -36,5 +33,13 @@ public class UserController {
         String searchName = userParamDTO.getSearchContent();
 
         return adminUserService.list(searchName, page, size);
+    }
+
+    public ResponseMessage getById(@RequestParam("id") String id) {
+        if (StringUtils.isEmpty(id)) {
+            return ResponseMessage.defaultFailure("参数为空！", null);
+        }
+
+        return adminUserService.getById(id);
     }
 }
