@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by qinhailong on 16-1-5.
  */
-@FeignClient(Constants.SJES_API_ITEM)
-@RequestMapping(value = "specificationValues")
+@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@RequestMapping(value = "specificationValues/anxian")
 public interface SpecificationValueFeign {
 
     /**

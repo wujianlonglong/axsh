@@ -49,6 +49,7 @@ public class PromotionSycnController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/pageList")
     public SjesPage<PromotionSycnView> pageList(@RequestParam(name = "promotionName", required = false) String promotionName,
                                                 @RequestParam(name = "promotionType", required = false) String promotionType,
+                                                @RequestParam(name = "status", required = false) Integer status,
                                                 @RequestParam(name = "syncStatus", required = false) Integer syncStatus,
                                                 @RequestParam(name = "startDate", required = false) String startDate,
                                                 @RequestParam(name = "endDate", required = false) String endDate,
@@ -59,6 +60,7 @@ public class PromotionSycnController extends BaseController {
         ErpSaleDTO erpSaleDTO = new ErpSaleDTO();
         erpSaleDTO.setSaleName(promotionName);
         erpSaleDTO.setSaleType(promotionType);
+        erpSaleDTO.setStatus(status);
         erpSaleDTO.setSyncStatus(syncStatus);
         if (StringUtils.isNotEmpty(startDate)) {
             erpSaleDTO.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -82,8 +84,8 @@ public class PromotionSycnController extends BaseController {
     public JsonMsg getById(@PathVariable("id") String id) {
         JsonMsg jsonMsg = new JsonMsg();
         jsonMsg.setSuccess(true);
-        PromotionSycnViewModel promotionSycnViewModel = promotionSycnApiClient.getById(id);
-        jsonMsg.setData(promotionSycnViewModel);
+        ResponseMessage<PromotionSycnViewModel> promotionSycnViewModel = promotionSycnApiClient.getById(id);
+        jsonMsg.setData(promotionSycnViewModel.getData());
         return jsonMsg;
     }
 

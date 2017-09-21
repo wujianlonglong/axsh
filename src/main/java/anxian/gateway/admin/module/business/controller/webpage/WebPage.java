@@ -38,10 +38,10 @@ public class WebPage {
     }
 
     @RequestMapping(value="/promotion/sync",method=RequestMethod.GET)
-    public String syncList(){return "/anXian-promotion/sync.html";}
+    public String syncList(){return "/anXian-promotion/sync";}
 
     @RequestMapping(value="/promotion/seckill",method=RequestMethod.GET)
-    public String seckillList(){return "/anXian-promotion/seckill.html";}
+    public String seckillList(){return "/anXian-promotion/seckill";}
 
 
 }

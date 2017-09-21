@@ -18,6 +18,8 @@ public class ErpSaleDTO {
 
     private String saleType;
 
+    private Integer status=null;
+
     private Integer syncStatus = null;
 
     private LocalDate startDate;
