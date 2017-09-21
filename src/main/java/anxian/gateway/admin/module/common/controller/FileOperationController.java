@@ -1,6 +1,8 @@
 package anxian.gateway.admin.module.common.controller;
 
 import client.api.image.common.Setting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,7 @@ import java.util.*;
 @RequestMapping("/anxian/fileOperation")
 public class FileOperationController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileOperationController.class);
 
     @Value("${picture.application.address}")
     private String pictureApplicationAddress;
@@ -79,7 +82,7 @@ public class FileOperationController {
 
                     //生成的图片路径是:file://${HOME}/sjes/sjes-app-admin/upload/image/201512/17/image1450317671943.jpg
                     String imageUploadPath = pictureUploadPath.substring(pictureUploadPath.indexOf("//") + 2) + imageLocalPath;
-
+                    LOGGER.info("------------上传图片路径地址：{}", imageUploadPath);
                     //new一个文件对象用来保存图片
                     File imageFile = new File(imageUploadPath);
                     if (!imageFile.getParentFile().exists()) {

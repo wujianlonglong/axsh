@@ -85,7 +85,9 @@ public class AnxianAppFloorController extends BaseController {
             if (CollectionUtils.isNotEmpty(appFloorDetailModel.getFloorContents())) {
                 return JsonMsg.failure("该楼层下存在内容, 不能删除！");
             }
-
+            if (null == appFloorDetailModel.getZoneId()){
+                appFloorDetailModel.setZoneId("");
+            }
             anXianAppFloorFeign.delete(floorId, appFloorDetailModel.getZoneId());
             return JsonMsg.success("删除成功！");
         } else {

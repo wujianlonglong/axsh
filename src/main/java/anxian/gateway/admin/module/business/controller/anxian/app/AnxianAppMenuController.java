@@ -11,10 +11,7 @@ import client.api.item.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -61,16 +58,44 @@ public class AnxianAppMenuController extends BaseController {
     }
 
     /**
-     * 修改楼层
+     * 修改菜单
      *
      * @param entryIconModel 楼层信息
-     * @return 修改数目
+     * @return
      */
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(EntryIconModel entryIconModel) {
         anXianAppMenuFeign.updateEntryIcon(entryIconModel);
         return JsonMsg.success("修改成功");
+    }
+
+    /**
+     * 新增菜单
+     * @param entryIconModel
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "add", method = RequestMethod.POST)
+    public JsonMsg add(EntryIconModel entryIconModel) {
+        anXianAppMenuFeign.addEntryIcon(entryIconModel);
+        return JsonMsg.success("添加成功");
+    }
+
+    /**
+     * 删除菜单
+     *
+     * @param menuId 菜单id
+     */
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE)
+    public JsonMsg deleteMenu(@RequestParam(value = "menuId") Long menuId) {
+        try {
+            anXianAppMenuFeign.deleteEntryIcon(menuId);
+        } catch (Exception e) {
+            return JsonMsg.failure("删除菜单失败");
+        }
+        return JsonMsg.success("删除菜单成功");
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
