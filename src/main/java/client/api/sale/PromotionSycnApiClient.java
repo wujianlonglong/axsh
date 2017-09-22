@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by byinbo on 2016/12/21.
  */
-@FeignClient("sjes-api-sale")
+@FeignClient(name="sjes-api-sale")
 //@RequestMapping(value = "/sales/erp", consumes = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/anxian/erpSale", consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface PromotionSycnApiClient {
@@ -37,7 +37,7 @@ public interface PromotionSycnApiClient {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    PromotionSycnViewModel getById(@PathVariable("id") String id);
+    ResponseMessage<PromotionSycnViewModel> getById(@PathVariable("id") String id);
 
     /**
      * 同步促销活动

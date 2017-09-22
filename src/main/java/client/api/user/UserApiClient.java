@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by gaoqichao on 15-12-1.
  */
-@FeignClient("sjes-api-user")
-@RequestMapping("/users")
+@FeignClient(name="sjes-api-user")
+@RequestMapping("/users/anxian")
 public interface UserApiClient {
 
     /**
