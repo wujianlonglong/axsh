@@ -8,9 +8,12 @@ spring:
       port: 27017
       database: anxian-gateway-admin
   thymeleaf:
-    prefix: file://${HOME}/sjes/sjes-hub-static/dist/
-    mode: LEGACYHTML5
-    cache: false
+      prefix:  file:///F:/JavaProjects/sjes-hub-static/dist/
+      suffix: .html
+      mode: LEGACYHTML5
+      encoding: UTF-8
+      content-type: text/html
+      cache: false
   resources:
     static-locations:
       - file://${HOME}/sjes/sjes-hub-static/
@@ -33,7 +36,7 @@ picture:
   application:
     address: http://img.dev.sanjiang.info
   upload:
-    path: file://${HOME}/sjes/sjes-app-admin/
+    path: file:///F:/JavaProjects/sjes-hub-static/app/
 
 eureka:
   client:
