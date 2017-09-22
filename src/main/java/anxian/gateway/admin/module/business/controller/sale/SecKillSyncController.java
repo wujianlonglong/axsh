@@ -36,6 +36,7 @@ public class SecKillSyncController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public ResponseMessage<SjesPage<SecKillMongo>> list(@RequestBody SaleManageCondition saleManageCondition){
+        saleManageCondition.setPage(saleManageCondition.getPage()-1);
         ResponseMessage<SjesPage<SecKillMongo>> result=secKillSyncApiClient.list(saleManageCondition);
         return result;
     }

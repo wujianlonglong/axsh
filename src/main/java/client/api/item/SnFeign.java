@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by qinhailong on 16-4-21.
  */
-@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
-@RequestMapping(value = "/sns/anxian")
+@FeignClient(Constants.SJES_API_ITEM)
+@RequestMapping(value = "/sns")
 public interface SnFeign {
 
     /**
