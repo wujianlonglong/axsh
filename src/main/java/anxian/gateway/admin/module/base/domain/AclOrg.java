@@ -2,7 +2,6 @@ package anxian.gateway.admin.module.base.domain;
 
 import anxian.gateway.admin.module.common.domain.BaseObj;
 import lombok.Data;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,9 +11,6 @@ import java.util.List;
  * 部门
  */
 @Data
-@Entity
-@Table(name = "t_org")
-@DynamicInsert
 public class AclOrg extends BaseObj {
 
     /**
@@ -30,22 +26,16 @@ public class AclOrg extends BaseObj {
     /**
      * 部门管理员
      */
-    @JoinColumn(name = "manager")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private AclUser manager;
 
     /**
      * 父部门
      */
-    @JoinColumn(name = "parentorg")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private AclOrg parentOrg;
 
     /**
      * 子部门
      */
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,
-            CascadeType.REMOVE}, fetch = FetchType.EAGER, mappedBy = "parentOrg")
     private List<AclOrg> children;
 
     /**

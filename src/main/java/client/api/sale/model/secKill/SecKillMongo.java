@@ -3,7 +3,6 @@ package client.api.sale.model.secKill;
 import lombok.Data;
 
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import java.util.List;
 @Data
 public class SecKillMongo implements Serializable {
 
-    @Id
     private String id;
     /**
      * 促销名称

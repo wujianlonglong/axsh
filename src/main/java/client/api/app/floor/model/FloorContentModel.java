@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -30,10 +29,8 @@ public class FloorContentModel implements Serializable {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate startDate = LocalDate.of(1, 1, 1);
 
-    @Transient
     private String startDateStr; // 开始时间字符串
 
-    @Transient
     private String endDateStr; // 结束时间字符串
     /**
      * 结束时间

@@ -2,7 +2,6 @@ package client.api.item.model;
 
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -11,7 +10,6 @@ import java.io.Serializable;
 @Data
 public class ProductCategory implements Serializable {
 
-    @Id
     private Long id; // 主键
 
     private Long productId; // 单品id

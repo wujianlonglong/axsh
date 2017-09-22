@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.service.SjesAttributeService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Attribute;
@@ -9,24 +12,31 @@ import client.api.category.model.AttributeModel;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Jianghe on 15/12/15.
  */
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/anxian/sjes_attribute")
-public class AnxianAttributeController {
+public class AnxianAttributeController extends BaseController {
 
     @Autowired
     private SjesAttributeService sjesAttributeService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 分页查询属性列表
@@ -54,6 +64,7 @@ public class AnxianAttributeController {
      * @return 商品属性
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg saveAttributeModel(HttpServletRequest request, AttributeModel attributeModel) {
         String[] htmlAttributeOptions = request.getParameterValues("htmlAttributeOptions");
         try {
@@ -65,6 +76,17 @@ public class AnxianAttributeController {
         }
     }
 
+//    /**
+//     * 根据分类Id得到AttributeGroupModel列表
+//     *
+//     * @param categoryId 分类Id
+//     * @return AttributeGroupModel列表
+//     */
+//    @RequestMapping(value = "{categoryId}", method = RequestMethod.GET)
+//    public Map getAttributeModels(@PathVariable("categoryId") Long categoryId) {
+//        return sjesAttributeService.getAttributeModels(categoryId);
+//    }
+
     /**
      * 根据分类Id得到AttributeGroupModel列表
      *
@@ -72,10 +94,31 @@ public class AnxianAttributeController {
      * @return AttributeGroupModel列表
      */
     @RequestMapping(value = "{categoryId}", method = RequestMethod.GET)
-    public Map getAttributeModels(@PathVariable("categoryId") Long categoryId) {
-        return sjesAttributeService.getAttributeModels(categoryId);
+    public String getAttributeModels(@PathVariable("categoryId") Long categoryId, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+
+        model.addAttribute("categoryList", sjesAttributeService.getAttributeModels(categoryId));
+        return "anXian-goods/attribute-maintain";
     }
 
+    /**
+     * 根据分类Id得到AttributeGroupModel列表
+     *
+     * @param categoryId 分类Id
+     * @return AttributeGroupModel列表
+     */
+    @RequestMapping(value = "test/{categoryId}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map getAttributeModelsTest(@PathVariable("categoryId") Long categoryId, Model model) {
+        return sjesAttributeService.getAttributeModels(categoryId);
+    }
 
     /**
      * 根据分类Id得到AttributeGroupModel列表,在商品修改页面使用
@@ -84,6 +127,7 @@ public class AnxianAttributeController {
      * @return
      */
     @RequestMapping(value = "/getAttributeModelsForProduct", method = RequestMethod.GET)
+    @ResponseBody
     public List<AttributeGroupModel> getAttributeModelsForProduct(Long categoryId) {
         return sjesAttributeService.getAttributeModelsForProduct(categoryId);
     }
@@ -94,6 +138,7 @@ public class AnxianAttributeController {
      * @return
      */
     @RequestMapping("/categoryAttributeGroups")
+    @ResponseBody
     public List<Map> categoryAttributeGroups() {
         return AttributeGroupEnum.getAttributeGroupList();
     }
@@ -106,6 +151,7 @@ public class AnxianAttributeController {
      * @return
      */
     @RequestMapping("/toUpdateAttributeModel")
+    @ResponseBody
     public JsonMsg toUpdateAttributeModel(Long id, Long categoryId, Long attributeGroupId) {
         JsonMsg jsonMsg = new JsonMsg(true, false, sjesAttributeService.getAttributeModel(id, categoryId, attributeGroupId), "", "");
         return jsonMsg;

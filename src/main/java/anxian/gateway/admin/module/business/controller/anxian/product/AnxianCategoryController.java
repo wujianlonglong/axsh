@@ -1,43 +1,50 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Category;
 import client.api.constants.Constants;
-import client.api.item.ProductFeign;
+import client.api.item.AnXianProductFeign;
 import client.api.item.domain.Product;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
  * 商品分类控制器
  * Created by jiangzhe on 15-12-4.
  */
-@RestController
+@Controller
 @RequestMapping("/anxian/sjes_category")
-public class AnxianCategoryController {
+public class AnxianCategoryController extends BaseController {
 
     @Autowired
     private SjesCategoryService sjesCategoryService;
 
     @Autowired
-    private ProductFeign productFeign;
+    private AnXianProductFeign productFeign;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 返回所有分类
      *
      * @return
      */
+    @ResponseBody
     @RequestMapping("/extCategory")
     public List<ExtCategoryModel> extCategory(Integer type) {
         return sjesCategoryService.roots(type);
@@ -49,6 +56,7 @@ public class AnxianCategoryController {
      *
      * @return 分类列表
      */
+    @ResponseBody
     @RequestMapping("/layerCategoryList")
     public JsonMsg layerCategoryList(Long parentId, Long currentId) {
         List<ExtCategoryModel> exceptOwnList = Lists.newArrayList();
@@ -75,6 +83,7 @@ public class AnxianCategoryController {
      * @param grade 分类级别
      * @return 分类列表信息
      */
+    @ResponseBody
     @RequestMapping(value = "/grade/{grade}/{type}", method = RequestMethod.GET)
     public JsonMsg findByGrade(@PathVariable("grade") Integer grade, @PathVariable("type") Integer type) {
         List<ExtCategoryModel> byGrade = sjesCategoryService.findByGrade(grade);
@@ -99,6 +108,7 @@ public class AnxianCategoryController {
      * @param categoryId 　分类id
      * @return　分类簇对象
      */
+    @ResponseBody
     @RequestMapping(value = "/categorys", method = RequestMethod.GET)
     public List<Category> findClusters(Long categoryId) {
         return sjesCategoryService.findClusters(categoryId);
@@ -108,6 +118,7 @@ public class AnxianCategoryController {
     /**
      * @return 分页分类列表
      */
+    @ResponseBody
     @RequestMapping("/search")
     public PageModel<Category> search(int page, int limit, Long parentId) {
         Category searchCategory = new Category();
@@ -127,6 +138,7 @@ public class AnxianCategoryController {
      *
      * @param category
      */
+    @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public JsonMsg saveCategory(Category category) {
 
@@ -147,6 +159,7 @@ public class AnxianCategoryController {
      *
      * @param category
      */
+    @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonMsg updateCategory(Category category) {
 
@@ -177,6 +190,7 @@ public class AnxianCategoryController {
      * @param category
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/updateCategoryTag", method = RequestMethod.POST)
     public JsonMsg updateCategoryTag(Category category) {
         JsonMsg jsonMsg = new JsonMsg();
@@ -199,6 +213,7 @@ public class AnxianCategoryController {
      * @param id 主键
      * @return 实体
      */
+    @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public JsonMsg findCategoryById(@PathVariable("id") Long id) {
         return new JsonMsg(true, false, sjesCategoryService.findOne(id), null, null);
@@ -211,6 +226,7 @@ public class AnxianCategoryController {
      * @param id 主键id
      * @return 显示数量
      */
+    @ResponseBody
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public JsonMsg delete(@PathVariable("id") Long id, Integer type) {
         try {
@@ -245,19 +261,116 @@ public class AnxianCategoryController {
      * @param grade
      * @return
      */
+    @ResponseBody
     @RequestMapping("/attributeManagementList")
-    public PageModel<Category> attributeManagementList(int page, int limit, Long parentId, Integer grade) {
+    public String attributeManagementList(int page, int limit, Long parentId, Integer grade, Model model, Principal principal,
+                                          @RequestParam(value = "flag", required = false) String flag) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         Category searchCategory = new Category();
         searchCategory.setParentId(parentId);
         searchCategory.setGrade(grade == null ? 3 : grade);
         SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
-        searchCoditionModel.setPage(page - 1);
+//        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setPage(page);
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchCategory);
 
-        return sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
-
+        PageModel<Category> productPageModel = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), true);
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", productPageModel.getTotal());
+        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
+        model.addAttribute("categoryList", productPageModel.getContent());
+        model.addAttribute("maxShowPage", 10);
+        model.addAttribute("longShow", 7);
+        if (flag == null) {
+            return "anXian-goods/attribute-templet-manage";
+        } else {
+            return "anXian-goods/attribute-templet-manage-ajax";
+        }
     }
 
+    @RequestMapping("/category")
+    public String category(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        return "anXian-goods/category-maintain";
+    }
+
+    @RequestMapping("/ajaxCategory")
+    public String ajaxCategory(Model model, int page, int limit, Long parentId, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        Category searchCategory = new Category();
+        searchCategory.setParentId(parentId);
+        SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchCategory);
+        PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
+        model.addAttribute("page", page + 1);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
+        model.addAttribute("categoryModels", categoryModels);
+        return "anXian-goods/category-maintain-ajax";
+    }
+
+    @RequestMapping("/tag")
+    public String categoryTag(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        return "anXian-goods/category-show-label-maintain";
+    }
+
+    @RequestMapping("/ajaxCategoryTag")
+    public String ajaxCategoryTag(Model model, int page, int limit, Long parentId, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        Category searchCategory = new Category();
+        searchCategory.setParentId(parentId);
+        SearchCoditionModel<Category> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchCategory);
+        PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
+        model.addAttribute("page", page + 1);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
+        model.addAttribute("categoryTags", categoryModels);
+        return "anXian-goods/category-show-label-ajax";
+    }
 
 }

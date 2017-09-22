@@ -13,11 +13,7 @@ public class Constants {
     /**
      * 商品
      */
-    public static final String SJES_API_ITEM = "sjes-api-item";
-
     public static final String ANXIAN_SJES_API_ITEM = "anxian-sjes-api-item";
-
-
 
     /**
      * 分类

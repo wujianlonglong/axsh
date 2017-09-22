@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sjes-gateway-admin
+    name: anxian-gateway-admin
   profiles:
     active: development
 ---
@@ -10,7 +10,7 @@ spring:
   cloud:
     config:
       profile: development
-      enabled: false
+      enabled: true
 #      uri: http://srv3.sanjiang.info:8888
 #      fail-fast: true
 ---

@@ -2,7 +2,6 @@ package client.api.sale.model;
 
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -12,7 +11,6 @@ import java.io.Serializable;
 @Data
 public class JoinedBrand implements Serializable {
 
-    @Id
     private String id;
     /**
      * 卷类型

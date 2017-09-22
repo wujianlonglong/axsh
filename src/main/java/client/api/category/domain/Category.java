@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -57,8 +56,6 @@ public class Category implements Serializable {
     @JsonSerialize(using = CustomDateSerializer.class)
     private LocalDateTime updateDate; // 更新时间
 
-
-    @Transient
     private String classification;
 
 }

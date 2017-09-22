@@ -1,7 +1,9 @@
 package anxian.gateway.admin.module.business.controller.order;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.AclUser;
-import anxian.gateway.admin.module.business.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.controller.order.model.LogisticsTracking;
 import anxian.gateway.admin.module.business.controller.order.model.OrderConstant;
 import anxian.gateway.admin.module.business.controller.order.model.PayAmount;
@@ -23,17 +25,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URLEncoder;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +45,13 @@ import java.util.Map;
 /**
  * Created by Jianghe on 16/1/19.
  */
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/order")
 public class OrderController extends BaseController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private OrderAdminApiClient orderAdminApiClient;
@@ -120,11 +127,34 @@ public class OrderController extends BaseController {
      * 后台订单模块的订单查询功能点
      */
     @RequestMapping(method = RequestMethod.GET, value = "/searchOrder")
-    public PageModel<Order> getOrderlistForSearch(SearchCondition searchCondition, int page, int limit) {
-        searchCondition.setPage(page - 1);
+    public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit,
+                                        @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        searchCondition.setPage(page);
         searchCondition.setSize(limit);
         SjesPage<Order> orderlistForSearch = orderAdminApiClient.getOrderlistForSearch(searchCondition);
-        return new PageModel<>(orderlistForSearch.getContent(), orderlistForSearch.getTotalElements(), new Pageable(page, limit));
+        PageModel<Order> orderPageModel = new PageModel<>(orderlistForSearch.getContent(), orderlistForSearch.getTotalElements(), new Pageable(page, limit));
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", orderPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", orderPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", orderPageModel.getTotal());
+        model.addAttribute("totalPage", orderPageModel.getTotal() / orderPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", orderPageModel.getTotal() == orderPageModel.getPageable().getPage());
+//        model.addAttribute("items", orderPageModel.getContent());
+        model.addAttribute("orderList", orderPageModel.getContent());
+//        return orderPageModel;
+        if (flag == null) {
+            return "/order/order-init";
+        } else {
+            return "/order/order-init-ajax";
+        }
     }
 
 
@@ -134,6 +164,7 @@ public class OrderController extends BaseController {
      * @param orderId 订单编号
      */
     @RequestMapping(method = RequestMethod.GET, value = "/saleclick/{orderId}")
+    @ResponseBody
     public Map getItemsByOrderId(@PathVariable("orderId") Long orderId) {
         List<OrderItem> itemsByOrder = orderAdminApiClient.getItemsByOrderId(orderId);
         Map itemsResult = new HashMap<>();
@@ -148,6 +179,7 @@ public class OrderController extends BaseController {
      * @param orderId 订单编号
      */
     @RequestMapping(method = RequestMethod.GET, value = "/benefitclick/{orderId}")
+    @ResponseBody
     public Map getBenefitItemsByOrderId(@PathVariable("orderId") Long orderId) {
         List<OrderItem> benefitItemsByOrder = orderAdminApiClient.getBenefitItemsByOrderId(orderId);
         Map benefitItemsResult = new HashMap<>();
@@ -348,20 +380,45 @@ public class OrderController extends BaseController {
      * 订单取消列表.
      */
     @RequestMapping(value = "/cancelingOrder", method = RequestMethod.GET)
-    public PageModel<Order> cancelOrderList(CancelCondition cancelCondition, int page, int limit) {
-        cancelCondition.setPage(page - 1);
+    public String cancelOrderList(CancelCondition cancelCondition, int page, int limit, Model model,
+                                  @RequestParam(value = "flag", required = false) String flag, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+//        cancelCondition.setPage(page - 1);
+        cancelCondition.setPage(page);
         cancelCondition.setSize(limit);
         SjesPage<Order> orders = orderAdminApiClient.cancelOrder(cancelCondition);
-        return new PageModel<>(orders.getContent(), orders.getTotalElements(), new Pageable(page, limit));
+        PageModel<Order> orderPageModel = new PageModel<>(orders.getContent(), orders.getTotalElements(), new Pageable(page, limit));
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", orderPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", orderPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", orderPageModel.getTotal());
+        model.addAttribute("totalPage", orderPageModel.getTotal() / orderPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", orderPageModel.getTotal() == orderPageModel.getPageable().getPage());
+//        model.addAttribute("items", orderPageModel.getContent());
+        model.addAttribute("cancelOrders", orderPageModel);
+        if (flag == null) {
+            return "order/cancel-order";
+        } else {
+            return "order/cancel-order-ajax";
+        }
     }
 
     /**
      * 订单取消.
      */
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
-    public JsonMsg cancelOrder(CancelOrderView cancelOrderView) {
-        AclUser user = UserContextHelper.getUser();
-        cancelOrderView.setUserId(user.getId());
+    public JsonMsg cancelOrder(@RequestBody CancelOrderView cancelOrderView, Principal principal, Authentication authentication) {
+        User user = userService.getByUserName(principal.getName());
+        cancelOrderView.setUserId(String.valueOf(user.getId()));
+//        AclUser user = UserContextHelper.getUser();
+//        cancelOrderView.setUserId(user.getId());
         cancelOrderView.setCustomer(user.getFullName());
         OrderApiResponse<List<Order>> listOrderApiResponse = cancelOrderApiClient.cancelOrder(cancelOrderView);
         if (listOrderApiResponse.getReturn_code().equals(OrderConstant.successCode)) {

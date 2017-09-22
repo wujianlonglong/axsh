@@ -1,14 +1,17 @@
 package anxian.gateway.admin.module.business.controller.anxian.product;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.CommodityInfoUpdateJson;
 import anxian.gateway.admin.module.business.model.item.ProductPriceModel;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.BeanUtil;
 import anxian.gateway.admin.utils.ExcelUtil;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.item.ProductAttributeApiClient;
-import client.api.item.ProductFeign;
-import client.api.item.SnFeign;
+import client.api.item.AnXianProductAttributeApiClient;
+import client.api.item.AnXianProductFeign;
+import client.api.item.AnXianSnFeign;
 import client.api.item.domain.Product;
 import client.api.item.domain.ProductAttributeValue;
 import client.api.item.domain.ProductImage;
@@ -29,28 +32,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 /**
  * Created by jiangzhe on 15-12-3.
  */
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/anxian/sjes_product")
-public class AnxianProductController {
+public class AnxianProductController extends BaseController {
 
     Logger LOGGER = LoggerFactory.getLogger(AnxianProductController.class);
 
     @Autowired
-    private ProductFeign productFeign;
+    private AnXianProductFeign productFeign;
 
     @Autowired
-    private ProductAttributeApiClient productAttributeApiClient;
+    private UserService userService;
+
+    @Autowired
+    private AnXianProductAttributeApiClient productAttributeApiClient;
 
     //图片应用地址
     @Value("${picture.application.address}")
@@ -61,7 +71,7 @@ public class AnxianProductController {
     private String pictureUploadPath;
 
     @Autowired
-    private SnFeign snFeign;
+    private AnXianSnFeign snFeign;
 
     /**
      * 总列数
@@ -76,7 +86,9 @@ public class AnxianProductController {
      * @return 单品属性值列表
      */
     @RequestMapping(value = "/listByProductId/{productId}", method = RequestMethod.GET)
+    @ResponseBody
     public List<ProductAttributeValue> listByProductId(@PathVariable("productId") Long productId) {
+
         return productAttributeApiClient.listByProductId(productId);
     }
 
@@ -86,12 +98,52 @@ public class AnxianProductController {
      * @return 分页列表
      */
     @RequestMapping("/informationList")
-    public PageModel<Product> commodityInformationList(int page, int limit, Product searchProduct) {
+    public String commodityInformationList(int page, int limit, Product searchProduct, Model model,
+                                           @RequestParam(value = "flag", required = false) String flag, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         SearchCoditionModel<Product> searchCoditionModel = new SearchCoditionModel<>();
-        searchCoditionModel.setPage(page - 1);
+//        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setPage(page);
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchProduct);
-        return productFeign.searchProductPackage(searchCoditionModel);
+        PageModel<Product> productPageModel = productFeign.searchProductPackage(searchCoditionModel);
+//        return productFeign.searchProductPackage(searchCoditionModel);
+//        model.addAttribute("items", productPageModel.getContent());
+//        model.addAttribute("total", productPageModel.getTotal());
+//        model.addAttribute("page", productPageModel.getPageable());
+//        model.addAttribute("power", 10);
+//
+//        model.addAttribute("pageNum", productPageModel.getPageable().getPage()-1);
+//        model.addAttribute("isFirstPage", true);
+//        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
+//        model.addAttribute("totalCount", productPageModel.getTotal());
+//        model.addAttribute("totalPage", (productPageModel.getTotal() + 10 - 1) / 10);
+//        model.addAttribute("isLastPage", false);
+//        model.addAttribute("maxShowPage", 10);
+//        model.addAttribute("longShow", 9);
+        System.out.println("-----------productPageModel.getPage():" + productPageModel.getPage());
+        model.addAttribute("pageNum", page);
+        model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
+        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
+        model.addAttribute("totalCount", productPageModel.getTotal());
+        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
+        model.addAttribute("items", productPageModel.getContent());
+        model.addAttribute("categoryModels", productPageModel);
+//        model.addAttribute("maxShowPage", 10);
+//        model.addAttribute("longShow", 7);
+        if (flag == null) {
+            return "anXian-goods/info-maintain";
+        } else {
+            return "anXian-goods/info-maintain-ajax";
+        }
     }
 
     /**
@@ -116,14 +168,50 @@ public class AnxianProductController {
         return productFeign.findBySn(sn);
     }
 
+//    /**
+//     * 根据商品Id得到商品详细信息
+//     *
+//     * @param sn 商品编码
+//     * @return 详细信息
+//     */
+//    @RequestMapping(value = "/getProductDetail", method = RequestMethod.POST)
+//    public JsonMsg getProductDetail(String sn, Long productId, Integer status) {
+//        JsonMsg jsonMsg = new JsonMsg();
+//        if (StringUtils.isBlank(sn)) {
+//            sn = snFeign.generateProductSn(productId);
+//        }
+//        ProductModel productModel = productFeign.getProductDetail(sn, status);
+//
+//        CommodityInfoUpdateJson commodityInfoUpdateJson = new CommodityInfoUpdateJson();
+//        BeanUtil.setBean2Bean(productModel, commodityInfoUpdateJson);
+//        commodityInfoUpdateJson.setGoodsName(productModel.getGoods() != null ? productModel.getGoods().getGoodsName() : "");
+//        commodityInfoUpdateJson.setBrandName(productModel.getBrand() != null ? productModel.getBrand().getName() : "");
+//        commodityInfoUpdateJson.setParameterGroupModels(productModel.getParameterGroupModels());
+//        commodityInfoUpdateJson.setProductImages(productModel.getProductImages());
+//
+//        jsonMsg.setSuccess(true);
+//        jsonMsg.setData(commodityInfoUpdateJson);
+//
+//        return jsonMsg;
+//    }
+
     /**
      * 根据商品Id得到商品详细信息
      *
      * @param sn 商品编码
      * @return 详细信息
      */
-    @RequestMapping(value = "/getProductDetail", method = RequestMethod.POST)
-    public JsonMsg getProductDetail(String sn, Long productId, Integer status) {
+    @RequestMapping(value = "/getProductDetail", method = RequestMethod.GET)
+    public String getProductDetail(String sn, Long productId, Integer status, Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+
         JsonMsg jsonMsg = new JsonMsg();
         if (StringUtils.isBlank(sn)) {
             sn = snFeign.generateProductSn(productId);
@@ -139,8 +227,8 @@ public class AnxianProductController {
 
         jsonMsg.setSuccess(true);
         jsonMsg.setData(commodityInfoUpdateJson);
-
-        return jsonMsg;
+        model.addAttribute("product", jsonMsg);
+        return "anXian-goods/edit-info-maintain";
     }
 
     /**
@@ -149,7 +237,8 @@ public class AnxianProductController {
      * @return
      */
     @RequestMapping(value = "/updateProductModel", method = RequestMethod.POST)
-    public JsonMsg updateProductModel(ProductModel productModel) {
+    @ResponseBody
+    public JsonMsg updateProductModel(@RequestBody ProductModel productModel, Model model) {
 
         List<ProductImage> productImages = Lists.newArrayList();
 

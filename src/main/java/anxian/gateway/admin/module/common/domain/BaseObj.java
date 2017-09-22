@@ -3,9 +3,6 @@ package anxian.gateway.admin.module.common.domain;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
 /**
@@ -14,10 +11,8 @@ import java.io.Serializable;
  */
 
 @Data
-@MappedSuperclass
 public abstract class BaseObj implements Serializable {
-    @Id
-    @GeneratedValue
+
     private Long id;
 
 }

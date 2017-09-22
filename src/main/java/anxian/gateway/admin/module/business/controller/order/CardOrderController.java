@@ -1,5 +1,6 @@
 package anxian.gateway.admin.module.business.controller.order;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.business.controller.order.model.OrderConstant;
 import client.api.card.CardOrderApiClient;
 import client.api.card.model.CardOrderAdmin;
@@ -40,7 +41,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/cardOrders")
-public class CardOrderController {
+public class CardOrderController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CardOrderController.class);
 
