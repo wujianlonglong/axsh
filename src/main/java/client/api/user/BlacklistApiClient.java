@@ -11,7 +11,7 @@ import java.util.List;
  * Created by gaoqichao on 16-2-18.
  */
 @FeignClient("sjes-api-user")
-@RequestMapping("/blackList")
+@RequestMapping("/blackList/anxian")
 public interface BlacklistApiClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/id")

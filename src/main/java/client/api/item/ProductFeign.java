@@ -22,8 +22,8 @@ import java.util.List;
 /**
  * Created by mac on 15/8/28.
  */
-@FeignClient(Constants.SJES_API_ITEM)
-@RequestMapping(value = "/products")
+@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@RequestMapping(value = "/products/anxian")
 public interface ProductFeign {
 
     /**

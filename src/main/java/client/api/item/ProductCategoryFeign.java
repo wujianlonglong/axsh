@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by qinhailong on 15-12-25.
  */
-@FeignClient(Constants.SJES_API_ITEM)
-@RequestMapping("productCategorys")
+@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@RequestMapping("productCategorys/anxian")
 public interface ProductCategoryFeign {
 
     /**

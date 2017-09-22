@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * Created by qinhailong on 15-12-23.
  */
-@FeignClient(Constants.SJES_API_ITEM)
-@RequestMapping(value = "specifications")
+@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@RequestMapping(value = "specifications/anxian")
 public interface SpecificationFeign {
 
     /**
