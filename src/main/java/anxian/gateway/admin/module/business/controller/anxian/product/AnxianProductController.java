@@ -92,6 +92,24 @@ public class AnxianProductController extends BaseController {
         return productAttributeApiClient.listByProductId(productId);
     }
 
+
+
+    /**
+     * 商品信息维护列表
+     *
+     * @return 分页列表
+     */
+    @RequestMapping("/informationListData")
+    @ResponseBody
+    public PageModel<Product> commodityInformationListData(int page, int limit, Product searchProduct) {
+        SearchCoditionModel<Product> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchProduct);
+        return productFeign.searchProductPackage(searchCoditionModel);
+    }
+
+
     /**
      * 商品信息维护列表
      *
@@ -264,6 +282,7 @@ public class AnxianProductController extends BaseController {
      * @return 更新的数量
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg updateStatus(Authentication authentication, Long id, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
         LOGGER.info("  #######   进行商品上下架，status: {} , id: {}", status, id);

@@ -1,6 +1,6 @@
 package anxian.gateway.admin.module.business.controller.search;
 
-import client.api.item.ProductFeign;
+import client.api.item.AnXianProductFeign;
 import client.api.item.domain.Product;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -23,7 +23,7 @@ public class SearchController {
     private SearchApiClient searchApiClient;
 
     @Autowired
-    private ProductFeign productFeign;
+    private AnXianProductFeign productFeign;
 
     @Autowired
     private AnxianSearchApiClient anxianSearchApiClient;

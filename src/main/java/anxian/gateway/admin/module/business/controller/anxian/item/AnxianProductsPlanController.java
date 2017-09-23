@@ -2,6 +2,8 @@ package anxian.gateway.admin.module.business.controller.anxian.item;
 
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.JsonMsg;
+import client.api.item.AnXianProductFeign;
+import client.api.item.AnXianProductsPlanFeign;
 import client.api.item.ProductFeign;
 import client.api.item.ProductsPlanFeign;
 import client.api.item.domain.Product;
@@ -25,10 +27,10 @@ import java.util.List;
 public class AnxianProductsPlanController {
 
     @Autowired
-    private ProductsPlanFeign productsPlanFeign;
+    private AnXianProductsPlanFeign productsPlanFeign;
 
     @Autowired
-    private ProductFeign productFeign;
+    private AnXianProductFeign productFeign;
 
     /**
      * 分页查询指定计划的商品列表
