@@ -25,7 +25,7 @@ public class CancelOrderView {
     /**
      * 取消人
      */
-    private String userId;
+    private Long userId;
     /**
      * 取消人姓名
      */

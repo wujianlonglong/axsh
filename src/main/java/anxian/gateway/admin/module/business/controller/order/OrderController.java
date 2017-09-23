@@ -6,6 +6,7 @@ import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.controller.order.model.LogisticsTracking;
 import anxian.gateway.admin.module.business.controller.order.model.OrderConstant;
+import anxian.gateway.admin.module.business.controller.order.model.OrderStatusEnum;
 import anxian.gateway.admin.module.business.controller.order.model.PayAmount;
 import anxian.gateway.admin.module.security.UserContextHelper;
 import anxian.gateway.admin.utils.JsonMsg;
@@ -127,7 +128,7 @@ public class OrderController extends BaseController {
      * 后台订单模块的订单查询功能点
      */
     @RequestMapping(method = RequestMethod.GET, value = "/searchOrder")
-    public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit,
+    public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit, @RequestParam(value = "orderStatusName", required = false) String orderStatusName,
                                         @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
@@ -136,7 +137,14 @@ public class OrderController extends BaseController {
         }
 
         getMenus(user, model);
-
+        if (orderStatusName != null) {
+            for (OrderStatusEnum taoBaoOrderStatusEnum : OrderStatusEnum.values()) {
+                if (taoBaoOrderStatusEnum.getStatusMsg().equals(orderStatusName.trim())) {
+                    searchCondition.setOrderStatus(taoBaoOrderStatusEnum.getCode());
+                    break;
+                }
+            }
+        }
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
         SjesPage<Order> orderlistForSearch = orderAdminApiClient.getOrderlistForSearch(searchCondition);
@@ -414,11 +422,11 @@ public class OrderController extends BaseController {
      * 订单取消.
      */
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg cancelOrder(@RequestBody CancelOrderView cancelOrderView, Principal principal, Authentication authentication) {
         User user = userService.getByUserName(principal.getName());
-        cancelOrderView.setUserId(String.valueOf(user.getId()));
-//        AclUser user = UserContextHelper.getUser();
-//        cancelOrderView.setUserId(user.getId());
+        cancelOrderView.setUserId(Long.valueOf(String.valueOf(user.getId())));
+//        cancelOrderView.setUserId(11l);
         cancelOrderView.setCustomer(user.getFullName());
         OrderApiResponse<List<Order>> listOrderApiResponse = cancelOrderApiClient.cancelOrder(cancelOrderView);
         if (listOrderApiResponse.getReturn_code().equals(OrderConstant.successCode)) {

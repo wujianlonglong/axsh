@@ -114,20 +114,6 @@ public class AnxianProductController extends BaseController {
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchProduct);
         PageModel<Product> productPageModel = productFeign.searchProductPackage(searchCoditionModel);
-//        return productFeign.searchProductPackage(searchCoditionModel);
-//        model.addAttribute("items", productPageModel.getContent());
-//        model.addAttribute("total", productPageModel.getTotal());
-//        model.addAttribute("page", productPageModel.getPageable());
-//        model.addAttribute("power", 10);
-//
-//        model.addAttribute("pageNum", productPageModel.getPageable().getPage()-1);
-//        model.addAttribute("isFirstPage", true);
-//        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
-//        model.addAttribute("totalCount", productPageModel.getTotal());
-//        model.addAttribute("totalPage", (productPageModel.getTotal() + 10 - 1) / 10);
-//        model.addAttribute("isLastPage", false);
-//        model.addAttribute("maxShowPage", 10);
-//        model.addAttribute("longShow", 9);
         System.out.println("-----------productPageModel.getPage():" + productPageModel.getPage());
         model.addAttribute("pageNum", page);
         model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
@@ -167,33 +153,6 @@ public class AnxianProductController extends BaseController {
     public Product findBySn(@PathVariable("sn") String sn) {
         return productFeign.findBySn(sn);
     }
-
-//    /**
-//     * 根据商品Id得到商品详细信息
-//     *
-//     * @param sn 商品编码
-//     * @return 详细信息
-//     */
-//    @RequestMapping(value = "/getProductDetail", method = RequestMethod.POST)
-//    public JsonMsg getProductDetail(String sn, Long productId, Integer status) {
-//        JsonMsg jsonMsg = new JsonMsg();
-//        if (StringUtils.isBlank(sn)) {
-//            sn = snFeign.generateProductSn(productId);
-//        }
-//        ProductModel productModel = productFeign.getProductDetail(sn, status);
-//
-//        CommodityInfoUpdateJson commodityInfoUpdateJson = new CommodityInfoUpdateJson();
-//        BeanUtil.setBean2Bean(productModel, commodityInfoUpdateJson);
-//        commodityInfoUpdateJson.setGoodsName(productModel.getGoods() != null ? productModel.getGoods().getGoodsName() : "");
-//        commodityInfoUpdateJson.setBrandName(productModel.getBrand() != null ? productModel.getBrand().getName() : "");
-//        commodityInfoUpdateJson.setParameterGroupModels(productModel.getParameterGroupModels());
-//        commodityInfoUpdateJson.setProductImages(productModel.getProductImages());
-//
-//        jsonMsg.setSuccess(true);
-//        jsonMsg.setData(commodityInfoUpdateJson);
-//
-//        return jsonMsg;
-//    }
 
     /**
      * 根据商品Id得到商品详细信息
