@@ -36,4 +36,9 @@ public class SecKillParamDTO implements Serializable {
     private String itemDetonation;
 
     private String operator;
+
+    private Integer saleOrderNum;
+
+    private String seckillIllustration;
+
 }

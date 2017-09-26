@@ -40,7 +40,7 @@ public class FileOperationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/upload")
     public Object upload(HttpServletRequest request, HttpServletResponse response) {
 
         Map map = new HashMap<>();//存放操作结果,返回到前端

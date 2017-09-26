@@ -87,11 +87,27 @@ public class WebPage extends BaseController {
         return "/pay/pay";
     }
 
-    @RequestMapping(value="/promotion/sync",method=RequestMethod.GET)
-    public String syncList(){return "/anXian-promotion/sync";}
+    @RequestMapping(value = "/promotion/sync", method = RequestMethod.GET)
+    public String syncList(Model model, Principal principal) {
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
 
-    @RequestMapping(value="/promotion/seckill",method=RequestMethod.GET)
-    public String seckillList(){return "/anXian-promotion/seckill";}
+        getMenus(user, model);
+        return "/anXian-promotion/sync";
+    }
+
+    @RequestMapping(value = "/promotion/seckill", method = RequestMethod.GET)
+    public String seckillList(Model model, Principal principal) {
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+        return "/anXian-promotion/seckill";
+    }
 
 
 }

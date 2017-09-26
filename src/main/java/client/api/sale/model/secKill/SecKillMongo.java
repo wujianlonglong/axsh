@@ -107,4 +107,8 @@ public class SecKillMongo implements Serializable {
      * 操作时间
      */
     private LocalDateTime operateTime;
+
+    private Integer saleOrderNum;
+
+    private String seckillIllustration;
 }
