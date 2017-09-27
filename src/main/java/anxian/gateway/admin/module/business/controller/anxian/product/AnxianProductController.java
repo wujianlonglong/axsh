@@ -39,6 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -91,7 +93,6 @@ public class AnxianProductController extends BaseController {
 
         return productAttributeApiClient.listByProductId(productId);
     }
-
 
 
     /**
@@ -418,4 +419,23 @@ public class AnxianProductController extends BaseController {
     }
 
 
+    @RequestMapping(value = "/downLoadTemplate")
+    public void downLoadTemplate(HttpServletResponse response) throws IOException {
+        response.setHeader("Content-Disposition", "attachment;filename=" + new String(("商品上下架模板").getBytes("gb2312"), "ISO8859-1") + ".xlsx");
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+
+        InputStream it = this.getClass().getResourceAsStream("/xls_template/wzspsxjmb.xlsx");
+        OutputStream os = response.getOutputStream();
+
+        //文件拷贝
+        byte flush[] = new byte[1024];
+        int len = 0;
+        while (0 <= (len = it.read(flush))) {
+            os.write(flush, 0, len);
+        }
+
+        it.close();
+        os.close();
+
+    }
 }

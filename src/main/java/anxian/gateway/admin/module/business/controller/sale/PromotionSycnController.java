@@ -11,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Created by byinbo on 2016/12/21.
  */
-@RestController
+@Controller
 @RequestMapping(value = "/admin/promotionSycn")
 public class PromotionSycnController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(PromotionSycnController.class);
@@ -47,6 +49,7 @@ public class PromotionSycnController extends BaseController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/pageList")
+    @ResponseBody
     public SjesPage<PromotionSycnView> pageList(@RequestParam(name = "promotionName", required = false) String promotionName,
                                                 @RequestParam(name = "promotionType", required = false) String promotionType,
                                                 @RequestParam(name = "status", required = false) Integer status,
@@ -81,6 +84,7 @@ public class PromotionSycnController extends BaseController {
      * @return 返回优ERP促销信息
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @ResponseBody
     public JsonMsg getById(@PathVariable("id") String id) {
         JsonMsg jsonMsg = new JsonMsg();
         jsonMsg.setSuccess(true);
@@ -89,10 +93,18 @@ public class PromotionSycnController extends BaseController {
         return jsonMsg;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "judge/{id}")
+    @ResponseBody
+    public ResponseMessage<PromotionSycnViewModel> judge(@PathVariable("id") String id) {
+         ResponseMessage<PromotionSycnViewModel> promotionSycnViewModel = promotionSycnApiClient.getById(id);
+        return promotionSycnViewModel;
+    }
+
     /**
      * 同步促销
      */
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg updateBenefitVolume(@RequestBody PromotionSyncModel promotionSyncModel) {
         ResponseMessage<PromotionSync> promotionSycnResponseMessage = promotionSycnApiClient.savePromotionSycn(promotionSyncModel);
         if (promotionSycnResponseMessage.getCode() == SaleConstant.successCode) {
@@ -107,6 +119,7 @@ public class PromotionSycnController extends BaseController {
      * 删除促销
      */
     @RequestMapping(value = "/delete/{sheetId}", method = RequestMethod.DELETE)
+    @ResponseBody
     public JsonMsg delBySheetId(@PathVariable("sheetId") String sheetId) {
         ResponseMessage responseMessage = promotionSycnApiClient.delBySheetId(sheetId);
         if (responseMessage.getCode() == SaleConstant.successCode) {
@@ -115,5 +128,11 @@ public class PromotionSycnController extends BaseController {
             return JsonMsg.failure("删除失败");
         }
 
+    }
+
+    @RequestMapping(value="/turnToSyncEdit/{id}")
+    public String turnToSyncEdit(@PathVariable("id") String id,Model model){
+        model.addAttribute("id",id);
+        return "anXian-promotion/edit-sync";
     }
 }

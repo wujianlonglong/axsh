@@ -6,9 +6,11 @@ import client.api.sale.model.secKill.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping(value="/admin/secKillSycn")
 public class SecKillSyncController {
     private static final Logger log= LoggerFactory.getLogger(SecKillSyncController.class);
@@ -24,6 +26,7 @@ public class SecKillSyncController {
      * @return 保存成功
      */
     @RequestMapping(method = RequestMethod.POST, value = "/save")
+    @ResponseBody
     public ResponseMessage save(@RequestBody SecKillParamDTO secKillParamDTO){
         return secKillSyncApiClient.save(secKillParamDTO);
     }
@@ -35,6 +38,7 @@ public class SecKillSyncController {
      * @param saleManageCondition 促销管理查询条件
      */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @ResponseBody
     public ResponseMessage<SjesPage<SecKillMongo>> list(@RequestBody SaleManageCondition saleManageCondition){
         saleManageCondition.setPage(saleManageCondition.getPage()-1);
         ResponseMessage<SjesPage<SecKillMongo>> result=secKillSyncApiClient.list(saleManageCondition);
@@ -49,8 +53,16 @@ public class SecKillSyncController {
      * @return 促销对象
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @ResponseBody
     public SecKillMongo get(@PathVariable("id") String id){
         return secKillSyncApiClient.get(id);
+    }
+
+
+    @RequestMapping(value="/turnToEdit/{id}")
+    public String turnToEdit(@PathVariable("id") String id,Model model){
+        model.addAttribute("id",id);
+        return "anXian-promotion/edit-seckill";
     }
 
 }
