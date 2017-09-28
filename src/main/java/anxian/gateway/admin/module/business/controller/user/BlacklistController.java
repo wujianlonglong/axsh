@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.user;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.user.BlacklistApiClient;
 import client.api.user.domain.Blacklist;
@@ -24,11 +27,14 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/anxian/admin_blacklist")
-public class BlacklistController {
+public class BlacklistController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
 
     @Autowired
     private BlacklistApiClient blacklistApiClient;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 分页取得黑名单列表
@@ -54,7 +60,13 @@ public class BlacklistController {
      * @return
      */
     @RequestMapping(method=RequestMethod.GET,value="/turnToEditPage")
-    public String turnToEditPage(Long userId,Model model){
+    public String turnToEditPage(Long userId,Model model,Principal principal){
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+        getMenus(user, model);
+
         if(userId!=0){
             Blacklist blacklist=blacklistApiClient.findByUserId(userId);
             if(blacklist!=null){

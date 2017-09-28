@@ -1,6 +1,9 @@
 package anxian.gateway.admin.module.business.controller.sale;
 
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import client.api.sale.SecKillSyncApiClient;
 import client.api.sale.model.secKill.*;
 import org.slf4j.Logger;
@@ -10,13 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping(value="/admin/secKillSycn")
-public class SecKillSyncController {
+public class SecKillSyncController  extends BaseController{
     private static final Logger log= LoggerFactory.getLogger(SecKillSyncController.class);
 
     @Autowired
     private SecKillSyncApiClient secKillSyncApiClient;
+
+    @Autowired
+    UserService userService;
 
 
     /**
@@ -60,8 +68,15 @@ public class SecKillSyncController {
 
 
     @RequestMapping(value="/turnToEdit/{id}")
-    public String turnToEdit(@PathVariable("id") String id,Model model){
+    public String turnToEdit(@PathVariable("id") String id,Model model,Principal principal){
         model.addAttribute("id",id);
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
         return "anXian-promotion/edit-seckill";
     }
 
