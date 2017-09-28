@@ -3,12 +3,16 @@ package anxian.gateway.admin.module.base.service;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.repository.UserRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
+import org.bson.types.ObjectId;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class UserService {
@@ -64,10 +68,46 @@ public class UserService {
      * @param pageable
      * @return
      */
-    public Page<User> list(String workerId, Pageable pageable) {
+    public ResponseMessage<Page<User>> list(String workerId, Pageable pageable) {
         if (StringUtils.isEmpty(workerId)) {
-            return userRepository.findAll(pageable);
+            return ResponseMessage.success(userRepository.findAll(pageable));
         }
-        return userRepository.findByUsernameLike(workerId, pageable);
+        return ResponseMessage.success(userRepository.findByUsernameLike(workerId, pageable));
+    }
+
+    /**
+     * 根据id获取用户信息
+     *
+     * @param id
+     * @return
+     */
+    public ResponseMessage<User> getById(String id) {
+
+        User user = userRepository.findOne(id);
+
+        return null == user ? ResponseMessage.error("没有获取对应的用户") : ResponseMessage.success(user);
+    }
+
+    /**
+     * 保存用户
+     *
+     * @param user
+     * @return
+     */
+    public ResponseMessage save(User user) {
+
+        String id = user.getId();
+        if (null == id || StringUtils.isEmpty(id)) {
+            user.setCreateDateTime(LocalDateTime.now());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            User modifyUser = userRepository.findOne(id);
+            if (null == modifyUser) {
+                user.setId(null);
+            }
+            user.setUpdateDateTime(LocalDateTime.now());
+        }
+        User result = userRepository.save(user);
+        return null == result ? ResponseMessage.error("保存失败！") : ResponseMessage.success("保存成功！");
     }
 }

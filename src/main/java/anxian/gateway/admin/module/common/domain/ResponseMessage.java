@@ -1,13 +1,18 @@
 package anxian.gateway.admin.module.common.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * Ajax 响应消息
  * Created by mac on 15/8/29.
  */
 @Data
-public class ResponseMessage {
+@AllArgsConstructor
+public class ResponseMessage<T> implements Serializable {
 
     /**
      * 类型
@@ -39,6 +44,8 @@ public class ResponseMessage {
      */
     private String content;
 
+    private T data;
+
     /**
      * 初始化一个新建的 AjaxResponse 对象，使其表示一个空消息
      */
@@ -65,6 +72,10 @@ public class ResponseMessage {
      */
     public static ResponseMessage success(String content) {
         return new ResponseMessage(Type.success, content);
+    }
+
+    public static <T> ResponseMessage success(T data) {
+        return new ResponseMessage(Type.success, "", data);
     }
 
     /**
