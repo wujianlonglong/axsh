@@ -1,5 +1,10 @@
 package anxian.gateway.admin.module.business.controller.sale;
 
+
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
+
+
 import anxian.gateway.admin.module.business.controller.BaseController;
 import anxian.gateway.admin.module.business.model.promotionSycn.PromotionSycnView;
 import anxian.gateway.admin.utils.JsonMsg;
@@ -16,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -35,6 +41,8 @@ public class PromotionSycnController extends BaseController {
     @Autowired
     private PromotionSycnApiClient promotionSycnApiClient;
 
+    @Autowired
+    private UserService userService;
 
     /**
      * 查询促销同步列表
@@ -131,7 +139,13 @@ public class PromotionSycnController extends BaseController {
     }
 
     @RequestMapping(value="/turnToSyncEdit/{id}")
-    public String turnToSyncEdit(@PathVariable("id") String id,Model model){
+    public String turnToSyncEdit(@PathVariable("id") String id, Model model, Principal principal){
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+        getMenus(user, model);
+
         model.addAttribute("id",id);
         return "anXian-promotion/edit-sync";
     }
