@@ -2,6 +2,7 @@ package anxian.gateway.admin.utils;
 
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class ExcelUtil {
      * @param cell 单元格
      * @return 单元格的值
      */
-    public static String getCellValue(XSSFCell cell) {
+    public static String getCellValue(Cell cell) {
         Assert.notNull(cell);
         int cellType = cell.getCellType();
         if (XSSFCell.CELL_TYPE_BOOLEAN == cellType) {
