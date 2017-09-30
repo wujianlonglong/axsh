@@ -425,7 +425,7 @@ public class OrderController extends BaseController {
     @ResponseBody
     public JsonMsg cancelOrder(@RequestBody CancelOrderView cancelOrderView, Principal principal, Authentication authentication) {
         User user = userService.getByUserName(principal.getName());
-        cancelOrderView.setUserId(Long.valueOf(String.valueOf(user.getId())));
+        cancelOrderView.setUserId(Long.valueOf(String.valueOf(user.getUsername())));
 //        cancelOrderView.setUserId(11l);
         cancelOrderView.setCustomer(user.getFullName());
         OrderApiResponse<List<Order>> listOrderApiResponse = cancelOrderApiClient.cancelOrder(cancelOrderView);
