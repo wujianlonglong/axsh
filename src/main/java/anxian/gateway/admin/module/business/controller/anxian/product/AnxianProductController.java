@@ -22,6 +22,11 @@ import client.api.item.model.SearchCoditionModel;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -381,28 +386,34 @@ public class AnxianProductController extends BaseController {
      * @return 更新的数量
      */
     @RequestMapping(value = "batUpdateStatus/{status}", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg batUpdateStatus(Authentication authentication, HttpServletResponse response, @RequestParam("file") MultipartFile multipartFile, @PathVariable("status") Integer status) {
         response.setHeader("X-Frame-Options", "SAMEORIGIN");//添加了文件上传后跨域问题解决办法
-        XSSFWorkbook wb;
+        String fileName = multipartFile.getOriginalFilename();
+        Workbook wb=null;
         try {
-            wb = new XSSFWorkbook(multipartFile.getInputStream());
+            if (fileName.endsWith(".xls")) {
+                wb = new HSSFWorkbook(multipartFile.getInputStream());
+            } else if (fileName.endsWith(".xlsx")) {
+                wb = new XSSFWorkbook(multipartFile.getInputStream());
+            }
         } catch (IOException e) {
             return JsonMsg.failure("导入失败!");
         }
         if (null != wb) {
-            XSSFSheet sheet = wb.getSheetAt(0);
+            Sheet sheet = wb.getSheetAt(0);
             if (null != sheet) {
                 int firstRowNum = sheet.getFirstRowNum();
                 int lastRowNum = sheet.getLastRowNum();
                 List<Long> erpGoodIds = Lists.newArrayList();
                 for (int i = firstRowNum + 1; i <= lastRowNum; i++) {
-                    XSSFRow row = sheet.getRow(i);
+                    Row row = sheet.getRow(i);
                     if (null == row) {
                         continue;
                     }
                     String[] datas = new String[1];
                     for (int j = 0; j < 1; j++) {
-                        XSSFCell cell = row.getCell(j);
+                       Cell cell = row.getCell(j);
                         datas[j] = null != cell ? ExcelUtil.getCellValue(cell).trim() : null;
                     }
                     if (StringUtils.isNotBlank(datas[0])) {
