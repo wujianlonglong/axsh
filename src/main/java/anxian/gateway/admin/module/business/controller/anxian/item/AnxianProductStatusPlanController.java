@@ -2,12 +2,15 @@ package anxian.gateway.admin.module.business.controller.anxian.item;
 
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.item.ProductStatusPlanFeign;
+import client.api.item.AnXianProductStatusPlanFeign;
 import client.api.item.domain.ProductStatusPlan;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by qinhailong on 17-1-11.
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AnxianProductStatusPlanController {
 
     @Autowired
-    private ProductStatusPlanFeign productStatusPlanFeign;
+    private AnXianProductStatusPlanFeign productStatusPlanFeign;
 
     /**
      * 分页查询批量更新商品状态计划列表
