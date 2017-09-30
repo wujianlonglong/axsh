@@ -227,12 +227,12 @@ public class AnxianProductController extends BaseController {
 
         for (ProductImage productImage : productModel.getProductImages()) {
             if (productImage.getLarge800() != null) {//过滤掉没有地址的图片,由于前台点了删除按钮后图片集合的下标无法改变,故在此做过滤
-                String imageAddress = productImage.getLarge800();
+                String imageAddress = productImage.getLarge800().replace("/image/", "/images/");
                 String[] images = imageAddress.split("\\.");
                 String imageEnd = images[images.length - 1];
                 String imageStart = imageAddress.substring(0, imageAddress.length() - imageEnd.length() - 1);
-                String image400 = imageStart + "_400*400." + imageEnd;
-                String image220 = imageStart + "_220*220." + imageEnd;
+                String image400 = imageStart + "_400x400." + imageEnd;
+                String image220 = imageStart + "_220x220." + imageEnd;
                 productImage.setMedium400(image400);
                 productImage.setThumbnail220(image220);
                 productImages.add(productImage);
@@ -398,7 +398,7 @@ public class AnxianProductController extends BaseController {
     public JsonMsg batUpdateStatus(Authentication authentication, HttpServletResponse response, @RequestParam("file") MultipartFile multipartFile, @PathVariable("status") Integer status) {
         response.setHeader("X-Frame-Options", "SAMEORIGIN");//添加了文件上传后跨域问题解决办法
         String fileName = multipartFile.getOriginalFilename();
-        Workbook wb=null;
+        Workbook wb = null;
         try {
             if (fileName.endsWith(".xls")) {
                 wb = new HSSFWorkbook(multipartFile.getInputStream());
@@ -421,7 +421,7 @@ public class AnxianProductController extends BaseController {
                     }
                     String[] datas = new String[1];
                     for (int j = 0; j < 1; j++) {
-                       Cell cell = row.getCell(j);
+                        Cell cell = row.getCell(j);
                         datas[j] = null != cell ? ExcelUtil.getCellValue(cell).trim() : null;
                     }
                     if (StringUtils.isNotBlank(datas[0])) {
