@@ -4,7 +4,7 @@
     <contextName>sjes-gateway-admin</contextName>
 
     <property name="projectName" value="anxian-gateway-admin"/>
-    <property name="logging.path" value="/${HOME}/sjes/logs/${projectName}/${projectName}.log"/>
+    <property name="logging.path" value="/${HOME}/anxian/logs/${projectName}/${projectName}.log"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- <filter class="com.example.logback.filter.MyFilter" /> -->
