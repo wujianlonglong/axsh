@@ -50,7 +50,7 @@ public class NewMenuService {
                 if (isAdmin) {
                     childrenMenus = newMenuRepository.findByParentIdAndLeafOrderBySortAsc(parentId, true);
                 } else {
-                    childrenMenus = newMenus.stream().filter(newMenu -> newMenu.getParentId().compareTo(parentId) == 0).collect(Collectors.toList());
+                    childrenMenus = newMenus.stream().filter(newMenu -> newMenu.getParentId() != null && newMenu.getParentId().compareTo(parentId) == 0).collect(Collectors.toList());
                 }
                 if (CollectionUtils.isNotEmpty(childrenMenus)) {
                     List<MenuModel> children = new ArrayList<>();
