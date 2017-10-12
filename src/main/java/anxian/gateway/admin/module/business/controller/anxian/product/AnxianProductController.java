@@ -227,7 +227,8 @@ public class AnxianProductController extends BaseController {
 
         for (ProductImage productImage : productModel.getProductImages()) {
             if (productImage.getLarge800() != null) {//过滤掉没有地址的图片,由于前台点了删除按钮后图片集合的下标无法改变,故在此做过滤
-                String imageAddress = productImage.getLarge800().replace("/image/", "/images/");
+                String imageAddress = productImage.getLarge800();
+//                String imageAddress = productImage.getLarge800().replace("/image/", "/images/");
                 String[] images = imageAddress.split("\\.");
                 String imageEnd = images[images.length - 1];
                 String imageStart = imageAddress.substring(0, imageAddress.length() - imageEnd.length() - 1);
