@@ -1,5 +1,6 @@
 package client.api.category;
 
+import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import client.api.category.domain.Category;
 import client.api.category.model.CategoryModel;
 import client.api.constants.Constants;
@@ -89,6 +90,21 @@ public interface CategoryApiClient {
      */
     @RequestMapping(value = "/updateCategory", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     int updateCategory(Category category);
+
+    /**
+     * 保存商品分类
+     * @param category
+     */
+    @RequestMapping(value = "/save/anxian", method = RequestMethod.POST)
+    ResponseMessage saveAnxian(@RequestBody Category category);
+
+    /**
+     * 修改分类名
+     * @param category
+     * @return
+     */
+    @RequestMapping(value = "/updateCategory/anxian", method = RequestMethod.PUT)
+    ResponseMessage updateCategoryAnxian(@RequestBody Category category);
 
     /**
      * 修改分类标签
