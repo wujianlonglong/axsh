@@ -2,6 +2,7 @@ package anxian.gateway.admin.module.business.service.impl;
 
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
+import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import client.api.category.CategoryApiClient;
 import client.api.category.domain.Category;
 import client.api.category.model.CategoryModel;
@@ -243,4 +244,13 @@ public class SjesCategoryServiceImpl implements SjesCategoryService {
         categoryApiClient.delete(id);
     }
 
+    @Override
+    public ResponseMessage saveAnxian(Category category) {
+        return categoryApiClient.saveAnxian(category);
+    }
+
+    @Override
+    public ResponseMessage updateCategoryAnxian(Category category) {
+        return categoryApiClient.updateCategoryAnxian(category);
+    }
 }
