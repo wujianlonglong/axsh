@@ -121,15 +121,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDecisionManager(accessDecisionManager())//自定义accessDecisionManager访问控制器
                 .antMatchers("/login").permitAll()
                 .antMatchers("/admin/**").permitAll()
-                .antMatchers("/anxian/fileOperation/**").permitAll()
-                .antMatchers("/anxian/sjes_product/**").permitAll()
-                .antMatchers("/anxian/sjes_category/**").permitAll()
-                .antMatchers("/anxian/productStatusPlan/**").permitAll()
-                .antMatchers("/anxian/productsPlan/**").permitAll()
-                .antMatchers("/anxian/sjes_users/**").permitAll()
-                .antMatchers("/search/**").permitAll()
-                .antMatchers("/anxian/admin_blacklist/**").permitAll()
-                .antMatchers("/admin/secKillSycn/**").permitAll()
+                .antMatchers("/image/**").permitAll()
+                .antMatchers("/resize/**").permitAll()
                 .anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
                 .and()
                 .exceptionHandling().accessDeniedPage("/login")
