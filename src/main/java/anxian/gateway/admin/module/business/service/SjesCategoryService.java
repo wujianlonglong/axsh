@@ -1,6 +1,7 @@
 package anxian.gateway.admin.module.business.service;
 
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
+import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import client.api.category.domain.Category;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -109,5 +110,18 @@ public interface SjesCategoryService {
      * @return 显示数量
      */
     void delete(Long id);
+
+    /**
+     * 保存商品分类
+     * @param category
+     */
+    ResponseMessage saveAnxian(Category category);
+
+    /**
+     * 修改分类名
+     * @param category
+     * @return
+     */
+    ResponseMessage updateCategoryAnxian(Category category);
 
 }
