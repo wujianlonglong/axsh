@@ -222,7 +222,7 @@ public class AnxianProductController extends BaseController {
     @RequestMapping(value = "/updateProductModel", method = RequestMethod.POST)
     @ResponseBody
     public JsonMsg updateProductModel(@RequestBody ProductModel productModel, Model model) {
-
+        LOGGER.info("----更新商品信息1：{}", productModel.toString());
         List<ProductImage> productImages = Lists.newArrayList();
 
         for (ProductImage productImage : productModel.getProductImages()) {
@@ -240,6 +240,7 @@ public class AnxianProductController extends BaseController {
             }
         }
         productModel.setProductImages(productImages);
+        LOGGER.info("----更新商品信息2：{}", productModel.toString());
         int result = productFeign.updateProductModel(productModel);//更新
         if (result > 0) {
             return JsonMsg.success("修改成功");
