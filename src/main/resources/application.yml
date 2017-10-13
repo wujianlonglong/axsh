@@ -51,6 +51,9 @@ picture:
   upload:
     path: file://${HOME}/sjes/sjes-app-admin/
 
+apk:
+  download:
+    address: http://anxian.dev.sanjiang.info
 eureka:
   client:
     serviceUrl:
