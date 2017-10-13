@@ -26,5 +26,16 @@ public class Setting {
      */
     public static final String PORTRAIT_IMAGE_UPLOAD_PATH = "/portrait/";
 
+    /**
+     * apk上传路径
+     */
+    public static final String APK_DOWNLOAD_UPLOAD_PATH = "/download/";
+
+    /**
+     * apk下载路径
+     */
+    public static final String APK_DOWNLOAD_PATH = "/admin/apkDownload";
+
+
 
 }
