@@ -19,6 +19,7 @@ spring:
       host: srv3.sanjiang.info
       port: 27017
       database: anxian-gateway-admin
+  http.multipart.max-file-size
 
   jpa:
       database: MYSQL
@@ -70,4 +71,5 @@ hystrix:
 
 multipart:
   enabled: true
+  max-request-size: 20Mb
   max-file-size: 52428800
