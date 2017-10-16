@@ -22,6 +22,11 @@ import client.api.item.model.SearchCoditionModel;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -39,6 +44,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -92,6 +99,23 @@ public class AnxianProductController extends BaseController {
         return productAttributeApiClient.listByProductId(productId);
     }
 
+
+    /**
+     * 商品信息维护列表
+     *
+     * @return 分页列表
+     */
+    @RequestMapping("/informationListData")
+    @ResponseBody
+    public PageModel<Product> commodityInformationListData(int page, int limit, Product searchProduct) {
+        SearchCoditionModel<Product> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchProduct);
+        return productFeign.searchProductPackage(searchCoditionModel);
+    }
+
+
     /**
      * 商品信息维护列表
      *
@@ -114,20 +138,6 @@ public class AnxianProductController extends BaseController {
         searchCoditionModel.setSize(limit);
         searchCoditionModel.setSearchCodition(searchProduct);
         PageModel<Product> productPageModel = productFeign.searchProductPackage(searchCoditionModel);
-//        return productFeign.searchProductPackage(searchCoditionModel);
-//        model.addAttribute("items", productPageModel.getContent());
-//        model.addAttribute("total", productPageModel.getTotal());
-//        model.addAttribute("page", productPageModel.getPageable());
-//        model.addAttribute("power", 10);
-//
-//        model.addAttribute("pageNum", productPageModel.getPageable().getPage()-1);
-//        model.addAttribute("isFirstPage", true);
-//        model.addAttribute("pageSize", productPageModel.getPageable().getSize());
-//        model.addAttribute("totalCount", productPageModel.getTotal());
-//        model.addAttribute("totalPage", (productPageModel.getTotal() + 10 - 1) / 10);
-//        model.addAttribute("isLastPage", false);
-//        model.addAttribute("maxShowPage", 10);
-//        model.addAttribute("longShow", 9);
         System.out.println("-----------productPageModel.getPage():" + productPageModel.getPage());
         model.addAttribute("pageNum", page);
         model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
@@ -167,33 +177,6 @@ public class AnxianProductController extends BaseController {
     public Product findBySn(@PathVariable("sn") String sn) {
         return productFeign.findBySn(sn);
     }
-
-//    /**
-//     * 根据商品Id得到商品详细信息
-//     *
-//     * @param sn 商品编码
-//     * @return 详细信息
-//     */
-//    @RequestMapping(value = "/getProductDetail", method = RequestMethod.POST)
-//    public JsonMsg getProductDetail(String sn, Long productId, Integer status) {
-//        JsonMsg jsonMsg = new JsonMsg();
-//        if (StringUtils.isBlank(sn)) {
-//            sn = snFeign.generateProductSn(productId);
-//        }
-//        ProductModel productModel = productFeign.getProductDetail(sn, status);
-//
-//        CommodityInfoUpdateJson commodityInfoUpdateJson = new CommodityInfoUpdateJson();
-//        BeanUtil.setBean2Bean(productModel, commodityInfoUpdateJson);
-//        commodityInfoUpdateJson.setGoodsName(productModel.getGoods() != null ? productModel.getGoods().getGoodsName() : "");
-//        commodityInfoUpdateJson.setBrandName(productModel.getBrand() != null ? productModel.getBrand().getName() : "");
-//        commodityInfoUpdateJson.setParameterGroupModels(productModel.getParameterGroupModels());
-//        commodityInfoUpdateJson.setProductImages(productModel.getProductImages());
-//
-//        jsonMsg.setSuccess(true);
-//        jsonMsg.setData(commodityInfoUpdateJson);
-//
-//        return jsonMsg;
-//    }
 
     /**
      * 根据商品Id得到商品详细信息
@@ -239,15 +222,25 @@ public class AnxianProductController extends BaseController {
     @RequestMapping(value = "/updateProductModel", method = RequestMethod.POST)
     @ResponseBody
     public JsonMsg updateProductModel(@RequestBody ProductModel productModel, Model model) {
-
+        LOGGER.info("----更新商品信息1：{}", productModel.toString());
         List<ProductImage> productImages = Lists.newArrayList();
 
         for (ProductImage productImage : productModel.getProductImages()) {
             if (productImage.getLarge800() != null) {//过滤掉没有地址的图片,由于前台点了删除按钮后图片集合的下标无法改变,故在此做过滤
+                String imageAddress = productImage.getLarge800();
+//                String imageAddress = productImage.getLarge800().replace("/image/", "/images/");
+                String[] images = imageAddress.split("\\.");
+                String imageEnd = images[images.length - 1];
+                String imageStart = imageAddress.substring(0, imageAddress.length() - imageEnd.length() - 1);
+                String image400 = imageStart + "_400x400." + imageEnd;
+                String image220 = imageStart + "_220x220." + imageEnd;
+                productImage.setMedium400(image400);
+                productImage.setThumbnail220(image220);
                 productImages.add(productImage);
             }
         }
         productModel.setProductImages(productImages);
+        LOGGER.info("----更新商品信息2：{}", productModel.toString());
         int result = productFeign.updateProductModel(productModel);//更新
         if (result > 0) {
             return JsonMsg.success("修改成功");
@@ -264,6 +257,7 @@ public class AnxianProductController extends BaseController {
      * @return 更新的数量
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg updateStatus(Authentication authentication, Long id, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
         LOGGER.info("  #######   进行商品上下架，status: {} , id: {}", status, id);
@@ -402,28 +396,34 @@ public class AnxianProductController extends BaseController {
      * @return 更新的数量
      */
     @RequestMapping(value = "batUpdateStatus/{status}", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg batUpdateStatus(Authentication authentication, HttpServletResponse response, @RequestParam("file") MultipartFile multipartFile, @PathVariable("status") Integer status) {
         response.setHeader("X-Frame-Options", "SAMEORIGIN");//添加了文件上传后跨域问题解决办法
-        XSSFWorkbook wb;
+        String fileName = multipartFile.getOriginalFilename();
+        Workbook wb = null;
         try {
-            wb = new XSSFWorkbook(multipartFile.getInputStream());
+            if (fileName.endsWith(".xls")) {
+                wb = new HSSFWorkbook(multipartFile.getInputStream());
+            } else if (fileName.endsWith(".xlsx")) {
+                wb = new XSSFWorkbook(multipartFile.getInputStream());
+            }
         } catch (IOException e) {
             return JsonMsg.failure("导入失败!");
         }
         if (null != wb) {
-            XSSFSheet sheet = wb.getSheetAt(0);
+            Sheet sheet = wb.getSheetAt(0);
             if (null != sheet) {
                 int firstRowNum = sheet.getFirstRowNum();
                 int lastRowNum = sheet.getLastRowNum();
                 List<Long> erpGoodIds = Lists.newArrayList();
                 for (int i = firstRowNum + 1; i <= lastRowNum; i++) {
-                    XSSFRow row = sheet.getRow(i);
+                    Row row = sheet.getRow(i);
                     if (null == row) {
                         continue;
                     }
                     String[] datas = new String[1];
                     for (int j = 0; j < 1; j++) {
-                        XSSFCell cell = row.getCell(j);
+                        Cell cell = row.getCell(j);
                         datas[j] = null != cell ? ExcelUtil.getCellValue(cell).trim() : null;
                     }
                     if (StringUtils.isNotBlank(datas[0])) {
@@ -440,4 +440,23 @@ public class AnxianProductController extends BaseController {
     }
 
 
+    @RequestMapping(value = "/downLoadTemplate")
+    public void downLoadTemplate(HttpServletResponse response) throws IOException {
+        response.setHeader("Content-Disposition", "attachment;filename=" + new String(("商品上下架模板").getBytes("gb2312"), "ISO8859-1") + ".xlsx");
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+
+        InputStream it = this.getClass().getResourceAsStream("/xls_template/wzspsxjmb.xlsx");
+        OutputStream os = response.getOutputStream();
+
+        //文件拷贝
+        byte flush[] = new byte[1024];
+        int len = 0;
+        while (0 <= (len = it.read(flush))) {
+            os.write(flush, 0, len);
+        }
+
+        it.close();
+        os.close();
+
+    }
 }

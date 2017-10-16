@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by qinhailong on 17-1-11.
  */
-@FeignClient(Constants.SJES_API_ITEM)
+@FeignClient(name=Constants.SJES_API_ITEM)
 @RequestMapping(value = "productStatusPlans", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public interface ProductStatusPlanFeign {
 

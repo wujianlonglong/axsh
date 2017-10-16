@@ -1,5 +1,8 @@
 package anxian.gateway.admin.module.business.controller.user;
 
+import anxian.gateway.admin.module.base.controller.BaseController;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.user.BlacklistApiClient;
 import client.api.user.domain.Blacklist;
@@ -9,9 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -20,13 +25,16 @@ import java.util.List;
 /**
  * Created by gaoqichao on 16-2-18.
  */
-@RestController
+@Controller
 @RequestMapping("/anxian/admin_blacklist")
-public class BlacklistController {
+public class BlacklistController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
 
     @Autowired
     private BlacklistApiClient blacklistApiClient;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 分页取得黑名单列表
@@ -40,9 +48,40 @@ public class BlacklistController {
      * @return 黑名单分页数据
      */
     @RequestMapping(method = RequestMethod.GET, value = "/page")
+    @ResponseBody
     public PageForAdmin<Blacklist> pageList(int page, int limit, String username, String mobile, String email,
                                             String cardNum) {
         return blacklistApiClient.pageGetBlackLists(username, mobile, email, cardNum, page - 1, limit);
+    }
+
+
+    /**
+     * 跳转至编辑页
+     * @return
+     */
+    @RequestMapping(method=RequestMethod.GET,value="/turnToEditPage")
+    public String turnToEditPage(Long userId,Model model,Principal principal){
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+        getMenus(user, model);
+
+        if(userId!=0){
+            Blacklist blacklist=blacklistApiClient.findByUserId(userId);
+            if(blacklist!=null){
+                model.addAttribute("id",blacklist.getId());
+                model.addAttribute("userId",blacklist.getUserId());
+                model.addAttribute("username",blacklist.getUsername());
+                model.addAttribute("phone",blacklist.getMobile());
+                model.addAttribute("email",blacklist.getEmail());
+                model.addAttribute("card",blacklist.getCustNum());
+                model.addAttribute("reason",blacklist.getReason());
+                model.addAttribute("limittype",blacklist.getLimitType());
+            }
+        }
+
+        return "anXian-user/edit-blacklist";
     }
 
     /**
@@ -52,6 +91,7 @@ public class BlacklistController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/add")
+    @ResponseBody
     public JsonMsg add(Blacklist blacklist, Principal principal) {
         try {
             // 判断当前用户是否已经存在黑名单
@@ -71,6 +111,7 @@ public class BlacklistController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
+    @ResponseBody
     public JsonMsg update(Blacklist blacklist, Principal principal) {
         int result = 1;
         try {
@@ -87,6 +128,7 @@ public class BlacklistController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/batchDelete")
+    @ResponseBody
     public JsonMsg delete(String idList, Principal principal) {
         if (StringUtils.isEmpty(idList)) {
             return JsonMsg.failure("id不能为空");
@@ -123,4 +165,8 @@ public class BlacklistController {
         }
         return JsonMsg.failure("删除成功");
     }
+
+
+
+
 }

@@ -4,17 +4,14 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.app.floor.feign.AppMenuFeign;
+import client.api.anxian.app.AnXianAppMenuFeign;
 import client.api.app.floor.model.EntryIconModel;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class AnxianAppMenuController extends BaseController {
     private UserService userService;
 
     @Autowired
-    AppMenuFeign appMenuFeign;
+    private AnXianAppMenuFeign anXianAppMenuFeign;
 
     /**
      * 楼层列表
@@ -41,7 +38,7 @@ public class AnxianAppMenuController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<EntryIconModel> list(int page, int limit) {
-        List<EntryIconModel> list = appMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list();
         return new PageModel<>(list, list.size(), new Pageable(page, limit));
     }
 
@@ -55,22 +52,50 @@ public class AnxianAppMenuController extends BaseController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public JsonMsg getEntryIconModel(@PathVariable("id") Long id) {
         JsonMsg jsonMsg = new JsonMsg();
-        jsonMsg.setData(appMenuFeign.getEntryIconModel(id));
+        jsonMsg.setData(anXianAppMenuFeign.getEntryIconModel(id));
         jsonMsg.setSuccess(true);
         return jsonMsg;
     }
 
     /**
-     * 修改楼层
+     * 修改菜单
      *
      * @param entryIconModel 楼层信息
-     * @return 修改数目
+     * @return
      */
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(EntryIconModel entryIconModel) {
-        appMenuFeign.updateEntryIcon(entryIconModel);
+        anXianAppMenuFeign.updateEntryIcon(entryIconModel);
         return JsonMsg.success("修改成功");
+    }
+
+    /**
+     * 新增菜单
+     * @param entryIconModel
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "add", method = RequestMethod.POST)
+    public JsonMsg add(EntryIconModel entryIconModel) {
+        anXianAppMenuFeign.addEntryIcon(entryIconModel);
+        return JsonMsg.success("添加成功");
+    }
+
+    /**
+     * 删除菜单
+     *
+     * @param menuId 菜单id
+     */
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE)
+    public JsonMsg deleteMenu(@RequestParam(value = "menuId") Long menuId) {
+        try {
+            anXianAppMenuFeign.deleteEntryIcon(menuId);
+        } catch (Exception e) {
+            return JsonMsg.failure("删除菜单失败");
+        }
+        return JsonMsg.success("删除菜单成功");
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
@@ -96,7 +121,7 @@ public class AnxianAppMenuController extends BaseController {
 
         getMenus(user, model);
 
-        List<EntryIconModel> list = appMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list();
         PageModel<EntryIconModel> menus = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<EntryIconModel> content = new ArrayList<>();
         int currIdx = page * limit;
@@ -107,6 +132,7 @@ public class AnxianAppMenuController extends BaseController {
         menus.getContent().clear();
         menus.getContent().addAll(content);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",menus.getTotalPages());
         model.addAttribute("menus", menus);
         return "anXian-APP/menu-ajax";
     }

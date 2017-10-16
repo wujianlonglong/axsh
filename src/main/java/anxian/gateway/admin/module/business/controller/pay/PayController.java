@@ -90,6 +90,7 @@ public class PayController {
             List<PayModelView> payModelViews = new ArrayList<>();
             exportViewModels.forEach(payModel -> {
                 PayModelView payModelView = new PayModelView();
+                payModelView.setBankName(payModel.getBankName());
                 payModelView.setPlatformId(payModel.getPlatformId());
                 payModelView.setShopId(payModel.getShopId());
                 payModelView.setActualAmount(payModel.getActualAmount());

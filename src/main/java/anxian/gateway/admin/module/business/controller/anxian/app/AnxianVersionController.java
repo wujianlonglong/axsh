@@ -4,9 +4,8 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.app.version.VersionApiClient;
-import client.api.app.version.domain.Version;
-import client.api.user.utils.page.PageForAdmin;
+import client.api.anxian.app.AnXianAppVersionFeign;
+import client.api.anxian.app.model.VersionAnxian;
 import client.api.user.utils.page.SjesPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,28 +32,8 @@ public class AnxianVersionController extends BaseController {
     private UserService userService;
 
     @Autowired
-    private VersionApiClient versionApiClient;
+    private AnXianAppVersionFeign anXianAppVersionFeign;
 
-
-    /**
-     * 取得APP版本信息列表
-     *
-     * @param page  页码
-     * @param limit 每页展示的最大数目
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public PageForAdmin<Version> pageList(int page, int limit) {
-        SjesPage<Version> sjesPage = versionApiClient.pageGetVersionList(page - 1, limit);
-
-
-        PageForAdmin<Version> pageForAdmin = new PageForAdmin<>();
-        pageForAdmin.setTotalCount(sjesPage.getTotalElements());
-        pageForAdmin.setList(sjesPage.getContent());
-
-        return pageForAdmin;
-    }
 
     /**
      * 新增APP版本信息
@@ -64,14 +43,13 @@ public class AnxianVersionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/add")
-    public JsonMsg add(Version version) {
+    public JsonMsg add(VersionAnxian version) {
         try {
             version.setCreatedDate(new Date());
             version.setLastModifiedDate(new Date());
-            version = versionApiClient.insert(version);
+            anXianAppVersionFeign.insert(version);
         } catch (Exception e) {
             log.error("新增APP版本发生异常！", e);
-
             return JsonMsg.failure("新增版本信息发生异常!");
         }
 
@@ -84,13 +62,12 @@ public class AnxianVersionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public JsonMsg update(Version version) {
+    public JsonMsg update(VersionAnxian version) {
         try {
-            Version oldVersion = versionApiClient.findOne(version.getId());
-
+            VersionAnxian oldVersion = anXianAppVersionFeign.findOne(version.getId());
             version.setCreatedDate(oldVersion.getCreatedDate());
             version.setLastModifiedDate(new Date());
-            versionApiClient.save(version);
+            anXianAppVersionFeign.save(version);
         } catch (Exception e) {
             log.error("更新APP版本信息内容发生异常", e);
 
@@ -107,7 +84,7 @@ public class AnxianVersionController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JsonMsg findCategoryById(@PathVariable("id") Long id) {
-        return new JsonMsg(true, false, versionApiClient.findOne(id), null, null);
+        return new JsonMsg(true, false, anXianAppVersionFeign.findOne(id), null, null);
     }
 
     /**
@@ -120,13 +97,12 @@ public class AnxianVersionController extends BaseController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public JsonMsg delete(@PathVariable("id") Long id) {
         try {
-            versionApiClient.delete(id);
+            anXianAppVersionFeign.delete(id);
         } catch (Exception e) {
             log.error("删除版本信息失败", e);
 
             return JsonMsg.failure("删除版本信息失败");
         }
-
         return JsonMsg.success("删除版本信息成功");
     }
 
@@ -137,7 +113,6 @@ public class AnxianVersionController extends BaseController {
         if (null == user) {
             return "redirect:/login";
         }
-
         getMenus(user, model);
 
         return "anXian-APP/version";
@@ -150,11 +125,10 @@ public class AnxianVersionController extends BaseController {
         if (null == user) {
             return "redirect:/login";
         }
-
         getMenus(user, model);
-
-        SjesPage<Version> sjesPage = versionApiClient.pageGetVersionList(page, limit);
+        SjesPage<VersionAnxian> sjesPage = anXianAppVersionFeign.pageGetVersionList(page, limit);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",sjesPage.getTotalPages());
         model.addAttribute("versions", sjesPage);
         return "anXian-APP/version-ajax";
     }

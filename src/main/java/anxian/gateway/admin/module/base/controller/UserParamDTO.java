@@ -2,8 +2,10 @@ package anxian.gateway.admin.module.base.controller;
 
 import lombok.Data;
 
-@Data
-public class UserParamDTO extends BaseParam {
+import java.io.Serializable;
 
-    private String workerId;
+@Data
+public class UserParamDTO extends BaseParam implements Serializable {
+
+    private String searchContent;
 }

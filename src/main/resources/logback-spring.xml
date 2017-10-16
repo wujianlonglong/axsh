@@ -4,12 +4,12 @@
     <contextName>sjes-gateway-admin</contextName>
 
     <property name="projectName" value="anxian-gateway-admin"/>
-    <property name="logging.path" value="/${HOME}/sjes/logs/${projectName}/${projectName}.log"/>
+    <property name="logging.path" value="/${HOME}/anxian/logs/${projectName}/${projectName}.log"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- <filter class="com.example.logback.filter.MyFilter" /> -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>ERROR</level>
         </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -30,7 +30,7 @@
 
     <root level="info">
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="file"/>-->
+        <appender-ref ref="file"/>
     </root>
 
     <logger name="com.example.logback" level="warn"/>

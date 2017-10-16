@@ -4,7 +4,7 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
-import client.api.app.floor.feign.AppFloorFeign;
+import client.api.anxian.app.AnXianAppFloorFeign;
 import client.api.app.floor.model.AppFloorDetailModel;
 import client.api.app.floor.model.AppFloorModel;
 import client.api.app.floor.model.FloorContentModel;
@@ -31,7 +31,7 @@ public class AnxianAppFloorController extends BaseController {
     private UserService userService;
 
     @Autowired
-    private AppFloorFeign appFloorFeign;
+    private AnXianAppFloorFeign anXianAppFloorFeign;
 
     /**
      * 楼层列表
@@ -41,7 +41,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<AppFloorModel> list(int page, int limit) {
-        List<AppFloorModel> list = appFloorFeign.list();
+        List<AppFloorModel> list = anXianAppFloorFeign.list();
         return new PageModel<>(list, list.size(), new Pageable(page, limit));
     }
 
@@ -55,7 +55,7 @@ public class AnxianAppFloorController extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     public JsonMsg add(AppFloorModel appFloorModel) {
         appFloorModel.setZoneId(String.valueOf(System.currentTimeMillis()));
-        appFloorFeign.addAppFloor(appFloorModel);
+        anXianAppFloorFeign.addAppFloor(appFloorModel);
         return JsonMsg.success("保存成功");
     }
 
@@ -68,7 +68,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(AppFloorModel appFloorModel) {
-        appFloorFeign.updateAppFloor(appFloorModel);
+        anXianAppFloorFeign.updateAppFloor(appFloorModel);
         return JsonMsg.success("修改成功");
     }
 
@@ -80,13 +80,15 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.DELETE)
     public JsonMsg deleteFloor(@RequestParam(value = "floorId") Long floorId) {
-        AppFloorDetailModel appFloorDetailModel = appFloorFeign.getAppFloorDetailModel(floorId);
+        AppFloorDetailModel appFloorDetailModel = anXianAppFloorFeign.getAppFloorDetailModel(floorId);
         if (null != appFloorDetailModel) {
             if (CollectionUtils.isNotEmpty(appFloorDetailModel.getFloorContents())) {
                 return JsonMsg.failure("该楼层下存在内容, 不能删除！");
             }
-
-            appFloorFeign.delete(floorId, appFloorDetailModel.getZoneId());
+            if (null == appFloorDetailModel.getZoneId()){
+                appFloorDetailModel.setZoneId("");
+            }
+            anXianAppFloorFeign.delete(floorId, appFloorDetailModel.getZoneId());
             return JsonMsg.success("删除成功！");
         } else {
             return JsonMsg.failure("不存在该楼层！");
@@ -103,7 +105,7 @@ public class AnxianAppFloorController extends BaseController {
     @RequestMapping(value = "{floorId}", method = RequestMethod.GET)
     public JsonMsg getAppFloorDetailModel(@PathVariable("floorId") Long floorId) {
         JsonMsg jsonMsg = new JsonMsg();
-        jsonMsg.setData(appFloorFeign.getAppFloorDetailModel(floorId));
+        jsonMsg.setData(anXianAppFloorFeign.getAppFloorDetailModel(floorId));
         jsonMsg.setSuccess(true);
         return jsonMsg;
     }
@@ -117,7 +119,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/content/add", method = RequestMethod.POST)
     public JsonMsg addContent(FloorContentModel floorContentModel) {
-        appFloorFeign.addContent(floorContentModel);
+        anXianAppFloorFeign.addContent(floorContentModel);
         return JsonMsg.success("添加成功!");
     }
 
@@ -130,7 +132,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/content/update", method = RequestMethod.POST)
     public JsonMsg updateContent(FloorContentModel floorContentModel) {
-        appFloorFeign.updateContent(floorContentModel);
+        anXianAppFloorFeign.updateContent(floorContentModel);
         return JsonMsg.success("修改成功!");
     }
 
@@ -142,7 +144,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/content/delete", method = RequestMethod.POST)
     public JsonMsg delete(@RequestParam("id") Long id) {
-        appFloorFeign.deleteContent(id);
+        anXianAppFloorFeign.deleteContent(id);
         return JsonMsg.success("删除成功!");
     }
 
@@ -170,7 +172,7 @@ public class AnxianAppFloorController extends BaseController {
 
         getMenus(user, model);
 
-        List<AppFloorModel> list = appFloorFeign.list();
+        List<AppFloorModel> list = anXianAppFloorFeign.list();
         PageModel<AppFloorModel> floors = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<AppFloorModel> content = new ArrayList<>();
         int currIdx = page * limit;
@@ -181,6 +183,7 @@ public class AnxianAppFloorController extends BaseController {
         floors.getContent().clear();
         floors.getContent().addAll(content);
         model.addAttribute("page", page + 1);
+        model.addAttribute("totalPages",floors.getTotalPages());
         model.addAttribute("floors", floors);
         return "anXian-APP/floor-ajax";
     }
@@ -195,7 +198,7 @@ public class AnxianAppFloorController extends BaseController {
 
         getMenus(user, model);
 
-        AppFloorDetailModel floor = appFloorFeign.getAppFloorDetailModel(id);
+        AppFloorDetailModel floor = anXianAppFloorFeign.getAppFloorDetailModel(id);
         model.addAttribute("floor", floor);
         return "anXian-APP/edit-floor";
     }

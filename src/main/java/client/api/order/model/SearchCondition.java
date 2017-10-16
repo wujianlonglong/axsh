@@ -18,6 +18,7 @@ public class SearchCondition implements Serializable {
     private Integer orderStatus;    // 订单状态
     private Integer logisticStatus; // 物流状态
     private Integer orderSoure;     // 下单来源
+    private String orderType = "sjes";
     private Long orderId;       // 订单号
     private Long parentId;      // 关联订单号
     private String telphone;    // 手机号

@@ -1,7 +1,10 @@
 package anxian.gateway.admin.module.common.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.io.Serializable;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -12,7 +15,7 @@ import java.io.Serializable;
  */
 @Data
 @AllArgsConstructor
-public class ResponseMessage<T> implements Serializable {
+public class  ResponseMessage<T> implements Serializable {
 
     /**
      * 类型

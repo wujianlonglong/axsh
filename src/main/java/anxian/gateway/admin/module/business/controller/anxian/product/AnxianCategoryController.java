@@ -5,6 +5,7 @@ import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.ExtCategoryModel;
 import anxian.gateway.admin.module.business.service.SjesCategoryService;
+import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.JsonMsg;
 import client.api.category.domain.Category;
 import client.api.constants.Constants;
@@ -141,17 +142,12 @@ public class AnxianCategoryController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public JsonMsg saveCategory(Category category) {
-
-        JsonMsg jsonMsg = new JsonMsg();
-        if (sjesCategoryService.save(category) != null) {
-            jsonMsg.setSuccess(true);
-            jsonMsg.setMsg("保存成功");
+        ResponseMessage responseMessage =  sjesCategoryService.saveAnxian(category);
+        if (responseMessage.getType() == ResponseMessage.Type.success) {
+            return JsonMsg.success("保存成功");
         } else {
-            jsonMsg.setFailure(true);
-            jsonMsg.setMsg("保存失败");
+            return JsonMsg.failure(responseMessage.getContent());
         }
-
-        return jsonMsg;
     }
 
     /**
@@ -163,23 +159,16 @@ public class AnxianCategoryController extends BaseController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonMsg updateCategory(Category category) {
 
-        /*List<ExtCategoryModel> extCategoryModels = sjesCategoryService.childrenCategoryList(category.getId());
-        if(!CollectionUtils.isEmpty(extCategoryModels)){
-            return JsonMsg.success("此分类有子分类不能修改");
-        }else{*/
         Long parentId = category.getParentId();
         if (null != parentId && category.getId().longValue() == parentId.longValue()) {
             return JsonMsg.failure("不能挂载在自己的分类下");
         }
-        if (null == parentId && category.getGrade().intValue() != Constants.CategoryGradeConstants.GRADE_ONE) {
-
-        }
-        if (sjesCategoryService.updateCategory(category) > 0) {
+        ResponseMessage responseMessage = sjesCategoryService.updateCategoryAnxian(category);
+        if (responseMessage.getType() == ResponseMessage.Type.success) {
             return JsonMsg.success("修改成功");
         } else {
-            return JsonMsg.failure("修改失败");
+            return JsonMsg.failure(responseMessage.getContent());
         }
-        // }
 
     }
 
@@ -331,11 +320,12 @@ public class AnxianCategoryController extends BaseController {
         PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
         model.addAttribute("page", page + 1);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
         model.addAttribute("categoryModels", categoryModels);
         return "anXian-goods/category-maintain-ajax";
     }
 
-    @RequestMapping("/categoryTag")
+    @RequestMapping("/tag")
     public String categoryTag(Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
@@ -367,6 +357,7 @@ public class AnxianCategoryController extends BaseController {
         PageModel<Category> categoryModels = sjesCategoryService.getNewPageMode(sjesCategoryService.search(searchCoditionModel), false);
         model.addAttribute("page", page + 1);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("totalPages",categoryModels.getTotalPages());
         model.addAttribute("categoryTags", categoryModels);
         return "anXian-goods/category-show-label-ajax";
     }

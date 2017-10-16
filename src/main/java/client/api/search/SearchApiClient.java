@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * 搜索服务
  * Created by kimiyu on 16/3/9.
  */
-@FeignClient("sjes-elasticsearch")
+@FeignClient(name="sjes-elasticsearch")
 @RequestMapping("tinysearchs")
 public interface SearchApiClient {
 

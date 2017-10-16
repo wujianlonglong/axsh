@@ -20,4 +20,7 @@ public class VolumeCondition implements Serializable {
     private LocalDateTime endDate;    // 有效结束时间
     private Integer page;
     private Integer size;
+    private Boolean isSync;   // 是否同步
+    private String startDateStr;
+    private String endDateStr;
 }
