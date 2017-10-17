@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by wangdinglan on 2017/10/16
  */
-@FeignClient(value = "sjes-api-sale", url = "http://localhost:20065")
+@FeignClient("sjes-api-sale")
 @RequestMapping("/anxian/activity/admin")
 public interface AnxianActivityApiClient {
     /**
