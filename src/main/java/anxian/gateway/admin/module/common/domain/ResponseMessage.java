@@ -17,6 +17,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class  ResponseMessage<T> implements Serializable {
 
+    public Type getType() {
+        return type;
+    }
+
     /**
      * 类型
      */

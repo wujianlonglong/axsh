@@ -72,7 +72,7 @@ public class AdminUserService {
      */
     public ResponseMessage getById(String id) {
 
-        User user = userRepository.findOne(new ObjectId(id));
+        User user = userRepository.findOne(id);
         if (null == user) {
             return ResponseMessage.defaultFailure("用户对象为空！", id);
         }

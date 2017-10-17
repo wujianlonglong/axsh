@@ -96,6 +96,7 @@ public class UserService {
 
         String id = user.getId();
         if (null == id || StringUtils.isEmpty(id)) {
+            user.setId(null);
             user.setCreateDateTime(LocalDateTime.now());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
@@ -103,6 +104,7 @@ public class UserService {
             if (null == modifyUser) {
                 user.setId(null);
             }
+            user.setPassword(modifyUser.getPassword());
             user.setUpdateDateTime(LocalDateTime.now());
         }
         User result = userRepository.save(user);

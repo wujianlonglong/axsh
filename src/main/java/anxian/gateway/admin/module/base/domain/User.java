@@ -38,6 +38,11 @@ public class User implements Serializable {
     private String fullName;
 
     /**
+     * 角色类型
+     */
+    private String roleType;
+
+    /**
      * 所属角色
      */
     @DBRef
