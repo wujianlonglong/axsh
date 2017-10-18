@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -33,6 +36,8 @@ public class FileOperationController {
     @Value("${picture.upload.path}")
     private String pictureUploadPath;
 
+    @Value("${apk.download.address}")
+    private String apkDownloadAddress;
     /**
      * 上传操作
      *
@@ -129,5 +134,46 @@ public class FileOperationController {
         return "上传失败，请重试";
     }
 
+    /**
+     * apk上传操作
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/apkUpload")
+    public Object apkUpload(HttpServletRequest request, HttpServletResponse response) {
+        Map map = new HashMap<>();
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+        response.setHeader("X-Frame-Options", "SAMEORIGIN");
+        Iterator<String> iter = multiRequest.getFileNames();
+        while (iter.hasNext()) {
+            MultipartFile file = multiRequest.getFile(iter.next());
+            if (file.getSize() > 0) {
+                String apkName = file.getOriginalFilename();
+                String ext = apkName.substring(apkName.lastIndexOf("."));
+                List<String> fileTypes = new ArrayList<>();
+                fileTypes.add(".apk");
+                if (fileTypes.contains(ext.toLowerCase())) {
+                    String fileName = "anxian" + ext;
+                    String apkLocalPath = Setting.APK_DOWNLOAD_UPLOAD_PATH + fileName;
+                    String apkDownloadUploadPath = pictureUploadPath.substring(pictureUploadPath.indexOf("//") + 2) + apkLocalPath;
+                    File apkFile = new File(apkDownloadUploadPath);
+                    String apkDownloadUrl = apkDownloadAddress + Setting.APK_DOWNLOAD_PATH;
+                    if (!apkFile.getParentFile().exists()) {
+                        apkFile.getParentFile().mkdirs();
+                    }
+                    try {
+                        file.transferTo(apkFile);
+                        map.put("success", true);
+                        map.put("apk", apkDownloadUrl);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return map;
+    }
 
 }

@@ -51,6 +51,9 @@ picture:
   upload:
     path: file://${HOME}/sjes/sjes-app-admin/
 
+apk:
+  download:
+    address: http://anxian.dev.sanjiang.info
 eureka:
   client:
     serviceUrl:
@@ -67,4 +70,5 @@ hystrix:
 
 multipart:
   enabled: true
-  max-file-size: 52428800
+  max-file-size: 104857600
+  max-request-size: 104857600
