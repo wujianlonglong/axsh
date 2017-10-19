@@ -1,9 +1,14 @@
 package client.api.anxian.activity.model;
 
+import lombok.Data;
+
+import java.io.Serializable;
+
 /**
  * Created by wangdinglan on 2017/10/16
  */
-public class CouponMessage {
+@Data
+public class CouponMessage implements Serializable {
     /**
      * 优惠券内容
      */
@@ -12,7 +17,7 @@ public class CouponMessage {
     /**
      * 优惠券图片
      */
-    private String couponImage;
+    private String couponImage = "";
 
     /**
      * 优惠券券阶梯
@@ -22,5 +27,5 @@ public class CouponMessage {
     /**
      * 获取优惠券链接
      */
-    private String couponUrl;
+    private String couponUrl = "";
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,7 +72,7 @@ public class AnxianActivityController extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/editActivity", method = RequestMethod.GET)
+    @RequestMapping(value = "/activitiesEdit", method = RequestMethod.GET)
     public String editCoupons(Principal principal, Model model, String id){
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -89,11 +90,40 @@ public class AnxianActivityController extends BaseController {
         if (activityResponse.getCode() == SaleConstant.successCode) {
             AnxianActivity anxianActivity = activityResponse.getData();
             model.addAttribute("activity", anxianActivity);
+            String a = anxianActivity.getActivityCouponMongos().get(0).getCouponName();
+            model.addAttribute("couponMongos",anxianActivity.getActivityCouponMongos());
             return "anXian-promotion/edit-activity";
         } else {
             return "redirect:/anxian/activities";
         }
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteActivity", method = RequestMethod.GET)
+    public ResponseMessage delete(Principal principal, Model model, String id){
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            ResponseMessage responseMessage = new ResponseMessage<>();
+            responseMessage.setCode(0);
+            responseMessage.setCodeMessage("请先登入");
+            return responseMessage;
+        }
+        return anxianActivityApiClient.delete(id);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/stopActivity", method = RequestMethod.GET)
+    public ResponseMessage stop(Principal principal, Model model, String id){
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            ResponseMessage responseMessage = new ResponseMessage<>();
+            responseMessage.setCode(0);
+            responseMessage.setCodeMessage("请先登入");
+            return responseMessage;
+        }
+        return anxianActivityApiClient.stop(id);
+    }
+
 
     /**
      *  新增/更新 活动
@@ -103,7 +133,7 @@ public class AnxianActivityController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/saveActivity", method = RequestMethod.POST)
-    public ResponseMessage<AnxianActivity> save(Principal principal, AnxianActivity anxianActivity){
+    public ResponseMessage<AnxianActivity> save(Principal principal, @RequestBody AnxianActivity anxianActivity){
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
             ResponseMessage responseMessage = new ResponseMessage<>();

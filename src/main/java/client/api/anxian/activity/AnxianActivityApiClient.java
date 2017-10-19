@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by wangdinglan on 2017/10/16
  */
-@FeignClient("sjes-api-sale")
+@FeignClient(value = "sjes-api-sale", url = "http://localhost:20065")
 @RequestMapping("/anxian/activity/admin")
 public interface AnxianActivityApiClient {
     /**
@@ -53,4 +53,22 @@ public interface AnxianActivityApiClient {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/getCouponById/{promotionId}")
     ResponseMessage getCouponById(@PathVariable("promotionId") String promotionId);
+
+    /**
+     * 删除活动
+     *
+     * @param id 主键
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    ResponseMessage delete(@PathVariable("id") String id);
+
+    /**
+     * 强停活动
+     *
+     * @param id 主键
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/stop/{id}")
+    ResponseMessage stop(@PathVariable("id") String id);
 }
