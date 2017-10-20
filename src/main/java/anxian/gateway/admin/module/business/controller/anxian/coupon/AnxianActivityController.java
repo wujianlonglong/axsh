@@ -8,7 +8,6 @@ import client.api.anxian.activity.model.ActivityCondition;
 import client.api.anxian.activity.model.AnxianActivity;
 import client.api.sale.model.*;
 import client.api.sale.model.ResponseMessage;
-import client.api.track.model.*;
 import client.api.user.utils.page.SjesPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,7 +89,6 @@ public class AnxianActivityController extends BaseController {
         if (activityResponse.getCode() == SaleConstant.successCode) {
             AnxianActivity anxianActivity = activityResponse.getData();
             model.addAttribute("activity", anxianActivity);
-            String a = anxianActivity.getActivityCouponMongos().get(0).getCouponName();
             model.addAttribute("couponMongos",anxianActivity.getActivityCouponMongos());
             return "anXian-promotion/edit-activity";
         } else {
