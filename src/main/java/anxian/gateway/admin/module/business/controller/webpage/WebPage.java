@@ -109,5 +109,17 @@ public class WebPage extends BaseController {
         return "/anXian-promotion/seckill";
     }
 
+    @RequestMapping(value="/sms/smslist",method=RequestMethod.GET)
+    public String smsList(Model model,Principal principal){
+        User user =userService.getByUserName(principal.getName());
+        if(user==null){
+            return "redirect:/login";
+        }
+
+        getMenus(user,model);
+        return "/log/SMS-log";
+    }
+
+
 
 }
