@@ -83,4 +83,14 @@ public class AnxianActivity implements Serializable {
     @DBRef
     private List<AnxianActivityCoupon> activityCouponMongos;
 
+    /**
+     * 楼层数量
+     */
+    private Integer[] floorNum;
+
+    /**
+     * 楼层
+     */
+    private List<ActivityFloor> activityFloors;
+
 }

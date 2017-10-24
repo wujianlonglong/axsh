@@ -6,8 +6,12 @@ import anxian.gateway.admin.module.base.service.UserService;
 import client.api.anxian.activity.AnxianActivityApiClient;
 import client.api.anxian.activity.model.ActivityCondition;
 import client.api.anxian.activity.model.AnxianActivity;
+import client.api.item.domain.Product;
+import client.api.item.model.PageModel;
 import client.api.sale.model.*;
 import client.api.sale.model.ResponseMessage;
+import client.api.search.AnxianSearchApiClient;
+import client.api.track.model.*;
 import client.api.user.utils.page.SjesPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +37,9 @@ public class AnxianActivityController extends BaseController {
 
     @Autowired
     private AnxianActivityApiClient anxianActivityApiClient;
+
+    @Autowired
+    private AnxianSearchApiClient anxianSearchApiClient;
 
     @RequestMapping("/activities")
     public String activities(Principal principal, Model model){
@@ -158,6 +165,14 @@ public class AnxianActivityController extends BaseController {
         }
         ResponseMessage d =  anxianActivityApiClient.getCouponById(promotionId);
         return anxianActivityApiClient.getCouponById(promotionId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/activity/search", method = RequestMethod.GET)
+    public PageModel<Product> search(String name, Long productId, int page, int limit) {
+        PageModel<Product> productPageModels = anxianSearchApiClient.listProducts(productId, name, page - 1, limit);
+
+        return productPageModels;
     }
 
 
