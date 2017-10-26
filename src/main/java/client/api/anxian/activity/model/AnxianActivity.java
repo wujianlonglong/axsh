@@ -86,7 +86,7 @@ public class AnxianActivity implements Serializable {
     /**
      * 楼层数量
      */
-    private Integer[] floorNum;
+    private Integer floorNum;
 
     /**
      * 楼层
