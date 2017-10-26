@@ -14,6 +14,11 @@ import java.util.List;
 public class ActivityFloor implements Serializable{
 
     /**
+     * 楼层
+     */
+    private Integer floor;
+
+    /**
      * 排序
      */
     private Integer sort;
@@ -61,7 +66,7 @@ public class ActivityFloor implements Serializable{
     /**
      * 商品列数
      */
-    private Integer GoodsColumn;
+    private Integer goodsColumn;
 
     /**
      * 商品对象集合
