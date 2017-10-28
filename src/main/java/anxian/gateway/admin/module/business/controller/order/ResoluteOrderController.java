@@ -1,6 +1,8 @@
 package anxian.gateway.admin.module.business.controller.order;
 
 import anxian.gateway.admin.module.base.domain.AclUser;
+import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.controller.BaseController;
 import anxian.gateway.admin.module.business.controller.order.model.OrderConstant;
 import anxian.gateway.admin.module.business.controller.order.model.ResoluteOrderViewModel;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -30,6 +33,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/resoluteOrder")
 public class ResoluteOrderController extends BaseController {
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private OrderAdminApiClient orderAdminApiClient;
@@ -131,7 +136,13 @@ public class ResoluteOrderController extends BaseController {
      * 订单明细
      */
     @RequestMapping(value = "/orderDetails/{id}", method = RequestMethod.GET)
-    public String picking_orderDetails(@PathVariable("id") Long id, Model model) {
+    public String picking_orderDetails(@PathVariable("id") Long id, Model model, Principal principal) {
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
         ResoluteOrderViewModel orderViewModel = new ResoluteOrderViewModel();
         orderViewModel.setOrder(orderApiClient.findOrder(id));
         orderViewModel.setOrderItems(orderAdminApiClient.getItemsByOrderId(id));
