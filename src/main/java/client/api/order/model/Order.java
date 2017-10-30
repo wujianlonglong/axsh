@@ -349,7 +349,11 @@ public class Order implements Serializable {
      */
     public String getCongineeTypeView() {
         if (consigneeType == OrderConstant.sendForSJ) {
-            return OrderConstant.sendForSJName;
+            if (orderType == 3 || orderType == 4) {
+                return OrderConstant.sendForAnXianName;
+            } else {
+                return OrderConstant.sendForSJName;
+            }
         } else if (consigneeType == OrderConstant.shopPicking) {
             return OrderConstant.shopPickingName;
         } else if (consigneeType == OrderConstant.SEND_FOR_VIPCUST) {

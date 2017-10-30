@@ -206,6 +206,11 @@ public class OrderConstant {
     public static final int QUICK_MEAL = 4;
     public static final String quickMealName = "快餐自提";
 
+    /**
+     * 安鲜配送
+     */
+    public static final int sendForAnXian = 5;
+    public static final String sendForAnXianName = "安鲜配送";
 
     // 以下为赠品服务处理结果
     /**

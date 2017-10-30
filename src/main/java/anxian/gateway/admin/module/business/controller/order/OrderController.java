@@ -147,6 +147,10 @@ public class OrderController extends BaseController {
         }
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
+        String shopId = user.getShopId();
+        if (!StringUtils.isEmpty(shopId)) {
+            searchCondition.setMarketCode(shopId);
+        }
         SjesPage<Order> orderlistForSearch = orderAdminApiClient.getOrderlistForSearch(searchCondition);
         PageModel<Order> orderPageModel = new PageModel<>(orderlistForSearch.getContent(), orderlistForSearch.getTotalElements(), new Pageable(page, limit));
         model.addAttribute("pageNum", page);
