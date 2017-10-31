@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by wangdinglan on 2017/10/28
  */
-@FeignClient(value = "sjes-hub-api",url="http://193.0.1.122:20002")
+@FeignClient("sjes-hub-api")
 @RequestMapping(value = "/platformStock")
 public interface StockApiClient {
 
