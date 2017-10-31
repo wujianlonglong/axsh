@@ -1,18 +1,23 @@
 package anxian.gateway.admin.module.base.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Document(collection = "menu")
 public class NewMenu implements Serializable {
 
-    private ObjectId id;
+    private String id;
 
     /**
      * 菜单名称
@@ -42,11 +47,23 @@ public class NewMenu implements Serializable {
     /**
      * 父菜单
      */
-    private ObjectId parentId;
+    private String parentId;
 
 
     private Integer sort;
 
     @DBRef
     private List<NewAuthority> authorities;
+
+    private String creator;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createDateTime;
+
+    private String updator;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime updateDateTime;
 }

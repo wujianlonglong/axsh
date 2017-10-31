@@ -54,11 +54,6 @@ public class User implements Serializable {
     private String mobile;
 
     /**
-     * 平台号列表
-     */
-    private List<String> platForms;
-
-    /**
      * 描述
      */
     private String description;

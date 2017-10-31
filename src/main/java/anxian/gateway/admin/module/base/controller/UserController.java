@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @Controller
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/user")
 public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/listPage")
+    @RequestMapping(value = "")
     public String list(Model model, Principal principal) {
 
         // 没有登录或登录超时
@@ -32,7 +32,7 @@ public class UserController extends BaseController {
 
         getMenus(user, model);
 
-        return "system/user";
+        return "react/userList";
     }
 
     @RequestMapping(value = "list")
