@@ -38,4 +38,6 @@ public class VerficationView implements Serializable {
      * 订单ID
      */
     private List<Long> orderIds;
+
+    private List<String> orderIdsStr;
 }
