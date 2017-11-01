@@ -119,7 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())//自定义accessDecisionManager访问控制器
-                .antMatchers("/users/**").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/menu/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/image/**").permitAll()
                 .antMatchers("/resize/**").permitAll()
