@@ -25,7 +25,6 @@ public interface VerificationApiClient {
      *
      * @param orderId 订单ID
      */
-    @PreAuthorize("hasAuthority('ORDERTOEXAMINE_SAVE')")
     @RequestMapping(method = RequestMethod.GET, value = "/verificate/single/{orderId}")
     Integer verificateSingleOrder(@PathVariable("orderId") Long orderId);
 
@@ -35,7 +34,6 @@ public interface VerificationApiClient {
      * @param verficationView
      * @return
      */
-    @PreAuthorize("hasAuthority('ORDERTOEXAMINE_SAVE')")
     @RequestMapping(value = "/verficateOrders", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     OrderApiResponse<List<Order>> verficateOrder(VerficationView verficationView);
 }
