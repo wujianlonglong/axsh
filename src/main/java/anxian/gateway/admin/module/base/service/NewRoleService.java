@@ -112,6 +112,11 @@ public class NewRoleService {
         return ResponseMessage.success(newRoleModel);
     }
 
+
+    public NewRole getOne(String id) {
+        return newRoleRepository.findOne(id);
+    }
+
     /**
      * 保存角色信息
      *
@@ -144,6 +149,16 @@ public class NewRoleService {
         return ResponseMessage.success("保存成功！");
     }
 
+    public ResponseMessage listByUser() {
+
+        List<NewRole> newRoles = newRoleRepository.findByIsValid(true);
+        if (CollectionUtils.isEmpty(newRoles)) {
+            return ResponseMessage.error("请先创建角色！");
+        }
+
+        return ResponseMessage.success(newRoles);
+    }
+
     private List<NewMenu> getNewMenus(String[] menuIds) {
         List<NewMenu> returndMenus = new ArrayList<>();
         List<NewMenu> newMenus = newMenuService.getMenusByList(menuIds);
@@ -161,7 +176,16 @@ public class NewRoleService {
                 returndMenus.add(newMenuService.getOne(parentId));
             }
         }
-        returndMenus.addAll(newMenus);
+
+        // 防止重复加入菜单
+        for (NewMenu newMenu : newMenus) {
+            String id = newMenu.getId();
+            boolean notAdd = returndMenus.stream().anyMatch(newMenu1 -> newMenu1.getId().equalsIgnoreCase(id));
+            if (!notAdd) {
+                returndMenus.add(newMenu);
+            }
+        }
+
         return returndMenus;
     }
 }

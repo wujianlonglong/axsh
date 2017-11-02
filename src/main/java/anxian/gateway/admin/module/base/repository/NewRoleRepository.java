@@ -12,5 +12,5 @@ import java.util.List;
 public interface NewRoleRepository extends MongoRepository<NewRole, String> {
     Page<NewRole> findByDisplayNameLike(String roleName, Pageable pageable);
 
-    List<NewMenu> findByIdIn(String[] menuIds);
+    List<NewRole> findByIsValid(boolean isValid);
 }

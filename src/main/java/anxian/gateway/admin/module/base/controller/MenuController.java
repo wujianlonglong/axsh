@@ -88,11 +88,17 @@ public class MenuController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseMessage save(@RequestBody NewMenu newMenu) {
+    public ResponseMessage save(@RequestBody NewMenu newMenu, Principal principal) {
         if (null == newMenu) {
             return ResponseMessage.error("菜单对象为空!");
         }
-        return newMenuService.save(newMenu);
+
+        String username = "system";
+        if (principal != null) {
+            username = principal.getName();
+        }
+
+        return newMenuService.save(newMenu, username);
     }
 
 

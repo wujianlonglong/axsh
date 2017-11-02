@@ -52,6 +52,8 @@ public class NewMenu implements Serializable {
 
     private Integer sort;
 
+    private Boolean isValid = true;
+
     @DBRef
     private List<NewAuthority> authorities;
 

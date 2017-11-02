@@ -53,6 +53,12 @@ public class RoleController extends BaseController {
         return newRoleService.list(roleParamDTO.getRoleName(), pageable);
     }
 
+    @RequestMapping(value = "/listByUser")
+    @ResponseBody
+    public ResponseMessage listByUser() {
+        return newRoleService.listByUser();
+    }
+
 
     /**
      * 根据ID展示菜单信息

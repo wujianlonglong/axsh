@@ -1,6 +1,7 @@
 package anxian.gateway.admin.module.base.service;
 
 import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.model.UserModel;
 import anxian.gateway.admin.module.base.repository.UserRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import org.bson.types.ObjectId;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private NewRoleService newRoleService;
 
     /**
      * 根据用户名获取用户信息
@@ -89,24 +93,31 @@ public class UserService {
     /**
      * 保存用户
      *
-     * @param user
+     * @param userModel
      * @return
      */
-    public ResponseMessage save(User user) {
+    public ResponseMessage save(UserModel userModel, String username) {
 
-        String id = user.getId();
-        if (null == id || StringUtils.isEmpty(id)) {
-            user.setId(null);
+        String id = userModel.getId();
+        User user = null;
+        if (StringUtils.isEmpty(id)) {
+            user = new User();
+            user.setCreater(username);
             user.setCreateDateTime(LocalDateTime.now());
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(userModel.getPassword()));
         } else {
-            User modifyUser = userRepository.findOne(id);
-            if (null == modifyUser) {
-                user.setId(null);
+            user = userRepository.findOne(id);
+            if (null == user) {
+                userModel.setId(null);
             }
-            user.setPassword(modifyUser.getPassword());
+            user.setUpdater(username);
             user.setUpdateDateTime(LocalDateTime.now());
         }
+
+        user.setShopId(userModel.getShopId());
+        user.setFullName(userModel.getFullName());
+        user.setNewRole(newRoleService.getOne(userModel.getRoleId()));
+        user.setIsValid(userModel.getIsValid());
         User result = userRepository.save(user);
         return null == result ? ResponseMessage.error("保存失败！") : ResponseMessage.success("保存成功！");
     }

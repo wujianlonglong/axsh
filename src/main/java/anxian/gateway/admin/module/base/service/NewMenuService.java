@@ -72,7 +72,12 @@ public class NewMenuService {
         return ResponseMessage.success(new PageImpl<>(newMenuModels, pageable, newMenuPage.getTotalElements()));
     }
 
-    // 菜单展示
+    /**
+     * 菜单列表展示
+     *
+     * @param newMenus
+     * @return
+     */
     public List<MenuModel> showMenu(List<NewMenu> newMenus) {
         // 获取一级菜单
         List<NewMenu> firstMenus = null;
@@ -161,7 +166,7 @@ public class NewMenuService {
      * @param newMenu
      * @return
      */
-    public ResponseMessage save(NewMenu newMenu) {
+    public ResponseMessage save(NewMenu newMenu, String username) {
 
         try {
             log.info(objectMapper.writeValueAsString(newMenu));
@@ -177,22 +182,28 @@ public class NewMenuService {
         NewMenu newMenuResult = null;
         if (StringUtils.isEmpty(id)) {
             newMenuResult = new NewMenu();
-            newMenuResult.setCreator("");
+            newMenuResult.setCreator(username);
             newMenuResult.setCreateDateTime(LocalDateTime.now());
+            // TODO 处理序号排序
+            newMenuResult.setSort(generateSort(newMenu.isParent(), newMenu.getParentId()));
         } else {
             newMenuResult = newMenuRepository.findOne(id);
-            newMenuResult.setUpdator("");
+            newMenuResult.setUpdator(username);
             newMenuResult.setUpdateDateTime(LocalDateTime.now());
         }
 
         newMenuResult.setExpanded(newMenu.getExpanded());
+        boolean isParent = newMenu.isParent();
         newMenuResult.setParent(newMenu.isParent());
-        newMenuResult.setLeaf(newMenu.isLeaf());
+        boolean isLeaf = false;
+        if (!isParent) {
+            isLeaf = true;
+        }
+        newMenuResult.setLeaf(isLeaf);
         newMenuResult.setText(newMenu.getText());
         newMenuResult.setUrl(newMenu.getUrl());
-        // TODO 处理序号排序
-        newMenuResult.setSort(generateSort(newMenu.isParent(), newMenu.getParentId()));
-
+        newMenuResult.setParentId(newMenu.getParentId());
+        newMenuResult.setIsValid(newMenu.getIsValid());
 
         return ResponseMessage.success(newMenuRepository.save(newMenuResult));
     }

@@ -1,8 +1,10 @@
 package anxian.gateway.admin.module.base.controller;
 
 import anxian.gateway.admin.module.base.domain.User;
+import anxian.gateway.admin.module.base.model.UserModel;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller
 @RequestMapping(value = "/user")
 public class UserController extends BaseController {
@@ -57,12 +60,19 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseMessage save(@RequestBody User user) {
-        if (null == user) {
+    public ResponseMessage save(@RequestBody UserModel userModel, Principal principal) {
+        if (null == userModel) {
             return ResponseMessage.error("用户对象为空!");
         }
 
-        return userService.save(user);
+        log.info(userModel.toString());
+
+        String username = "system";
+        if (principal != null) {
+            username = principal.getName();
+        }
+
+        return userService.save(userModel, username);
     }
 
 

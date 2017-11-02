@@ -30,17 +30,12 @@ public class User implements Serializable {
     /**
      * 帐户是否锁住
      */
-    private boolean accountLocked;
+    private Boolean isValid = true;
 
     /**
      * 全名
      */
     private String fullName;
-
-    /**
-     * 角色类型
-     */
-    private String roleType;
 
     /**
      * 所属角色
