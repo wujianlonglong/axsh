@@ -69,6 +69,9 @@ public class OrderItem {
 
 
     public String getSaleTypeName() {
+        if (saleType == null) {
+            return "";
+        }
         if (saleType == SaleConstant.fullGift) {
             return "满赠";
         } else if (saleType == SaleConstant.secondKill) {
@@ -81,6 +84,8 @@ public class OrderItem {
             return "积分换券";
         } else if (saleType == SaleConstant.turnTable) {
             return "大转盘";
+        } else if (saleType == SaleConstant.amountReduced) {
+            return "金额满减";
         }
         return "";
     }

@@ -45,6 +45,11 @@ public class SaleConstant {
      */
     public static final int turnTable = 30;
 
+    /**
+     * 金额满减
+     */
+    public static final int amountReduced = 35;
+
     // 以下为促销状态
     /**
      * 未开始
