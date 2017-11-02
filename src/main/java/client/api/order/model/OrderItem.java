@@ -1,5 +1,6 @@
 package client.api.order.model;
 
+import client.api.sale.model.SaleConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -65,4 +66,31 @@ public class OrderItem {
     private Integer transportType; //商品运输类型
 
     private Integer itemStatus = 0; // 商品状态
+
+
+    public String getSaleTypeName() {
+        if (saleType == null) {
+            return "";
+        }
+        if (saleType == SaleConstant.fullGift) {
+            return "满赠";
+        } else if (saleType == SaleConstant.secondKill) {
+            return "秒杀";
+        } else if (saleType == SaleConstant.cash) {
+            return "现金券";
+        } else if (saleType == SaleConstant.fullReduce) {
+            return "满减券";
+        } else if (saleType == SaleConstant.integal) {
+            return "积分换券";
+        } else if (saleType == SaleConstant.turnTable) {
+            return "大转盘";
+        } else if (saleType == SaleConstant.amountReduced) {
+            return "金额满减";
+        }else if (saleType == SaleConstant.partFold) {
+            return "第n件n折";
+        }else if (saleType == SaleConstant.fullCourt) {
+            return "打折";
+        }
+        return "";
+    }
 }
