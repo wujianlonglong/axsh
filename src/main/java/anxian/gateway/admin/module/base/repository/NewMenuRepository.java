@@ -16,7 +16,17 @@ public interface NewMenuRepository extends MongoRepository<NewMenu, String> {
 
     List<NewMenu> findByIdInOrderBySortAsc(Set<String> parentIdSet);
 
-    List<NewMenu> findByIsParentAndLeaf(boolean parentLeaf, boolean isLeaf);
+    List<NewMenu> findByIsParentAndLeafOrderBySortAsc(boolean parentLeaf, boolean isLeaf);
 
     Page<NewMenu> findByTextLike(String menuName, Pageable pageable);
+
+
+    NewMenu findTopByIsParentOrderBySortDesc(boolean isParent);
+
+    NewMenu findTopByParentIdOrderBySortDesc(String parentId);
+
+
+    List<NewMenu> findByParentId(String parentId);
+
+    List<NewMenu> findByIdIn(String[] menuIds);
 }

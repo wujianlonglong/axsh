@@ -2,6 +2,7 @@ package anxian.gateway.admin.module.base.service;
 
 import anxian.gateway.admin.module.base.domain.NewMenu;
 import anxian.gateway.admin.module.base.model.MenuModel;
+import anxian.gateway.admin.module.base.model.MenuRoleModel;
 import anxian.gateway.admin.module.base.model.NewMenuModel;
 import anxian.gateway.admin.module.base.repository.NewMenuRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,8 +33,6 @@ public class NewMenuService {
 
     @Autowired
     private NewMenuRepository newMenuRepository;
-
-    // TODO 菜单保存，列表表示
 
     /**
      * 后台菜单列表
@@ -124,7 +124,7 @@ public class NewMenuService {
      * @return
      */
     public ResponseMessage getParentMenus() {
-        List<NewMenu> parentMenus = newMenuRepository.findByIsParentAndLeaf(true, false);
+        List<NewMenu> parentMenus = newMenuRepository.findByIsParentAndLeafOrderBySortAsc(true, false);
         return CollectionUtils.isEmpty(parentMenus) ? ResponseMessage.success(null) : ResponseMessage.success(parentMenus);
     }
 
@@ -146,6 +146,10 @@ public class NewMenuService {
         }
 
         return ResponseMessage.success(newMenu);
+    }
+
+    public NewMenu getOne(String id) {
+        return newMenuRepository.findOne(id);
     }
 
     @Autowired
@@ -187,9 +191,72 @@ public class NewMenuService {
         newMenuResult.setText(newMenu.getText());
         newMenuResult.setUrl(newMenu.getUrl());
         // TODO 处理序号排序
-//        newMenuResult.setSort();
+        newMenuResult.setSort(generateSort(newMenu.isParent(), newMenu.getParentId()));
 
 
         return ResponseMessage.success(newMenuRepository.save(newMenuResult));
+    }
+
+    /**
+     * 排序
+     *
+     * @param isParent
+     * @param id
+     * @return
+     */
+    private Integer generateSort(boolean isParent, String id) {
+        if (isParent) {
+            NewMenu newMenu = newMenuRepository.findTopByIsParentOrderBySortDesc(true);
+            return null == newMenu ? 1 : newMenu.getSort() + 1;
+        } else {
+            NewMenu newMenu = newMenuRepository.findTopByParentIdOrderBySortDesc(id);
+
+            NewMenu parentNewMenu = newMenuRepository.findOne(id);
+
+            return null == newMenu ? parentNewMenu.getSort() * 10 + 1 : newMenu.getSort() + 1;
+        }
+    }
+
+    /**
+     * 获取角色菜单列表
+     *
+     * @return
+     */
+    public ResponseMessage roleList() {
+        List<MenuRoleModel> menuRoleModels = new ArrayList<>();
+        List<NewMenu> parentMenus = newMenuRepository.findByIsParentAndLeafOrderBySortAsc(true, false);
+        if (CollectionUtils.isNotEmpty(parentMenus)) {
+            for (NewMenu parentMenu : parentMenus) {
+                String id = parentMenu.getId();
+                MenuRoleModel menuRoleModel = new MenuRoleModel();
+                menuRoleModel.setLabel(parentMenu.getText());
+                menuRoleModel.setKey(id);
+                menuRoleModel.setValue(id);
+
+                List<NewMenu> childrenNewMenus = newMenuRepository.findByParentId(id);
+                if (CollectionUtils.isNotEmpty(childrenNewMenus)) {
+                    List<MenuRoleModel> childMenuRoleModels = new ArrayList<>();
+                    for (NewMenu childNewMenu : childrenNewMenus) {
+                        MenuRoleModel childMenuRoleModel = new MenuRoleModel();
+                        childMenuRoleModel.setLabel(childNewMenu.getText());
+                        childMenuRoleModel.setKey(childNewMenu.getId());
+                        childMenuRoleModel.setValue(childNewMenu.getId());
+                        childMenuRoleModels.add(childMenuRoleModel);
+                    }
+                    menuRoleModel.setChildren(childMenuRoleModels);
+                }
+                menuRoleModels.add(menuRoleModel);
+            }
+        }
+
+        return ResponseMessage.success(menuRoleModels);
+    }
+
+    public List<NewMenu> getMenusByList(String[] menuIds) {
+        return newMenuRepository.findByIdIn(menuIds);
+    }
+
+    public List<NewMenu> getByParentId(String parentId) {
+        return newMenuRepository.findByParentId(parentId);
     }
 }

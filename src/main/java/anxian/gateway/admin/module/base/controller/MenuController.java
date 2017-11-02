@@ -94,4 +94,11 @@ public class MenuController extends BaseController {
         }
         return newMenuService.save(newMenu);
     }
+
+
+    @RequestMapping(value = "/roleList", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseMessage listByRole() {
+        return newMenuService.roleList();
+    }
 }

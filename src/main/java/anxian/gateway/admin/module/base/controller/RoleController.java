@@ -2,9 +2,11 @@ package anxian.gateway.admin.module.base.controller;
 
 import anxian.gateway.admin.module.base.domain.NewMenu;
 import anxian.gateway.admin.module.base.domain.User;
-import anxian.gateway.admin.module.base.service.NewMenuService;
+import anxian.gateway.admin.module.base.model.NewRoleModel;
+import anxian.gateway.admin.module.base.service.NewRoleService;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,14 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping(value = "/role")
 public class RoleController extends BaseController {
 
     @Autowired
-    private NewMenuService newMenuService;
+    private NewRoleService newRoleService;
 
     @Autowired
     private UserService userService;
@@ -38,29 +40,17 @@ public class RoleController extends BaseController {
 
         getMenus(user, model);
 
-        return "react/menuList";
-    }
-
-    /**
-     * 查询父菜单
-     *
-     * @return
-     */
-    @RequestMapping(value = "/parentMenus", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseMessage<List<NewMenu>> parentMenus() {
-
-        return newMenuService.getParentMenus();
+        return "react/roleList";
     }
 
 
     @RequestMapping(value = "list")
     @ResponseBody
-    public ResponseMessage list(@RequestBody MenuParamDTO menuParamDTO) {
+    public ResponseMessage list(@RequestBody RoleParamDTO roleParamDTO) {
 
-        Pageable pageable = new PageRequest(menuParamDTO.getPage() - 1, menuParamDTO.getSize(), Sort.Direction.ASC, "sort");
+        Pageable pageable = new PageRequest(roleParamDTO.getPage() - 1, roleParamDTO.getSize(), Sort.Direction.ASC, "sort");
 
-        return newMenuService.list(menuParamDTO.getMenuName(), pageable);
+        return newRoleService.list(roleParamDTO.getRoleName(), pageable);
     }
 
 
@@ -77,21 +67,29 @@ public class RoleController extends BaseController {
             return ResponseMessage.error("参数为空！");
         }
 
-        return newMenuService.getById(id);
+        return newRoleService.getById(id);
     }
 
     /**
-     * 保存菜单信息
+     * 保存角色信息
      *
-     * @param newMenu
+     * @param newRoleModel
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseMessage save(@RequestBody NewMenu newMenu) {
-        if (null == newMenu) {
-            return ResponseMessage.error("菜单对象为空!");
+    public ResponseMessage save(@RequestBody NewRoleModel newRoleModel, Principal principal) {
+        if (null == newRoleModel) {
+            return ResponseMessage.error("角色对象为空!");
         }
-        return newMenuService.save(newMenu);
+
+        log.info("保存角色的对象：{}", newRoleModel.toString());
+
+        String username = "system";
+        if (principal != null) {
+            username = principal.getName();
+        }
+
+        return newRoleService.save(newRoleModel, username);
     }
 }
