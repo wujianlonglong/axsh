@@ -157,7 +157,8 @@ public class OrderController extends BaseController {
         model.addAttribute("isFirstPage", orderPageModel.getPageable().getPage() == 0);
         model.addAttribute("pageSize", orderPageModel.getPageable().getSize());
         model.addAttribute("totalCount", orderPageModel.getTotal());
-        model.addAttribute("totalPage", orderPageModel.getTotal() / orderPageModel.getPageable().getSize() + 1);
+        model.addAttribute("totalPage", orderPageModel.getTotalPages());
+//        model.addAttribute("totalPage", orderPageModel.getTotal() / orderPageModel.getPageable().getSize() + 1);
         model.addAttribute("isLastPage", orderPageModel.getTotal() == orderPageModel.getPageable().getPage());
 //        model.addAttribute("items", orderPageModel.getContent());
         model.addAttribute("orderList", orderPageModel.getContent());
