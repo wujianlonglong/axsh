@@ -86,6 +86,10 @@ public class OrderItem {
             return "大转盘";
         } else if (saleType == SaleConstant.amountReduced) {
             return "金额满减";
+        }else if (saleType == SaleConstant.partFold) {
+            return "第n件n折";
+        }else if (saleType == SaleConstant.fullCourt) {
+            return "打折";
         }
         return "";
     }

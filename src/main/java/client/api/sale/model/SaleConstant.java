@@ -50,6 +50,16 @@ public class SaleConstant {
      */
     public static final int amountReduced = 35;
 
+    /**
+     * 第n件n折
+     */
+    public static final int partFold = 50;
+
+    /**
+     * 全场打折
+     */
+    public static final int fullCourt = 55;
+
     // 以下为促销状态
     /**
      * 未开始
