@@ -11,4 +11,8 @@ import java.util.List;
 public interface NewAuthorityRepository extends MongoRepository<NewAuthority, String> {
 
     Page<NewAuthority> findByNameLike(String authorityName, Pageable pageable);
+
+    List<NewAuthority> findByIsValid(boolean isValid);
+
+    List<NewAuthority> findByIdIn(String[] ids);
 }

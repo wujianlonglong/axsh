@@ -36,6 +36,8 @@ public class NewRoleModel implements Serializable {
 
     private String[] menuIds;
 
+    private String[] authorityIds;
+
     /**
      * 描述
      */

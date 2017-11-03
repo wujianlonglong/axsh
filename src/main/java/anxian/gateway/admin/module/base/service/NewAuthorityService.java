@@ -4,6 +4,7 @@ import anxian.gateway.admin.module.base.domain.NewAuthority;
 import anxian.gateway.admin.module.base.domain.NewMenu;
 import anxian.gateway.admin.module.base.model.NewAuthorityModel;
 import anxian.gateway.admin.module.base.model.NewMenuModel;
+import anxian.gateway.admin.module.base.model.RoleAuthorityModel;
 import anxian.gateway.admin.module.base.repository.NewAuthorityRepository;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,5 +107,26 @@ public class NewAuthorityService {
         newAuthorityResult.setIsValid(newAuthority.getIsValid());
 
         return ResponseMessage.success(newAuthorityRepository.save(newAuthorityResult));
+    }
+
+    public ResponseMessage listByRole() {
+
+        List<NewAuthority> newAuthorities = newAuthorityRepository.findByIsValid(true);
+
+        List<RoleAuthorityModel> roleAuthorityModels = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(newAuthorities)) {
+            for (NewAuthority newAuthority : newAuthorities) {
+                RoleAuthorityModel roleAuthorityModel = new RoleAuthorityModel();
+                roleAuthorityModel.setLabel(newAuthority.getName());
+                roleAuthorityModel.setValue(newAuthority.getId());
+                roleAuthorityModels.add(roleAuthorityModel);
+            }
+        }
+
+        return ResponseMessage.success(roleAuthorityModels);
+    }
+
+    public List<NewAuthority> listByIds(String[] authorityIds) {
+        return newAuthorityRepository.findByIdIn(authorityIds);
     }
 }

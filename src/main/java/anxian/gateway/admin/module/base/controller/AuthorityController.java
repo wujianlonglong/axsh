@@ -70,6 +70,18 @@ public class AuthorityController extends BaseController {
     }
 
     /**
+     * 获取有效的权限列表
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/listByRole", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseMessage listByRole() {
+        return newAuthorityService.listByRole();
+    }
+
+    /**
      * 保存菜单信息
      *
      * @param newAuthority

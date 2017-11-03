@@ -1,5 +1,6 @@
 package anxian.gateway.admin.module.base.service;
 
+import anxian.gateway.admin.module.base.domain.NewAuthority;
 import anxian.gateway.admin.module.base.domain.NewMenu;
 import anxian.gateway.admin.module.base.domain.NewRole;
 import anxian.gateway.admin.module.base.model.NewMenuModel;
@@ -29,6 +30,9 @@ public class NewRoleService {
 
     @Autowired
     private NewMenuService newMenuService;
+
+    @Autowired
+    private NewAuthorityService newAuthorityService;
 
 
     /**
@@ -109,6 +113,10 @@ public class NewRoleService {
         List<NewMenu> newMenus = newRole.getNewMenus();
         newRoleModel.setMenuIds(newMenus.stream().map(NewMenu::getId).collect(Collectors.toList()).toArray(new String[]{}));
         newRoleModel.setDescription(newRole.getDescription());
+        List<NewAuthority> newAuthorities = newRole.getNewAuthorities();
+        if (CollectionUtils.isNotEmpty(newAuthorities)) {
+            newRoleModel.setAuthorityIds(newAuthorities.stream().map(NewAuthority::getId).collect(Collectors.toList()).toArray(new String[]{}));
+        }
         return ResponseMessage.success(newRoleModel);
     }
 
@@ -144,9 +152,14 @@ public class NewRoleService {
         newRole.setPlatforms(newRoleModel.getPlatforms());
         newRole.setIsValid(newRoleModel.isValid());
         newRole.setNewMenus(getNewMenus(newRoleModel.getMenuIds()));
+        newRole.setNewAuthorities(getNewAuthoritys(newRoleModel.getAuthorityIds()));
         newRoleRepository.save(newRole);
 
         return ResponseMessage.success("保存成功！");
+    }
+
+    private List<NewAuthority> getNewAuthoritys(String[] authorityIds) {
+        return newAuthorityService.listByIds(authorityIds);
     }
 
     public ResponseMessage listByUser() {
