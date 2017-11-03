@@ -4,7 +4,7 @@ import client.api.category.CategoryApiClient;
 import client.api.category.domain.Category;
 import client.api.crm.CrmApiClient;
 import client.api.crm.domain.ScoreCrmRepose;
-import client.api.user.SjesUserApiClient;
+import client.api.user.UserApiClient;
 import client.api.user.domain.User;
 import client.api.user.utils.page.PageForAdmin;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,12 +25,12 @@ import java.util.List;
  * Created by jiangzhe on 15-12-1.
  */
 @RestController
-@RequestMapping("/sjes/sjes_users")
-public class SjesUserController {
+@RequestMapping("/anxian/sjes_users")
+public class AnxianUserController {
 
-    private static final Logger log = LoggerFactory.getLogger(SjesUserController.class);
+    private static final Logger log = LoggerFactory.getLogger(AnxianUserController.class);
     @Autowired
-    private SjesUserApiClient sjesUserApiClient;
+    private UserApiClient userApiClient;
     @Autowired
     private CategoryApiClient categoryApiClient;
 
@@ -42,7 +42,7 @@ public class SjesUserController {
      */
     @RequestMapping("/list")
     public PageForAdmin list(int page, int limit, String username, String mobile, String email, String cardNum) {
-        return sjesUserApiClient.pageGetUserList(username, mobile, email, cardNum, page - 1, limit);
+        return userApiClient.pageGetUserList(username, mobile, email, cardNum, page - 1, limit);
     }
 
     /**
@@ -53,7 +53,7 @@ public class SjesUserController {
      */
     @RequestMapping(value = "/viewUser", method = RequestMethod.POST)
     public User viewUser(String username) throws JsonProcessingException {
-        User user = sjesUserApiClient.findByUsername(username);
+        User user = userApiClient.findByUsername(username);
         if (null != user) {
             String categories = user.getCategories();
             if (StringUtils.isNotEmpty(categories)) {
@@ -93,17 +93,17 @@ public class SjesUserController {
      */
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public Integer updateUser(Long id, String username, String mobile, String email) {
-        User currentUser = sjesUserApiClient.findById(id);
+        User currentUser = userApiClient.findById(id);
         if (StringUtils.isNotEmpty(mobile) && !mobile.equals(currentUser.getMobile())
-                && sjesUserApiClient.findUser(mobile) != null) {
+                && userApiClient.findUser(mobile) != null) {
             return -1;
         }
 
         if (StringUtils.isNotEmpty(email) && !email.equals(currentUser.getEmail())
-                && sjesUserApiClient.findUser(email) != null) {
+                && userApiClient.findUser(email) != null) {
             return -2;
         }
-        return sjesUserApiClient.updateMobileAndEmailAndCardNum(id, username, mobile, email, null);
+        return userApiClient.updateMobileAndEmailAndCardNum(id, username, mobile, email, null);
     }
 
 }
