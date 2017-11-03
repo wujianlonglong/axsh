@@ -61,6 +61,19 @@ public class WebPage extends BaseController {
         return "/anXian-user/user";
     }
 
+    @RequestMapping(value = "/sjesuser/userList", method = RequestMethod.GET)
+    public String sjesuserList(Model model, Principal principal) {
+
+        User user = userService.getByUserName(principal.getName());
+        if (null == user) {
+            return "redirect:/login";
+        }
+
+        getMenus(user, model);
+
+        return "/anXian-user/sjesuser";
+    }
+
     @RequestMapping(value = "/user/blackList", method = RequestMethod.GET)
     public String blackList(Model model, Principal principal) {
 
