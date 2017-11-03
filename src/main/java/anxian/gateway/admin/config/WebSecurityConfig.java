@@ -121,6 +121,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDecisionManager(accessDecisionManager())//自定义accessDecisionManager访问控制器
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/menu/**").permitAll()
+                .antMatchers("/role/**").permitAll()
+                .antMatchers("/authority/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/image/**").permitAll()
                 .antMatchers("/resize/**").permitAll()
