@@ -11,6 +11,8 @@ public class UserModel implements Serializable {
 
     private String id;
 
+    private String username;
+
     private String roleId;
 
     private String fullName;
