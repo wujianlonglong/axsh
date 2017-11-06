@@ -145,6 +145,13 @@ public class OrderController extends BaseController {
                 }
             }
         }
+
+        String[] platforms = user.getNewRole().getPlatforms();
+        if (platforms != null && platforms.length > 0) {
+            String platform = platforms[0];
+            searchCondition.setOrderType("10005".equalsIgnoreCase(platform) ? "anxian" : "");
+        }
+
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
         String shopId = user.getShopId();
