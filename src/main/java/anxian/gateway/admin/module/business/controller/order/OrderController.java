@@ -403,7 +403,11 @@ public class OrderController extends BaseController {
 
         getMenus(user, model);
 
-//        cancelCondition.setPage(page - 1);
+        String[] platforms = user.getNewRole().getPlatforms();
+        if (platforms != null && platforms.length > 0) {
+            cancelCondition.setPlatformId(platforms[0]);
+        }
+
         cancelCondition.setPage(page);
         cancelCondition.setSize(limit);
         SjesPage<Order> orders = orderAdminApiClient.cancelOrder(cancelCondition);
@@ -435,7 +439,7 @@ public class OrderController extends BaseController {
         } else {
             cancelOrderView.setUserId(Long.valueOf(String.valueOf(user.getUsername())));
         }
-//        cancelOrderView.setUserId(11l);
+
         cancelOrderView.setCustomer(user.getFullName());
         OrderApiResponse<List<Order>> listOrderApiResponse = cancelOrderApiClient.cancelOrder(cancelOrderView);
         if (listOrderApiResponse.getReturn_code().equals(OrderConstant.successCode)) {
