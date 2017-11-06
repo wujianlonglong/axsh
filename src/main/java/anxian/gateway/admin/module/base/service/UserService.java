@@ -113,7 +113,7 @@ public class UserService {
             user.setUpdater(username);
             user.setUpdateDateTime(LocalDateTime.now());
         }
-
+        user.setUsername(userModel.getUsername());
         user.setShopId(userModel.getShopId());
         user.setFullName(userModel.getFullName());
         user.setNewRole(newRoleService.getOne(userModel.getRoleId()));
