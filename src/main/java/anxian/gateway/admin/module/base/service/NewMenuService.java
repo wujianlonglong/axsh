@@ -63,7 +63,9 @@ public class NewMenuService {
                 newMenuModel.setSort(newMenu.getSort());
                 if (newMenu.isLeaf()) {
                     NewMenu parentNewMenu = newMenuRepository.findOne(newMenu.getParentId());
-                    newMenuModel.setParentMenu(parentNewMenu.getText());
+                    if (parentNewMenu != null) {
+                        newMenuModel.setParentMenu(parentNewMenu.getText());
+                    }
                 }
                 newMenuModels.add(newMenuModel);
             }
