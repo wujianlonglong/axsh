@@ -35,6 +35,7 @@ public class AXGateShopController extends BaseController {
             @RequestParam(name = "shopName", required = false) String shopName,
             @RequestParam(name = "shopId", required = false) String shopId,
             @RequestParam(name = "state", required = false) Integer state,
+            @RequestParam(name = "platform", required = false) Integer platform,
             @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
@@ -47,7 +48,9 @@ public class AXGateShopController extends BaseController {
         AXGateShopSearch gateShopSearch = new AXGateShopSearch();
 
         gateShopSearch.setPage(page);
-
+        if (platform != null) {
+            gateShopSearch.setPlatform(platform);
+        }
         if (StringUtils.isNotEmpty(shopId)) {
             gateShopSearch.setShopId(shopId);
         }
