@@ -1,5 +1,6 @@
 package anxian.gateway.admin.module.business.controller.user;
 
+import anxian.gateway.admin.module.base.model.ResponseMessage;
 import client.api.category.CategoryApiClient;
 import client.api.category.domain.Category;
 import client.api.crm.CrmApiClient;
@@ -72,13 +73,14 @@ public class AnxianUserController {
             }
             String cardNum = user.getCardNum();
             if (StringUtils.isNotEmpty(cardNum)) {
-                ScoreCrmRepose scoreCrmRepose = crmApiClient.getTotalScore(cardNum);
-                if (scoreCrmRepose.getErrorCode().equals("0")) {
-                    user.setScoreTotal(String.valueOf(scoreCrmRepose.getValue()));
-                    user.setScoreEnable(String.valueOf(scoreCrmRepose.getValue()));
+                ResponseMessage responseMessage = userApiClient.memberPointEnquiry(cardNum);
+//                ScoreCrmRepose scoreCrmRepose = crmApiClient.getTotalScore(cardNum);
+                if (responseMessage.getCode() == 1) {
+                    user.setScoreTotal(String.valueOf(responseMessage.getData()));
+                    user.setScoreEnable(String.valueOf(responseMessage.getData()));
                 } else {
-                    user.setScoreTotal(String.valueOf(scoreCrmRepose.getMessage()));
-                    user.setScoreEnable(String.valueOf(scoreCrmRepose.getMessage()));
+                    user.setScoreTotal(String.valueOf(responseMessage.getErrMessage()));
+                    user.setScoreEnable(String.valueOf(responseMessage.getErrMessage()));
                 }
             }
             log.info(new ObjectMapper().writeValueAsString(user));
