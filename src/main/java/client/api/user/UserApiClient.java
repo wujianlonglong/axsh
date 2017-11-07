@@ -1,5 +1,6 @@
 package client.api.user;
 
+import anxian.gateway.admin.module.base.model.ResponseMessage;
 import client.api.user.domain.User;
 import client.api.user.utils.page.PageForAdmin;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -75,4 +76,13 @@ public interface UserApiClient {
                                            @RequestParam("mobile") String mobile,
                                            @RequestParam("email") String email,
                                            @RequestParam("cardNum") String cardNum);
+
+    /**
+     * 会员积分查询-安鲜
+     *
+     * @param memberId
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/memberPointEnquiry")
+    ResponseMessage memberPointEnquiry(@RequestParam("memberId") String memberId);
 }
