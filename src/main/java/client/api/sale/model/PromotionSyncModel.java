@@ -33,7 +33,7 @@ public class PromotionSyncModel implements Serializable {
     /**
      * 会员级别
      */
-//    private int[] memberLevels;
+    private int[] memberLevels;
 
     /**
      * 广告语
