@@ -1,0 +1,21 @@
+package client.api.item;
+
+import anxian.gateway.admin.module.common.domain.ResponseMessage;
+import client.api.constants.Constants;
+import client.api.item.model.GoodsStatus;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@RequestMapping("itemPrices/anxian")
+public interface AnxianItemPriceFeign {
+
+
+    @RequestMapping(value = "batUpdateStatusNew/{status}", method = RequestMethod.PUT)
+    ResponseMessage batUpdateStatusNew(@RequestBody List<GoodsStatus> goodsStatusList, @PathVariable("status") Integer status);
+
+    @RequestMapping(value = "updateStatus", method = RequestMethod.PUT)
+    int updateStatus(@RequestParam("id") Long id,@RequestParam("status") Integer status,@RequestParam("message") String message);
+}
