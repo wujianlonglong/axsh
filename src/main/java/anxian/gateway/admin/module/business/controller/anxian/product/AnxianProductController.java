@@ -143,7 +143,7 @@ public class AnxianProductController extends BaseController {
         model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
         model.addAttribute("pageSize", productPageModel.getPageable().getSize());
         model.addAttribute("totalCount", productPageModel.getTotal());
-        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("totalPage", productPageModel.getTotal() / productPageModel.getPageable().getSize() + 1);
         model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
         model.addAttribute("items", productPageModel.getContent());
         model.addAttribute("categoryModels", productPageModel);
