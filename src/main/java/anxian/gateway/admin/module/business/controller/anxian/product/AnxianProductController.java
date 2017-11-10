@@ -258,17 +258,17 @@ public class AnxianProductController extends BaseController {
     /**
      * 更新单品状态
      *
-     * @param id
+     * @param erpGoodsId
      * @param status
      * @return 更新的数量
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     @ResponseBody
-    public JsonMsg updateStatus(Authentication authentication, Long id, Integer status, String message) {
+    public JsonMsg updateStatus(Authentication authentication,@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
-        LOGGER.info("  #######   进行商品上下架，status: {} , id: {}", status, id);
+        LOGGER.info("  #######   进行商品上下架，status: {} , erpGoodsId: {},shopId:{}", status, erpGoodsId, shopId);
         LOGGER.info("  ############################################################     ");
-        int result = anxianItemPriceFeign.updateStatus(id, status, message);
+        int result = anxianItemPriceFeign.updateStatus(erpGoodsId,shopId, status, message);
         if (result > 0) {
             return JsonMsg.success("更新状态成功");
         } else {
@@ -424,30 +424,30 @@ public class AnxianProductController extends BaseController {
                         continue;
                     }
                     XSSFCell cell1 = row.getCell(0);
-                    XSSFCell cell2=row.getCell(1);
-                    XSSFCell cell3=row.getCell(2);
-                    String erpGoodId=null != cell1 ? ExcelUtil.getCellValue(cell1).trim() : null;
-                    String isAllShop=null!=cell2? ExcelUtil.getCellValue(cell2).trim() : null;
-                    String shopId=null!=cell3? ExcelUtil.getCellValue(cell3).trim() : null;
-                    if(erpGoodId==null){
-                        return JsonMsg.failure("批量更新单品状态失败:第"+i+"行的'商品编码'为空！");
+                    XSSFCell cell2 = row.getCell(1);
+                    XSSFCell cell3 = row.getCell(2);
+                    String erpGoodId = null != cell1 ? ExcelUtil.getCellValue(cell1).trim() : null;
+                    String isAllShop = null != cell2 ? ExcelUtil.getCellValue(cell2).trim() : null;
+                    String shopId = null != cell3 ? ExcelUtil.getCellValue(cell3).trim() : null;
+                    if (erpGoodId == null) {
+                        return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'商品编码'为空！");
                     }
-                    if(isAllShop==null||(!isAllShop.equals("是")&&!isAllShop.equals("否"))){
-                        return JsonMsg.failure("批量更新单品状态失败:第"+i+"行的'是否所有门店'为空或者不为'是'、'否'！");
-                    }else if(isAllShop.equals("是")){
-                        shopId=null;
-                    }else if(isAllShop.equals("否")){
-                        if(shopId==null){
-                            return JsonMsg.failure("批量更新单品状态失败:第"+i+"行的'门店ID'为空！");
+                    if (isAllShop == null || (!isAllShop.equals("是") && !isAllShop.equals("否"))) {
+                        return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'是否所有门店'为空或者不为'是'、'否'！");
+                    } else if (isAllShop.equals("是")) {
+                        shopId = null;
+                    } else if (isAllShop.equals("否")) {
+                        if (shopId == null) {
+                            return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'门店ID'为空！");
                         }
                     }
-                    GoodsStatus goodsStatus=new GoodsStatus();
+                    GoodsStatus goodsStatus = new GoodsStatus();
                     goodsStatus.setErpGoodsId(Long.valueOf(erpGoodId));
                     goodsStatus.setShopId(shopId);
                     goodsStatus.setStatus(status);
                     goodsStatusList.add(goodsStatus);
                 }
-                ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList,status);
+                ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList, status);
                 if ("success".equals(responseMessage.getType().name())) {
                     return JsonMsg.success("批量更新单品状态成功！");
                 }

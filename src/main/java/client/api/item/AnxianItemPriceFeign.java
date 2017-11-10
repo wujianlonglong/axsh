@@ -17,5 +17,5 @@ public interface AnxianItemPriceFeign {
     ResponseMessage batUpdateStatusNew(@RequestBody List<GoodsStatus> goodsStatusList, @PathVariable("status") Integer status);
 
     @RequestMapping(value = "updateStatus", method = RequestMethod.PUT)
-    int updateStatus(@RequestParam("id") Long id,@RequestParam("status") Integer status,@RequestParam("message") String message);
+    int updateStatus(@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId,@RequestParam("status") Integer status,@RequestParam("message") String message);
 }
