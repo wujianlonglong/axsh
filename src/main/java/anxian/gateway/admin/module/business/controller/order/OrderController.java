@@ -39,6 +39,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,8 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/searchOrder")
     public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit, @RequestParam(value = "orderStatusName", required = false) String orderStatusName,
-                                        @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal) {
+                                        @RequestParam(value = "flag", required = false) String flag, @RequestParam(value = "platformId", required = false) String platformId,
+                                        Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -147,10 +149,20 @@ public class OrderController extends BaseController {
         }
 
         String[] platforms = user.getNewRole().getPlatforms();
-        if (platforms != null && platforms.length > 0) {
-            String platform = platforms[0];
-            searchCondition.setOrderType("10005".equalsIgnoreCase(platform) ? "anxian" : "");
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(platformId) && platforms != null && platforms.length > 0) {
+            if (Arrays.asList(platforms).contains(platformId)) {
+                if (platformId.equals("10005")) {
+                    searchCondition.setOrderType("anxian");
+                }
+                if (platformId.equals("10004")) {
+                    searchCondition.setOrderType("sjes");
+                }
+            }
         }
+//        if (platforms != null && platforms.length > 0) {
+//            String platform = platforms[0];
+//            searchCondition.setOrderType("10005".equalsIgnoreCase(platform) ? "anxian" : "");
+//        }
 
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
