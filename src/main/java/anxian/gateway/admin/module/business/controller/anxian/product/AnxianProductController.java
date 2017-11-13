@@ -5,6 +5,7 @@ import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.CommodityInfoUpdateJson;
 import anxian.gateway.admin.module.business.model.item.ProductPriceModel;
+import anxian.gateway.admin.module.business.service.AnXianProductService;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.BeanUtil;
 import anxian.gateway.admin.utils.ExcelUtil;
@@ -12,10 +13,7 @@ import anxian.gateway.admin.utils.JsonMsg;
 import client.api.item.AnXianProductAttributeApiClient;
 import client.api.item.AnXianProductFeign;
 import client.api.item.AnXianSnFeign;
-import client.api.item.domain.Product;
-import client.api.item.domain.ProductAttributeValue;
-import client.api.item.domain.ProductImage;
-import client.api.item.domain.ProductModel;
+import client.api.item.domain.*;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -59,6 +57,9 @@ import java.util.List;
 public class AnxianProductController extends BaseController {
 
     Logger LOGGER = LoggerFactory.getLogger(AnxianProductController.class);
+
+    @Autowired
+    private AnXianProductService anXianProductService;
 
     @Autowired
     private AnXianProductFeign productFeign;
@@ -143,7 +144,7 @@ public class AnxianProductController extends BaseController {
         model.addAttribute("isFirstPage", productPageModel.getPageable().getPage() == 0);
         model.addAttribute("pageSize", productPageModel.getPageable().getSize());
         model.addAttribute("totalCount", productPageModel.getTotal());
-        model.addAttribute("totalPage", productPageModel.getTotalPages() / productPageModel.getPageable().getSize() + 1);
+        model.addAttribute("totalPage", productPageModel.getTotal() / productPageModel.getPageable().getSize() + 1);
         model.addAttribute("isLastPage", productPageModel.getTotalPages() == productPageModel.getPageable().getPage());
         model.addAttribute("items", productPageModel.getContent());
         model.addAttribute("categoryModels", productPageModel);
@@ -458,5 +459,15 @@ public class AnxianProductController extends BaseController {
         it.close();
         os.close();
 
+    }
+
+
+    /**
+     * 后台获取门店价格列表
+     */
+    @RequestMapping(value = "getItemPriceShowList", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ItemPriceShow> getItemPriceShowList(String erpGoodsId) {
+        return anXianProductService.getItemPriceShowList(Long.parseLong(erpGoodsId));
     }
 }
