@@ -413,7 +413,8 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(value = "/cancelingOrder", method = RequestMethod.GET)
     public String cancelOrderList(CancelCondition cancelCondition, int page, int limit, Model model,
-                                  @RequestParam(value = "flag", required = false) String flag, Principal principal) {
+                                  @RequestParam(value = "flag", required = false) String flag,
+                                  @RequestParam(value = "platformId", required = false) String platformId, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -423,9 +424,14 @@ public class OrderController extends BaseController {
         getMenus(user, model);
 
         String[] platforms = user.getNewRole().getPlatforms();
-        if (platforms != null && platforms.length > 0) {
-            cancelCondition.setPlatformId(platforms[0]);
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(platformId) && platforms != null && platforms.length > 0) {
+            if (Arrays.asList(platforms).contains(platformId)) {
+                cancelCondition.setPlatformId(platformId);
+            }
         }
+//        if (platforms != null && platforms.length > 0) {
+//            cancelCondition.setPlatformId(platforms[0]);
+//        }
 
         cancelCondition.setPage(page);
         cancelCondition.setSize(limit);
