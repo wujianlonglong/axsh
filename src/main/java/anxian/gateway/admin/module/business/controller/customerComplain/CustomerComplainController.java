@@ -177,8 +177,8 @@ public class CustomerComplainController  extends BaseController {
     @ResponseBody
     public SjesPage<NewShop> shopListForComplain(String shopId, String shopName, int limit, int page) {
         ShopSearch gateShopSearch = new ShopSearch();
-        gateShopSearch.setShopId(shopId);
-        gateShopSearch.setShopName(shopName);
+        gateShopSearch.setShopId(StringUtils.isEmpty(shopId) == true ? null : shopId);
+        gateShopSearch.setShopName(StringUtils.isEmpty(shopName) == true ? null : shopName);
         if (gateShopSearch != null && limit != 0 && page != 0) {
             Pageable pageable = new PageRequest(page, limit);
             gateShopSearch.setPage(page - 1);
@@ -216,6 +216,7 @@ public class CustomerComplainController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "/result/submit/{type}", method = RequestMethod.POST)
+    @ResponseBody
     public JsonMsg resultSubmit(@PathVariable("type") int type, @RequestParam("complainId") Long id, @RequestParam("result") String result, @RequestParam(value = "turn",required = false) boolean turn, @RequestParam(value = "shopId",required = false) String shopId, @RequestParam(value = "shopName",required = false) String shopName) {
 
 //        System.out.println(type+"   "+id+"   "+result+"   "+ turn +"   "+ shopId+"   "+shopName);
