@@ -13,10 +13,7 @@ import client.api.item.AnXianProductAttributeApiClient;
 import client.api.item.AnXianProductFeign;
 import client.api.item.AnXianSnFeign;
 import client.api.item.AnxianItemPriceFeign;
-import client.api.item.domain.Product;
-import client.api.item.domain.ProductAttributeValue;
-import client.api.item.domain.ProductImage;
-import client.api.item.domain.ProductModel;
+import client.api.item.domain.*;
 import client.api.item.model.GoodsStatus;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
@@ -121,6 +118,21 @@ public class AnxianProductController extends BaseController {
         return productFeign.searchProductPackage(searchCoditionModel);
     }
 
+
+    /**
+     * 商品信息维护列表
+     *
+     * @return 分页列表
+     */
+    @RequestMapping("/informationListDataNew")
+    @ResponseBody
+    public PageModel<ProductOfShelves> commodityInformationListDataNew(int page, int limit, ProductOfShelves searchProduct) {
+        SearchCoditionModel<ProductOfShelves> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchProduct);
+        return productFeign.searchProductOfShelves(searchCoditionModel);
+    }
 
     /**
      * 商品信息维护列表

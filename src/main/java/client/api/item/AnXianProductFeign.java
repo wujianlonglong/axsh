@@ -5,15 +5,13 @@ import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import client.api.constants.Constants;
 import client.api.item.domain.Product;
 import client.api.item.domain.ProductModel;
+import client.api.item.domain.ProductOfShelves;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
 import client.api.item.model.SearchCoditionModel;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -62,6 +60,9 @@ public interface AnXianProductFeign {
     @RequestMapping(value = "searchCode", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     PageModel<Product> searchProductPackage(SearchCoditionModel<Product> searchCoditionModel);
 
+    //分页查询单品上下架列表
+    @RequestMapping(value = "/searchProductOfShelves", method = RequestMethod.POST)
+     PageModel<ProductOfShelves> searchProductOfShelves(SearchCoditionModel<ProductOfShelves> searchCoditionModel) ;
 
     /**
      * 根据主键得到商品信息
