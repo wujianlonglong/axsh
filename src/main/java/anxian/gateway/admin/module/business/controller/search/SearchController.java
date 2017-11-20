@@ -2,6 +2,7 @@ package anxian.gateway.admin.module.business.controller.search;
 
 import client.api.item.AnXianProductFeign;
 import client.api.item.domain.Product;
+import client.api.item.domain.ProductsPlanShow;
 import client.api.item.model.PageModel;
 import client.api.item.model.SearchCoditionModel;
 import client.api.search.AnxianSearchApiClient;
@@ -47,6 +48,27 @@ public class SearchController {
         searchCoditionModel.setSize(limit);
         return productFeign.search(searchCoditionModel);
     }
+
+    @RequestMapping(value="/searchnew",method = RequestMethod.GET)
+    public PageModel<ProductsPlanShow> searchnew(String name, String productId, String shopId , int page, int limit) {
+        SearchCoditionModel<ProductsPlanShow> searchCoditionModel = new SearchCoditionModel<>();
+        ProductsPlanShow condition = new ProductsPlanShow();
+        if(StringUtils.isNotBlank(shopId)){
+            condition.setShopId(shopId);
+        }
+        if (StringUtils.isNotBlank(productId)) {
+            condition.setSn(productId);
+        } else if (StringUtils.isNotBlank(name)) {
+            condition.setName(name);
+        }
+        searchCoditionModel.setSearchCodition(condition);
+        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setSize(limit);
+        return productFeign.searchnew(searchCoditionModel);
+    }
+
+
+
 
     /**
      * 搜索

@@ -6,6 +6,7 @@ import client.api.constants.Constants;
 import client.api.item.domain.Product;
 import client.api.item.domain.ProductModel;
 import client.api.item.domain.ProductOfShelves;
+import client.api.item.domain.ProductsPlanShow;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -15,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * Created by mac on 15/8/28.
  */
-@FeignClient(value = Constants.ANXIAN_SJES_API_ITEM)
+@FeignClient(value = Constants.ANXIAN_SJES_API_ITEM,url="localhost:20011")
 @RequestMapping(value = "/products/anxian")
 public interface AnXianProductFeign {
 
@@ -41,6 +43,10 @@ public interface AnXianProductFeign {
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     PageModel<Product> search(SearchCoditionModel<Product> searchCoditionModel);
+
+
+    @RequestMapping(value = "/searchnew", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    PageModel<ProductsPlanShow> searchnew(SearchCoditionModel<ProductsPlanShow> searchCoditionModel);
 
     /**
      * 分页查询单品列表[fdw]
@@ -108,6 +114,10 @@ public interface AnXianProductFeign {
      */
     @RequestMapping(value = "findByErpGoodsIdIn", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     List<Product> findByErpGoodsIdIn(List<Long> erpGoodsIds);
+
+
+    @RequestMapping(value = "findByErpGoodsIdInAndShopId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    List<ProductsPlanShow> findByErpGoodsIdInAndShopId(Map<String, List<Long>> map);
 
     /**
      * 根据商品分类id查询商品列表

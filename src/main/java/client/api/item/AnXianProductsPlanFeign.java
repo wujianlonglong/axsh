@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by qinhailong on 17-1-10.
  */
-@FeignClient(Constants.ANXIAN_SJES_API_ITEM)
+@FeignClient(value=Constants.ANXIAN_SJES_API_ITEM,url="localhost:20011")
 @RequestMapping(value = "productsPlans/anxian", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public interface AnXianProductsPlanFeign {
 
@@ -56,5 +56,8 @@ public interface AnXianProductsPlanFeign {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     ResponseMessage delete(@RequestParam("planId") Long planId, @RequestParam("erpGoodsId") Long erpGoodsId);
+
+    @RequestMapping(value="deletenew",method = RequestMethod.DELETE)
+    ResponseMessage deletenew(@RequestParam("planId") Long planId, @RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId")String shopId);
 
 }
