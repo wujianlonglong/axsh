@@ -151,11 +151,13 @@ public class CustomerComplainController  extends BaseController {
             customerComplainApiClient.handle(id);
         }
         List<Image> imagePathLists = new ArrayList<>();
-        String[] imagArr = customerComplainWxModel.getImagePaths().split(",");
-        for (String imag : imagArr){
-            if(StringUtils.isNotEmpty(imag)){
-                Image image = new Image(imag);
-                imagePathLists.add(image);
+        if(customerComplainWxModel.getImagePaths() != null){
+            String[] imagArr = customerComplainWxModel.getImagePaths().split(",");
+            for (String imag : imagArr){
+                if(StringUtils.isNotEmpty(imag)){
+                    Image image = new Image(imag);
+                    imagePathLists.add(image);
+                }
             }
         }
         customerComplainWxModel.setImagePathLists(imagePathLists);
