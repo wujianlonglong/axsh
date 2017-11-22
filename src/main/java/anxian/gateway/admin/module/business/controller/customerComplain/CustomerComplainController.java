@@ -361,6 +361,12 @@ public class CustomerComplainController  extends BaseController {
                             comTypeStr = "物流配送";
                         }else if(comType.equals(ComplainTypeEnum.SHOP_ENVIRONMENT.getComplainTypeEnum())){
                             comTypeStr = "购物环境";
+                        }else if(comType.equals(ComplainTypeEnum.MEMBERCARD.getComplainTypeEnum())){
+                            comTypeStr = "会员卡问题";
+                        }else if(comType.equals(ComplainTypeEnum.ADVICE.getComplainTypeEnum())){
+                            comTypeStr = "咨询建议";
+                        }else if(comType.equals(ComplainTypeEnum.PRAISE.getComplainTypeEnum())){
+                            comTypeStr = "顾客表扬";
                         }else{
                             comTypeStr = "其他类型";
                         }

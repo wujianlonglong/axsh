@@ -1,7 +1,7 @@
 package client.api.customerComplain.domain;
 
 /**
- * 客诉平台枚举类
+ * 投诉类型枚举类
  */
 public enum ComplainTypeEnum {
 
@@ -38,7 +38,22 @@ public enum ComplainTypeEnum {
     /**
      * 其他类型
      */
-    OTHER ("107");
+    OTHER ("107"),
+
+    /**
+     * 会员卡问题
+     */
+    MEMBERCARD("108"),
+
+    /**
+     * 咨询建议
+     */
+    ADVICE("109"),
+
+    /**
+     * 顾客表扬
+     */
+    PRAISE("110");
 
     /**
      * 请求方法名
