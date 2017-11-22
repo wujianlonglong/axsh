@@ -21,4 +21,6 @@ public class SaleManageCondition implements Serializable {
     private String itemName;        // 商品名称
     private Integer size;
     private Integer page;
+    private String startDateStr;
+    private String endDateStr;
 }

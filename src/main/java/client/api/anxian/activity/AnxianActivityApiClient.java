@@ -35,17 +35,17 @@ public interface AnxianActivityApiClient {
     ResponseMessage<AnxianActivity> getById(@PathVariable("id") String id);
 
     /**
-     * 保存活动/更新
-     */
-    @RequestMapping(method = RequestMethod.POST, value = "/save")
-    ResponseMessage<AnxianActivity> save(@RequestBody AnxianActivity anxianActivity);
-
-    /**
      * 获得优惠券
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/getCoupons")
     ResponseMessage getCoupons();
+
+    /**
+     * 保存活动/更新
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/save")
+    ResponseMessage<AnxianActivity> save(@RequestBody AnxianActivity anxianActivity);
 
     /**
      * 获得优惠券

@@ -60,6 +60,11 @@ public class SaleConstant {
      */
     public static final int fullCourt = 55;
 
+    /**
+     * 预售
+     */
+    public static final int preSell = 60;
+
     // 以下为促销状态
     /**
      * 未开始
