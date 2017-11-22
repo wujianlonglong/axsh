@@ -11,6 +11,8 @@ public class AXGateShopSearch {
 
     private Integer state;
 
+    private Integer platform;
+
     private Integer page = 0;
 
     private Integer size = 10;

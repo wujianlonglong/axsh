@@ -119,14 +119,16 @@ public class CouponMongo implements Serializable {
      */
     private String receiveEndDate;
 
-
     private LocalDateTime getVolumeEndDate;      // 领卷结束日期
 
-    private Integer limitGetTotalVolume;// 用户总共限领数量
-    private Integer limitDayTotalNumber;    // 用户每天限领总数
-    private Integer perDayTotalExchangeAmount;  // 用户每人每天限兑换张数
+    private Integer limitReceiveTotalNumber;// 用户总共限领数量
 
-    private Integer dayGetTotalVolume;  // 每天限领
+    private Integer limitDayReceiveTotalNumber;    // 用户每天限领总数
+
+//    private Integer limitGetTotalVolume;// 用户总共限领数量
+//    private Integer limitDayTotalNumber;    // 用户每天限领总数
+//    private Integer perDayTotalExchangeAmount;  // 用户每人每天限兑换张数
+//    private Integer dayGetTotalVolume;  // 每天限领
 
     /**
      * 是否同步

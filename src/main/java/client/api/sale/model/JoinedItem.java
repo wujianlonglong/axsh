@@ -39,5 +39,10 @@ public class JoinedItem implements Serializable {
      */
     private Boolean specProduct = Boolean.FALSE;
 
+    /**
+     * 商品名称
+     */
+    private String productName;
+
 
 }
