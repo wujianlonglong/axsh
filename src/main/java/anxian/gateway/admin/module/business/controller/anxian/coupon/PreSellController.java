@@ -87,7 +87,7 @@ public class PreSellController extends BaseController {
         }
         getMenus(user, model);
         model.addAttribute("id", id);
-        return "anXian-promotion/edit-preSell";
+        return "anXian-promotion/edit-presell";
     }
 
     @ResponseBody
