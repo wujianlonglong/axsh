@@ -12,10 +12,9 @@ import anxian.gateway.admin.utils.JsonMsg;
 import client.api.item.AnXianProductAttributeApiClient;
 import client.api.item.AnXianProductFeign;
 import client.api.item.AnXianSnFeign;
-import client.api.item.domain.Product;
-import client.api.item.domain.ProductAttributeValue;
-import client.api.item.domain.ProductImage;
-import client.api.item.domain.ProductModel;
+import client.api.item.AnxianItemPriceFeign;
+import client.api.item.domain.*;
+import client.api.item.model.GoodsStatus;
 import client.api.item.model.PageModel;
 import client.api.item.model.ProductImageModel;
 import client.api.item.model.SearchCoditionModel;
@@ -48,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +62,9 @@ public class AnxianProductController extends BaseController {
 
     @Autowired
     private AnXianProductFeign productFeign;
+
+    @Autowired
+    private AnxianItemPriceFeign anxianItemPriceFeign;
 
     @Autowired
     private UserService userService;
@@ -115,6 +118,21 @@ public class AnxianProductController extends BaseController {
         return productFeign.searchProductPackage(searchCoditionModel);
     }
 
+
+    /**
+     * 商品信息维护列表
+     *
+     * @return 分页列表
+     */
+    @RequestMapping("/informationListDataNew")
+    @ResponseBody
+    public PageModel<ProductOfShelves> commodityInformationListDataNew(int page, int limit, ProductOfShelves searchProduct) {
+        SearchCoditionModel<ProductOfShelves> searchCoditionModel = new SearchCoditionModel<>();
+        searchCoditionModel.setPage(page - 1);
+        searchCoditionModel.setSize(limit);
+        searchCoditionModel.setSearchCodition(searchProduct);
+        return productFeign.searchProductOfShelves(searchCoditionModel);
+    }
 
     /**
      * 商品信息维护列表
@@ -252,17 +270,17 @@ public class AnxianProductController extends BaseController {
     /**
      * 更新单品状态
      *
-     * @param id
+     * @param erpGoodsId
      * @param status
      * @return 更新的数量
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     @ResponseBody
-    public JsonMsg updateStatus(Authentication authentication, Long id, Integer status, String message) {
+    public JsonMsg updateStatus(Authentication authentication,@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
-        LOGGER.info("  #######   进行商品上下架，status: {} , id: {}", status, id);
+        LOGGER.info("  #######   进行商品上下架，status: {} , erpGoodsId: {},shopId:{}", status, erpGoodsId, shopId);
         LOGGER.info("  ############################################################     ");
-        int result = productFeign.updateStatus(id, status, message);
+        int result = anxianItemPriceFeign.updateStatus(erpGoodsId,shopId, status, message);
         if (result > 0) {
             return JsonMsg.success("更新状态成功");
         } else {
@@ -399,38 +417,49 @@ public class AnxianProductController extends BaseController {
     @ResponseBody
     public JsonMsg batUpdateStatus(Authentication authentication, HttpServletResponse response, @RequestParam("file") MultipartFile multipartFile, @PathVariable("status") Integer status) {
         response.setHeader("X-Frame-Options", "SAMEORIGIN");//添加了文件上传后跨域问题解决办法
-        String fileName = multipartFile.getOriginalFilename();
-        Workbook wb = null;
+        XSSFWorkbook wb;
         try {
-            if (fileName.endsWith(".xls")) {
-                wb = new HSSFWorkbook(multipartFile.getInputStream());
-            } else if (fileName.endsWith(".xlsx")) {
-                wb = new XSSFWorkbook(multipartFile.getInputStream());
-            }
+            wb = new XSSFWorkbook(multipartFile.getInputStream());
         } catch (IOException e) {
             return JsonMsg.failure("导入失败!");
         }
         if (null != wb) {
-            Sheet sheet = wb.getSheetAt(0);
+            XSSFSheet sheet = wb.getSheetAt(0);
             if (null != sheet) {
                 int firstRowNum = sheet.getFirstRowNum();
                 int lastRowNum = sheet.getLastRowNum();
                 List<Long> erpGoodIds = Lists.newArrayList();
+                List<GoodsStatus> goodsStatusList = new ArrayList<>();
                 for (int i = firstRowNum + 1; i <= lastRowNum; i++) {
-                    Row row = sheet.getRow(i);
+                    XSSFRow row = sheet.getRow(i);
                     if (null == row) {
                         continue;
                     }
-                    String[] datas = new String[1];
-                    for (int j = 0; j < 1; j++) {
-                        Cell cell = row.getCell(j);
-                        datas[j] = null != cell ? ExcelUtil.getCellValue(cell).trim() : null;
+                    XSSFCell cell1 = row.getCell(0);
+                    XSSFCell cell2 = row.getCell(1);
+                    XSSFCell cell3 = row.getCell(2);
+                    String erpGoodId = null != cell1 ? ExcelUtil.getCellValue(cell1).trim() : null;
+                    String isAllShop = null != cell2 ? ExcelUtil.getCellValue(cell2).trim() : null;
+                    String shopId = null != cell3 ? ExcelUtil.getCellValue(cell3).trim() : null;
+                    if (erpGoodId == null) {
+                        return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'商品编码'为空！");
                     }
-                    if (StringUtils.isNotBlank(datas[0])) {
-                        erpGoodIds.add(Long.parseLong(datas[0]));
+                    if (isAllShop == null || (!isAllShop.equals("是") && !isAllShop.equals("否"))) {
+                        return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'是否所有门店'为空或者不为'是'、'否'！");
+                    } else if (isAllShop.equals("是")) {
+                        shopId = null;
+                    } else if (isAllShop.equals("否")) {
+                        if (shopId == null) {
+                            return JsonMsg.failure("批量更新单品状态失败:第" + i + "行的'门店ID'为空！");
+                        }
                     }
+                    GoodsStatus goodsStatus = new GoodsStatus();
+                    goodsStatus.setErpGoodsId(Long.valueOf(erpGoodId));
+                    goodsStatus.setShopId(shopId);
+                    goodsStatus.setStatus(status);
+                    goodsStatusList.add(goodsStatus);
                 }
-                ResponseMessage responseMessage = productFeign.batUpdateStatus(erpGoodIds, status);
+                ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList, status);
                 if ("success".equals(responseMessage.getType().name())) {
                     return JsonMsg.success("批量更新单品状态成功！");
                 }
