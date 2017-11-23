@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by mac on 15/8/28.
  */
-@FeignClient(value = Constants.ANXIAN_SJES_API_ITEM,url="localhost:20011")
+@FeignClient(value = Constants.ANXIAN_SJES_API_ITEM)
 @RequestMapping(value = "/products/anxian")
 public interface AnXianProductFeign {
 

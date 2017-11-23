@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by qinhailong on 17-1-10.
  */
-@FeignClient(value=Constants.ANXIAN_SJES_API_ITEM,url="localhost:20011")
+@FeignClient(value=Constants.ANXIAN_SJES_API_ITEM)
 @RequestMapping(value = "productsPlans/anxian", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public interface AnXianProductsPlanFeign {
 
