@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 /**
  * Created by mac on 15/8/28.
  */
@@ -27,5 +26,6 @@ public interface AnXianItemPriceFeign {
 
     @RequestMapping(value = "updateStatus", method = RequestMethod.PUT)
     int updateStatus(@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId,@RequestParam("status") Integer status,@RequestParam("message") String message);
+
 
 }
