@@ -10,10 +10,10 @@ import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.BeanUtil;
 import anxian.gateway.admin.utils.ExcelUtil;
 import anxian.gateway.admin.utils.JsonMsg;
+import client.api.item.AnXianItemPriceFeign;
 import client.api.item.AnXianProductAttributeApiClient;
 import client.api.item.AnXianProductFeign;
 import client.api.item.AnXianSnFeign;
-import client.api.item.AnxianItemPriceFeign;
 import client.api.item.domain.*;
 import client.api.item.model.GoodsStatus;
 import client.api.item.model.PageModel;
@@ -22,11 +22,6 @@ import client.api.item.model.SearchCoditionModel;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -68,7 +63,7 @@ public class AnxianProductController extends BaseController {
     private AnXianProductFeign productFeign;
 
     @Autowired
-    private AnxianItemPriceFeign anxianItemPriceFeign;
+    private AnXianItemPriceFeign anxianItemPriceFeign;
 
     @Autowired
     private UserService userService;
