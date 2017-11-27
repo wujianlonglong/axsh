@@ -5,6 +5,7 @@ import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.module.business.model.item.CommodityInfoUpdateJson;
 import anxian.gateway.admin.module.business.model.item.ProductPriceModel;
+import anxian.gateway.admin.module.business.service.AnXianProductService;
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import anxian.gateway.admin.utils.BeanUtil;
 import anxian.gateway.admin.utils.ExcelUtil;
@@ -59,6 +60,9 @@ import java.util.List;
 public class AnxianProductController extends BaseController {
 
     Logger LOGGER = LoggerFactory.getLogger(AnxianProductController.class);
+
+    @Autowired
+    private AnXianProductService anXianProductService;
 
     @Autowired
     private AnXianProductFeign productFeign;
@@ -487,5 +491,15 @@ public class AnxianProductController extends BaseController {
         it.close();
         os.close();
 
+    }
+
+
+    /**
+     * 后台获取门店价格列表
+     */
+    @RequestMapping(value = "getItemPriceShowList", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ItemPriceShow> getItemPriceShowList(String erpGoodsId) {
+        return anXianProductService.getItemPriceShowList(Long.parseLong(erpGoodsId));
     }
 }
