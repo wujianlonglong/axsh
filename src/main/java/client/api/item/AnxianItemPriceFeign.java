@@ -1,5 +1,6 @@
 package client.api.item;
 
+
 import anxian.gateway.admin.module.common.domain.ResponseMessage;
 import client.api.constants.Constants;
 import client.api.item.domain.ItemPriceShow;
@@ -27,5 +28,4 @@ public interface AnXianItemPriceFeign {
 
     @RequestMapping(value = "updateStatus", method = RequestMethod.PUT)
     int updateStatus(@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId,@RequestParam("status") Integer status,@RequestParam("message") String message);
-
 }
