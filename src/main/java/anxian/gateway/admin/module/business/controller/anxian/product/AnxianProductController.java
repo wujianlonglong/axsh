@@ -216,7 +216,7 @@ public class AnxianProductController extends BaseController {
         if (StringUtils.isBlank(sn)) {
             sn = snFeign.generateProductSn(productId);
         }
-        ProductModel productModel = productFeign.getProductDetail(sn, status);
+        ProductModel productModel = productFeign.getProductDetail(sn, null);
 
         CommodityInfoUpdateJson commodityInfoUpdateJson = new CommodityInfoUpdateJson();
         BeanUtil.setBean2Bean(productModel, commodityInfoUpdateJson);
@@ -275,11 +275,11 @@ public class AnxianProductController extends BaseController {
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     @ResponseBody
-    public JsonMsg updateStatus(Authentication authentication,@RequestParam("erpGoodsId") Long erpGoodsId,@RequestParam("shopId") String shopId, Integer status, String message) {
+    public JsonMsg updateStatus(Authentication authentication, @RequestParam("erpGoodsId") Long erpGoodsId, @RequestParam("shopId") String shopId, Integer status, String message) {
         LOGGER.info("  ############################################################     ");
         LOGGER.info("  #######   进行商品上下架，status: {} , erpGoodsId: {},shopId:{}", status, erpGoodsId, shopId);
         LOGGER.info("  ############################################################     ");
-        int result = anxianItemPriceFeign.updateStatus(erpGoodsId,shopId, status, message);
+        int result = anxianItemPriceFeign.updateStatus(erpGoodsId, shopId, status, message);
         if (result > 0) {
             return JsonMsg.success("更新状态成功");
         } else {
