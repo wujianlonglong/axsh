@@ -1,5 +1,6 @@
 package client.api.anxian.activity.model;
 
+import client.api.sale.model.JoinedGateShop;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +31,16 @@ public class AnxianActivity implements Serializable {
      * 活动名称
      */
     private String activityName;
+
+    /**
+     * 参与门店状态: 1 所有门店;2 部分门店
+     */
+    private Integer joinGateShopType = 1;
+
+    /**
+     * 参与门店列表
+     */
+    private List<JoinedGateShop> gateShops = new ArrayList<>();
 
     /**
      * 开始时间
