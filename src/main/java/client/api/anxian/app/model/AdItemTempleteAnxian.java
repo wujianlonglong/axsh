@@ -42,4 +42,14 @@ public class AdItemTempleteAnxian {
 	 * 更新时间
 	 */
 	private Date updatedDate;
+
+	/**
+	 * 门店id
+	 */
+	private String shopId;
+
+	/**
+	 * 门店名称
+	 */
+	private String shopName;
 }

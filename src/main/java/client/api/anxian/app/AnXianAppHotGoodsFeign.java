@@ -29,7 +29,7 @@ public interface AnXianAppHotGoodsFeign {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/app/{zoneId}")
-    AdItemTempleteAnxian getByZoneId(@PathVariable("zoneId") String zoneId);
+    List<AdItemTempleteAnxian> getByZoneId(@PathVariable("zoneId") String zoneId);
 
     /**
      * 修改热销商品

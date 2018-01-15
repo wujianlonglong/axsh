@@ -11,6 +11,7 @@ import client.api.constants.Constants;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,26 +53,26 @@ public class AnxianAppHotgoodsController extends BaseController {
         return jsonMsg;
     }
 
-    /**
-     * 热销列表
-     *
-     * @return 热销列表
-     */
-    @ResponseBody
-    @RequestMapping(method = RequestMethod.GET)
-    public PageModel<AdItemTempleteModel> list(int page, int limit) {
-        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
-        List<AdItemTempleteModel> list = Lists.newArrayList();
-        if (adItemTemplete != null) {
-            AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
-            adItemTempleteModel.setId(adItemTemplete.getId());
-            adItemTempleteModel.setSns(adItemTemplete.getSns());
-            adItemTempleteModel.setTempleteName(adItemTemplete.getTempleteName());
-            adItemTempleteModel.setZoneId(adItemTemplete.getZoneId());
-            list.add(adItemTempleteModel);
-        }
-        return new PageModel<>(list, list.size(), new Pageable(page, limit));
-    }
+//    /**
+//     * 热销列表
+//     *
+//     * @return 热销列表
+//     */
+//    @ResponseBody
+//    @RequestMapping(method = RequestMethod.GET)
+//    public PageModel<AdItemTempleteModel> list(int page, int limit) {
+//        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
+//        List<AdItemTempleteModel> list = Lists.newArrayList();
+//        if (adItemTemplete != null) {
+//            AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
+//            adItemTempleteModel.setId(adItemTemplete.getId());
+//            adItemTempleteModel.setSns(adItemTemplete.getSns());
+//            adItemTempleteModel.setTempleteName(adItemTemplete.getTempleteName());
+//            adItemTempleteModel.setZoneId(adItemTemplete.getZoneId());
+//            list.add(adItemTempleteModel);
+//        }
+//        return new PageModel<>(list, list.size(), new Pageable(page, limit));
+//    }
 
     /**
      * 修改热销商品
@@ -109,15 +110,19 @@ public class AnxianAppHotgoodsController extends BaseController {
 
         getMenus(user, model);
 
-        AdItemTempleteAnxian adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
+        List<AdItemTempleteAnxian> adItemTemplete = anXianAppHotGoodsFeign.getByZoneId(Constants.APP_HOTGOODS_ZONEID);
         List<AdItemTempleteModel> list = Lists.newArrayList();
-        if (adItemTemplete != null) {
-            AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
-            adItemTempleteModel.setId(adItemTemplete.getId());
-            adItemTempleteModel.setSns(adItemTemplete.getSns());
-            adItemTempleteModel.setTempleteName(adItemTemplete.getTempleteName());
-            adItemTempleteModel.setZoneId(adItemTemplete.getZoneId());
-            list.add(adItemTempleteModel);
+        if (CollectionUtils.isNotEmpty(adItemTemplete)) {
+            adItemTemplete.forEach(adItemTempleteAnxian -> {
+                AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
+                adItemTempleteModel.setId(adItemTempleteAnxian.getId());
+                adItemTempleteModel.setSns(adItemTempleteAnxian.getSns());
+                adItemTempleteModel.setTempleteName(adItemTempleteAnxian.getTempleteName());
+                adItemTempleteModel.setZoneId(adItemTempleteAnxian.getZoneId());
+                adItemTempleteModel.setShopId(adItemTempleteAnxian.getShopId());
+                adItemTempleteModel.setShopName(adItemTempleteAnxian.getShopName());
+                list.add(adItemTempleteModel);
+            });
         }
         PageModel<AdItemTempleteModel> hotGoods = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<AdItemTempleteModel> content = new ArrayList<>();
