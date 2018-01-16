@@ -81,6 +81,41 @@ public class AXGateShopController extends BaseController {
 
     }
 
+    @RequestMapping(value = "/pageListnew", method = RequestMethod.GET)
+    @ResponseBody
+    public SjesPage<AXGateShop> pageListnew( @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                            @RequestParam(name = "limit", required = false, defaultValue = "10") int size,
+                            @RequestParam(name = "shopName", required = false) String shopName,
+                            @RequestParam(name = "shopId", required = false) String shopId,
+                            @RequestParam(name = "state", required = false) Integer state,
+                            @RequestParam(name = "platform", required = false) Integer platform,
+                            @RequestParam(value = "flag", required = false) String flag, Model model, Principal principal){
+
+        AXGateShopSearch gateShopSearch = new AXGateShopSearch();
+
+        gateShopSearch.setPage(page);
+        if (platform != null) {
+            gateShopSearch.setPlatform(platform);
+        }
+        if (StringUtils.isNotEmpty(shopId)) {
+            gateShopSearch.setShopId(shopId);
+        }
+
+        if (StringUtils.isNotEmpty(shopName)) {
+            gateShopSearch.setShopName(shopName);
+        }
+        if (state != null) {
+            gateShopSearch.setState(state);
+        }
+
+        ResponseMessage<SjesPage<AXGateShop>> responseMessage = axGateShopClient.getShopList(gateShopSearch);
+        SjesPage<AXGateShop> data = responseMessage.getData();
+
+        return data;
+
+    }
+
+
     @RequestMapping(value = "/shopDetail", method = RequestMethod.GET)
     public String getShopDetail(String shopId, Model model, Principal principal) {
 

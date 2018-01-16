@@ -4,10 +4,12 @@ import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
 import anxian.gateway.admin.utils.JsonMsg;
+import anxian.gateway.admin.utils.StringUtils;
 import client.api.anxian.app.AnXianAppFloorFeign;
 import client.api.app.floor.model.AppFloorDetailModel;
 import client.api.app.floor.model.AppFloorModel;
 import client.api.app.floor.model.FloorContentModel;
+import client.api.customerComplain.domain.ShopInfo;
 import client.api.item.model.PageModel;
 import client.api.item.model.Pageable;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,7 +43,7 @@ public class AnxianAppFloorController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<AppFloorModel> list(int page, int limit) {
-        List<AppFloorModel> list = anXianAppFloorFeign.list();
+        List<AppFloorModel> list = anXianAppFloorFeign.list(null);
         return new PageModel<>(list, list.size(), new Pageable(page, limit));
     }
 
@@ -85,7 +87,7 @@ public class AnxianAppFloorController extends BaseController {
             if (CollectionUtils.isNotEmpty(appFloorDetailModel.getFloorContents())) {
                 return JsonMsg.failure("该楼层下存在内容, 不能删除！");
             }
-            if (null == appFloorDetailModel.getZoneId()){
+            if (null == appFloorDetailModel.getZoneId()) {
                 appFloorDetailModel.setZoneId("");
             }
             anXianAppFloorFeign.delete(floorId, appFloorDetailModel.getZoneId());
@@ -105,7 +107,21 @@ public class AnxianAppFloorController extends BaseController {
     @RequestMapping(value = "{floorId}", method = RequestMethod.GET)
     public JsonMsg getAppFloorDetailModel(@PathVariable("floorId") Long floorId) {
         JsonMsg jsonMsg = new JsonMsg();
-        jsonMsg.setData(anXianAppFloorFeign.getAppFloorDetailModel(floorId));
+        AppFloorDetailModel data = anXianAppFloorFeign.getAppFloorDetailModel(floorId);
+        if (data.getShopId() != null && data.getShopId() != "") {
+            String[] shopIdArray = data.getShopId().split(",");
+            String[] shopNameArray = data.getShopName().split(",");
+            List<ShopInfo> shopInfos=new ArrayList<>();
+            for(int i=0;i<shopIdArray.length;i++){
+                ShopInfo shopInfo=new ShopInfo();
+                shopInfo.setShopId(shopIdArray[i]);
+                shopInfo.setShopName(shopNameArray[i]);
+                shopInfos.add(shopInfo);
+            }
+            data.setShopList(shopInfos);
+        }
+
+        jsonMsg.setData(data);
         jsonMsg.setSuccess(true);
         return jsonMsg;
     }
@@ -163,7 +179,7 @@ public class AnxianAppFloorController extends BaseController {
     }
 
     @RequestMapping("/ajaxFloor")
-    public String ajaxFloor(Principal principal, Model model, int page, int limit) {
+    public String ajaxFloor(Principal principal, Model model, int page, int limit,String shopId) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -172,7 +188,7 @@ public class AnxianAppFloorController extends BaseController {
 
         getMenus(user, model);
 
-        List<AppFloorModel> list = anXianAppFloorFeign.list();
+        List<AppFloorModel> list = anXianAppFloorFeign.list(shopId);
         PageModel<AppFloorModel> floors = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<AppFloorModel> content = new ArrayList<>();
         int currIdx = page * limit;
@@ -183,7 +199,7 @@ public class AnxianAppFloorController extends BaseController {
         floors.getContent().clear();
         floors.getContent().addAll(content);
         model.addAttribute("page", page + 1);
-        model.addAttribute("totalPages",floors.getTotalPages());
+        model.addAttribute("totalPages", floors.getTotalPages());
         model.addAttribute("floors", floors);
         return "anXian-APP/floor-ajax";
     }
@@ -199,6 +215,18 @@ public class AnxianAppFloorController extends BaseController {
         getMenus(user, model);
 
         AppFloorDetailModel floor = anXianAppFloorFeign.getAppFloorDetailModel(id);
+        if (floor.getShopId() != null && floor.getShopId() != "") {
+            String[] shopIdArray = floor.getShopId().split(",");
+            String[] shopNameArray = floor.getShopName().split(",");
+            List<ShopInfo> shopInfos=new ArrayList<>();
+            for(int i=0;i<shopIdArray.length;i++){
+                ShopInfo shopInfo=new ShopInfo();
+                shopInfo.setShopId(shopIdArray[i]);
+                shopInfo.setShopName(shopNameArray[i]);
+                shopInfos.add(shopInfo);
+            }
+            floor.setShopList(shopInfos);
+        }
         model.addAttribute("floor", floor);
         return "anXian-APP/edit-floor";
     }
