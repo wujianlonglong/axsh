@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by wangdinglan on 2017/09/14
  */
-@FeignClient(name="sjes-api-app",url="http://localhost:20050/")
+@FeignClient(name="sjes-api-app")
 @RequestMapping("anxian/appFloors")
 public interface AnXianAppFloorFeign {
     /**

@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -83,7 +84,7 @@ public class AnxianAppHotgoodsController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(AdItemTempleteModel adItemTempleteModel) {
-        anXianAppHotGoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns());
+        anXianAppHotGoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns(),adItemTempleteModel.getShopId(),adItemTempleteModel.getShopName());
         return JsonMsg.success("修改成功");
     }
 
@@ -101,7 +102,7 @@ public class AnxianAppHotgoodsController extends BaseController {
     }
 
     @RequestMapping("/ajaxHot")
-    public String ajaxHotGood(Model model, int page, int limit, Principal principal) {
+    public String ajaxHotGood(Model model, int page, int limit,String shopId, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -114,6 +115,10 @@ public class AnxianAppHotgoodsController extends BaseController {
         List<AdItemTempleteModel> list = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(adItemTemplete)) {
             adItemTemplete.forEach(adItemTempleteAnxian -> {
+                //todo 筛选门店
+                String shopIds = adItemTempleteAnxian.getShopId();
+                if (!StringUtils.isEmpty(shopId) && (StringUtils.isEmpty(shopIds) || (!shopIds.equals("all") && !shopIds.contains(shopId))))
+                    return;
                 AdItemTempleteModel adItemTempleteModel = new AdItemTempleteModel();
                 adItemTempleteModel.setId(adItemTempleteAnxian.getId());
                 adItemTempleteModel.setSns(adItemTempleteAnxian.getSns());

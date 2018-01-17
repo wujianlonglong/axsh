@@ -38,7 +38,7 @@ public class AnxianAppMenuController extends BaseController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public PageModel<EntryIconModel> list(int page, int limit) {
-        List<EntryIconModel> list = anXianAppMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list(null);
         return new PageModel<>(list, list.size(), new Pageable(page, limit));
     }
 
@@ -112,7 +112,7 @@ public class AnxianAppMenuController extends BaseController {
     }
 
     @RequestMapping("/ajaxMenu")
-    public String ajaxMenu(Model model, int page, int limit, Principal principal) {
+    public String ajaxMenu(Model model, int page, int limit,String shopId, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -121,7 +121,7 @@ public class AnxianAppMenuController extends BaseController {
 
         getMenus(user, model);
 
-        List<EntryIconModel> list = anXianAppMenuFeign.list();
+        List<EntryIconModel> list = anXianAppMenuFeign.list(shopId);
         PageModel<EntryIconModel> menus = new PageModel<>(list, list.size(), new Pageable(page, limit));
         List<EntryIconModel> content = new ArrayList<>();
         int currIdx = page * limit;
