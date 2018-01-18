@@ -3,15 +3,17 @@ package anxian.gateway.admin.module.business.controller.anxian.coupon;
 import anxian.gateway.admin.module.base.controller.BaseController;
 import anxian.gateway.admin.module.base.domain.User;
 import anxian.gateway.admin.module.base.service.UserService;
+import client.api.anxian.AXGateShopClient;
 import client.api.anxian.activity.AnxianActivityApiClient;
 import client.api.anxian.activity.model.ActivityCondition;
 import client.api.anxian.activity.model.AnxianActivity;
+import client.api.anxian.shop.AXGateShop;
+import client.api.anxian.shop.AXGateShopSearch;
 import client.api.item.domain.Product;
 import client.api.item.model.PageModel;
 import client.api.sale.model.*;
 import client.api.sale.model.ResponseMessage;
 import client.api.search.AnxianSearchApiClient;
-import client.api.track.model.*;
 import client.api.user.utils.page.SjesPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,9 @@ public class AnxianActivityController extends BaseController {
 
     @Autowired
     private AnxianSearchApiClient anxianSearchApiClient;
+
+    @Autowired
+    private AXGateShopClient axGateShopClient;
 
     @RequestMapping("/activities")
     public String activities(Principal principal, Model model){
@@ -173,6 +178,14 @@ public class AnxianActivityController extends BaseController {
         PageModel<Product> productPageModels = anxianSearchApiClient.listProducts(productId, name, page - 1, limit);
 
         return productPageModels;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/axShopSearch", method = RequestMethod.GET)
+    public SjesPage<AXGateShop> shopListForSale(AXGateShopSearch gateShopSearch) {
+        gateShopSearch.setPage(gateShopSearch.getPage() - 1);
+        ResponseMessage<SjesPage<AXGateShop>> responseMessage = axGateShopClient.getShopList(gateShopSearch);
+        return responseMessage.getData();
     }
 
 

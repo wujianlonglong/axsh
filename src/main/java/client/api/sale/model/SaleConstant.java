@@ -61,9 +61,14 @@ public class SaleConstant {
     public static final int fullCourt = 55;
 
     /**
+     * 积分商品
+     */
+    public static final int scoreItem = 60;
+
+    /**
      * 预售
      */
-    public static final int preSell = 60;
+    public static final int preSell = 65;
 
     // 以下为促销状态
     /**
