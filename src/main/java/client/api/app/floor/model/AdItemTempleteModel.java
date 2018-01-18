@@ -28,4 +28,14 @@ public class AdItemTempleteModel implements Serializable {
      */
     private String sns;
 
+    /**
+     * 门店id
+     */
+    private String shopId;
+
+    /**
+     * 门店名称
+     */
+    private String shopName;
+
 }

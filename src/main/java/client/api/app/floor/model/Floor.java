@@ -74,4 +74,7 @@ public class Floor implements Serializable {
      * 修改时间
      */
     private Date lastModifiedDate;
+
+    private String shopId;
+    private String shopName;
 }

@@ -3,17 +3,14 @@ package client.api.anxian.app;
 import client.api.app.floor.model.EntryIconModel;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * Created by wangdinglan on 2017/09/14
  */
-@FeignClient("sjes-api-app")
+@FeignClient(name="sjes-api-app")
 @RequestMapping("/anxian/appMenus")
 public interface AnXianAppMenuFeign {
     /**
@@ -22,7 +19,7 @@ public interface AnXianAppMenuFeign {
      * @return
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    List<EntryIconModel> list();
+    List<EntryIconModel> list(@RequestParam("shopId") String shopId);
 
     /**
      * 根据id得到指定的 EntryIconModel

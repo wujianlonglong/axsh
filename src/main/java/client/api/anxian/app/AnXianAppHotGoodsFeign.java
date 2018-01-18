@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Created by wangdinglan on 2017/09/14
  */
-@FeignClient("sjes-api-app")
+@FeignClient(name = "sjes-api-app")
 @RequestMapping("/anxian/appHotgoods")
 public interface AnXianAppHotGoodsFeign {
     /**
@@ -23,20 +23,23 @@ public interface AnXianAppHotGoodsFeign {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     AdItemTempleteAnxian findOne(@PathVariable("id") long id);
+
     /**
      * 根据zoneId取得AdItemTemplete
+     *
      * @param zoneId
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/app/{zoneId}")
-    AdItemTempleteAnxian getByZoneId(@PathVariable("zoneId") String zoneId);
+    List<AdItemTempleteAnxian> getByZoneId(@PathVariable("zoneId") String zoneId);
 
     /**
      * 修改热销商品
+     *
      * @param id
      * @param sns
      */
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    void update(@RequestParam("id") Long id, @RequestParam("sns") String sns);
+    void update(@RequestParam("id") Long id, @RequestParam("sns") String sns, @RequestParam("shopId") String shopId, @RequestParam("shopName") String shopName);
 
 }

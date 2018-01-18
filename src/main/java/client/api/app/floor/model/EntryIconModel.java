@@ -40,4 +40,8 @@ public class EntryIconModel implements Serializable {
     private String startDateStr; // 开始时间字符串
 
     private String endDateStr; // 结束时间字符串
+
+    private String shopId;
+
+    private String shopName;
 }

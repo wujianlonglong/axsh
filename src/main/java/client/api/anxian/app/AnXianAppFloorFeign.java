@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by wangdinglan on 2017/09/14
  */
-@FeignClient("sjes-api-app")
+@FeignClient(name="sjes-api-app")
 @RequestMapping("anxian/appFloors")
 public interface AnXianAppFloorFeign {
     /**
@@ -36,7 +36,7 @@ public interface AnXianAppFloorFeign {
      * @return
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    List<AppFloorModel> list();
+    List<AppFloorModel> list(@RequestParam("shopId") String shopId);
 
     /**
      * 删除指定id的楼层
