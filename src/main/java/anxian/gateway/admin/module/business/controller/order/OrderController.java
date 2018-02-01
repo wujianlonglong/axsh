@@ -131,6 +131,7 @@ public class OrderController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/searchOrder")
     public String getOrderlistForSearch(SearchCondition searchCondition, int page, int limit, @RequestParam(value = "orderStatusName", required = false) String orderStatusName,
                                         @RequestParam(value = "flag", required = false) String flag, @RequestParam(value = "platformId", required = false) String platformId,
+                                        @RequestParam(value = "phone", required = false) String phone,
                                         Model model, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
@@ -163,7 +164,7 @@ public class OrderController extends BaseController {
 //            String platform = platforms[0];
 //            searchCondition.setOrderType("10005".equalsIgnoreCase(platform) ? "anxian" : "");
 //        }
-
+        searchCondition.setTelphone(phone);
         searchCondition.setPage(page);
         searchCondition.setSize(limit);
         String shopId = user.getShopId();
