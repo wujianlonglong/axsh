@@ -460,7 +460,8 @@ public class AnxianProductController extends BaseController {
                 }
                 ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList, status);
                 if ("success".equals(responseMessage.getType().name())) {
-                    return JsonMsg.success("批量更新单品状态成功！");
+                    return JsonMsg.success(responseMessage.getContent());
+//                    return JsonMsg.success("批量更新单品状态成功！");
                 }
             }
         }
