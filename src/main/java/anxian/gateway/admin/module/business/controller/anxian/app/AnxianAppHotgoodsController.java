@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -75,8 +72,9 @@ public class AnxianAppHotgoodsController extends BaseController {
 //        return new PageModel<>(list, list.size(), new Pageable(page, limit));
 //    }
 
+
     /**
-     * 修改热销商品
+     * 新增/修改热销商品
      *
      * @param adItemTempleteModel 热销信息
      * @return
@@ -84,8 +82,12 @@ public class AnxianAppHotgoodsController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public JsonMsg update(AdItemTempleteModel adItemTempleteModel) {
-        anXianAppHotGoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns(),adItemTempleteModel.getShopId(),adItemTempleteModel.getShopName());
-        return JsonMsg.success("修改成功");
+        if (StringUtils.isEmpty(adItemTempleteModel.getId())) {
+            anXianAppHotGoodsFeign.add(adItemTempleteModel.getSns(), adItemTempleteModel.getShopId(), adItemTempleteModel.getShopName());
+        } else {
+            anXianAppHotGoodsFeign.update(adItemTempleteModel.getId(), adItemTempleteModel.getSns(), adItemTempleteModel.getShopId(), adItemTempleteModel.getShopName());
+        }
+        return JsonMsg.success("成功");
     }
 
     @RequestMapping(value = "main", method = RequestMethod.GET)
@@ -101,8 +103,9 @@ public class AnxianAppHotgoodsController extends BaseController {
         return "anXian-APP/sell-hot";
     }
 
+
     @RequestMapping("/ajaxHot")
-    public String ajaxHotGood(Model model, int page, int limit,String shopId, Principal principal) {
+    public String ajaxHotGood(Model model, int page, int limit, String shopId, Principal principal) {
 
         User user = userService.getByUserName(principal.getName());
         if (null == user) {
@@ -139,10 +142,24 @@ public class AnxianAppHotgoodsController extends BaseController {
         hotGoods.getContent().clear();
         hotGoods.getContent().addAll(content);
         model.addAttribute("page", page + 1);
-        model.addAttribute("totalPages",hotGoods.getTotalPages());
+        model.addAttribute("totalPages", hotGoods.getTotalPages());
         model.addAttribute("hotGoods", hotGoods);
         return "anXian-APP/sell-hot-ajax";
     }
 
-
+    /**
+     *  删除热销
+     * @param hotId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE)
+    public JsonMsg deleteMenu(@RequestParam(value = "hotId") Long hotId) {
+        try {
+              anXianAppHotGoodsFeign.delete(hotId);
+        }catch (Exception e){
+             return JsonMsg.failure("删除菜单失败");
+        }
+        return JsonMsg.success("删除菜单成功");
+    }
 }

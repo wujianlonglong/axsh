@@ -42,4 +42,20 @@ public interface AnXianAppHotGoodsFeign {
     @RequestMapping(method = RequestMethod.POST, value = "/update")
     void update(@RequestParam("id") Long id, @RequestParam("sns") String sns, @RequestParam("shopId") String shopId, @RequestParam("shopName") String shopName);
 
+
+    /**
+     * 新增热销商品
+     * @param sns
+     * @param shopId
+     * @param shopName
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/add")
+    void add(@RequestParam("sns") String sns, @RequestParam(name = "shopId", required = false) String shopId, @RequestParam(name = "shopName", required = false) String shopName);
+
+    /**
+     * 删除热销商品
+     * @param id
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/delete/{id}")
+    void delete(@PathVariable("id") Long id);
 }
