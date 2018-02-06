@@ -93,6 +93,10 @@ public class AXGateShopController extends BaseController {
 
         AXGateShopSearch gateShopSearch = new AXGateShopSearch();
 
+        page = page - 1;
+        if(page < 0){
+            page = 0;
+        }
         gateShopSearch.setPage(page);
         if (platform != null) {
             gateShopSearch.setPlatform(platform);
