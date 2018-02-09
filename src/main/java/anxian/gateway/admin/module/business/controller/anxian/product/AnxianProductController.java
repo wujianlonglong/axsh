@@ -458,11 +458,33 @@ public class AnxianProductController extends BaseController {
                     goodsStatus.setStatus(status);
                     goodsStatusList.add(goodsStatus);
                 }
-                ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList, status);
-                if ("success".equals(responseMessage.getType().name())) {
-                    return JsonMsg.success(responseMessage.getContent());
-//                    return JsonMsg.success("批量更新单品状态成功！");
+                int flag = 0;
+                int size = goodsStatusList.size();
+                int batchStockNum = 100;
+                // 取得循环次数
+                int loopCount = (size + batchStockNum - 1) / batchStockNum;
+                String returnStr = "以下商品图片地址或分类未维护：";
+//                ResponseMessage responseMessage= JsonMsg.failure("批量更新单品状态失败！");
+                for (int i = 0; i < loopCount; i++) {
+                    List<GoodsStatus> subList = new ArrayList<>();
+                    subList.addAll(goodsStatusList.subList(i * batchStockNum, (i + 1) * batchStockNum > size ? size : (i + 1) * batchStockNum));
+                    ResponseMessage responseMessage = anxianItemPriceFeign.batUpdateStatusNew(goodsStatusList, status);
+                    if ("success".equals(responseMessage.getType().name())) {
+                        returnStr += responseMessage.getContent();
+                        if (responseMessage.getData() != null && responseMessage.getData().equals("1")) {
+                            flag = 1;
+                        }
+                    }
                 }
+                if (flag == 1) {
+                    return JsonMsg.success(returnStr.replaceAll("修改状态成功", ",").replaceAll("\\]\\[", ","));
+                } else {
+                    return JsonMsg.success("批量更新单品状态成功");
+                }
+//                if ("success".equals(responseMessage.getType().name())) {
+//                    return JsonMsg.success(responseMessage.getContent());
+////                    return JsonMsg.success("批量更新单品状态成功！");
+//                }
             }
         }
         return JsonMsg.failure("批量更新单品状态失败！");
